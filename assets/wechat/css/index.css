@@ -1,0 +1,256 @@
+/* css  reset */
+html, body, form { font-size: 14px; font-size: 14px\9; height: 100%; margin: 0; }
+body { font-family: Helvetica, Tahoma, Arial, "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif; overflow-y: scroll; }
+@media (max-width: 991px) {
+html, body, form { font-size: 13px; font-size: 13px\9; }
+}
+@media (max-width: 767px) {
+html, body, form { font-size: 12px; /* [disabled]font-size: 12px\9;
+*/ }
+}
+h1 { font-size: 3em; margin: 0; font-weight: bold; }
+h3 { font-size: 2em; margin: 0; font-weight: bold; }
+h4 { font-size: 1.3em; margin: 0; font-weight: bold; }
+small {  margin-left: 3px; font-size: 0.8em; font-style: italic; }
+a, a:hover, a:focus { text-decoration: none; outline: none; }
+a { color: #34393b; }
+a:hover, a:focus { color: #444; }
+/* WP8 and IE10 hack */
+@-webkit-viewport {
+width: device-width;
+}
+@-moz-viewport {
+width: device-width;
+}
+@-ms-viewport {
+width: device-width;
+}
+@-o-viewport {
+width: device-width;
+}
+@viewport {
+width: device-width;
+}
+.ie { height: 100%; width: 100%; background: url(../images/404.jpg) no-repeat center center #F3F2EE; position: fixed; z-index: 999999; }
+/*----登陆页面----*/
+/* 外框 */
+#wrap { width: 100%; min-height: 100%; margin: auto; position: relative; overflow: hidden; z-index: 99; background: url(../images/bg.jpg) no-repeat scroll center center / cover; }
+#header { width: 100%; height: 50px; background: rgba(255,255,255,0.3); position: relative; margin-bottom: 30px; }
+#header > a { width: 50px; height: 50px; line-height: 50px; font-size: 2.5em; color: #fff; text-align: center; display: block; position: absolute; left: 0; top: 0; }
+#header > a:after { position: absolute; right: 0; top: 10px; height: 30px; width: 1px; background: rgba(255,255,255,0.6); content: ''; }
+#header > span { width: 100%; height: 50px; line-height: 50px; color: #fff; display: block; padding-left: 60px; font-size: 1.4em; }
+.header-tips { height: 30px; width: 100%; margin: 0 0 20px 0; line-height: 30px; text-align: center; color: #fff; font-size: 1.2em; position: relative; }
+.header-tips > a { background: #fff; display: inline-block; padding: 0 5px; margin: 0 5px; border-radius: 3px; }
+/* logo */
+#login-logo { width: 100%; height: 175px; position: relative; }
+#login-message { width: 100%; height: 25px; position: relative; }
+#login-message > div { font-size: 1.2em; text-align: center; color: rgba(255,0,0,1); }
+#login-logo .logo { width: 128px; height: 128px; position: absolute; top: 50%; left: 50%; margin-top: -64px; margin-left: -64px; }
+/* 登陆框 */
+#login-box { width: 100%; position: relative; }
+.login-input { width: 100%; height: 30px; background: rgba(255,255,255,0.3); margin-bottom: 20px; position: relative; }
+.login-input > i { width: 40px; height: 30px; line-height: 30px; position: absolute; top: 0; left: 0; text-align: center; color: rgba(255,255,255,0.8); font-size: 1.4em; }
+.login-input > i:after { content: ""; width: 1px; height: 20px; position: absolute; top: 50%; right: -1px; background: rgba(255,255,255,0.6); margin-top: -10px; }
+.login-input > input { text-indent: 50px; background: none; border: 0; margin: 0; padding: 0; width: 100%; height: 30px; outline: none; color: rgba(255,255,255,1); font-size: 1.2em; -webkit-transition-duration: 0.25s; transition-duration: 0.25s; }
+/* 验证码 */
+#ver-box { width: 100%; height: 50px; margin-bottom: 20px; position: relative; }
+#ver-box .ver-left { width: 100%; height: 50px; float: left; padding-right: 150px; margin-right: -150px; }
+#ver-box .ver-left .login-input { width: 100%; height: 50px; }
+#ver-box .login-input > i { height: 50px; line-height: 50px; }
+#ver-box .login-input > i:after { height: 30px; margin-top: -15px; }
+#ver-box .login-input > input { height: 50px; line-height: 50px; }
+#ver-box .ver-right { width: 150px; height: 50px; float: left; padding-left: 10px; overflow: hidden; }
+#ver-box .ver-img { width: 150px; height: 50px; cursor: pointer; }
+.login-btn { width: 100%; height: 30px; margin-bottom: 20px; }
+.login-btn > input { width: 100%; height: 30px; background: #fff; padding: 0; margin: 0; border: 0; text-align: center; border-radius: 0; }
+.login-tips { width: 100%; height: 20px; text-align: center; margin-bottom: 20px; position: relative; }
+.login-tips > span { display: inline-block; margin: 0 10px; line-height: 20px; height: 20px; }
+.login-tips > span a { color: #fff; }
+.login-tips > span:first-child:after { width: 1px; height: 12px; background: rgba(255,255,255,0.8); content: ""; position: absolute; top: 4px; left: 50%; }
+/* 版权信息 */
+#copyright { width: 100%; height: 30px; line-height: 30px; text-align: center; color: rgba(255,255,255,0.8); font-size: 0.8em; margin-top: 20px; }
+/*----注册页面--*/
+#register-header { width: 100%; height: 40px; position: relative; margin: 20px 0; }
+#register-header .header { position: relative; width: 100%; height: 40px; }
+#register-header .header-logo { width: 40px; height: 40px; float: left; }
+#register-header .header-logo:after { content: ""; width: 1px; height: 30px; position: absolute; top: 5px; left: 51px; background: rgba(255,255,255,0.6); }
+#register-header .header-text { height: 40px; line-height: 40px; float: left; color: #fff; margin-left: 20px; font-size: 18px; }
+#register-box { width: 100%; height: 80%; position: relative; }
+.login-input #myDropdown #question-btn { text-align: left; text-indent: 50px; background: none; border: 0; margin: 0; padding: 0; width: 100%; height: 30px; line-height: 30px; outline: none; color: rgba(255,255,255,0.6); font-size: 1.2em; -webkit-transition-duration: 0.25s; transition-duration: 0.25s; }
+.login-input #myDropdown .dropdown-menu { width: 100%; border-radius: 0; text-indent: 10px; border: 0; }
+.login-input #myDropdown #question-btn > span { float: right; margin-right: 10px; height: 30px; line-height: 30px; }
+/* 输入框提示文字css */
+::-webkit-input-placeholder { /* WebKit browsers */
+color:rgba(255,255,255,0.6);
+}
+/*----用户中心界面----*/
+/* 用户中心头部 */
+#main-head { position: relative; width: 100%; margin: 20px 0; }
+#main-head .user { position: relative; width: 100%; }
+#main-head .user .userhead { width: 130px; height: 130px; margin: auto; background: rgba(0,0,0,0.3); border-radius: 50%; -moz-border-radius: 50%; -webkit-border-radius: 50%; padding: 5px; margin-bottom: 10px; }
+#main-head .user .userhead .head { width: 120px; height: 120px; border-radius: 50%; -moz-border-radius: 50%; -webkit-border-radius: 50%; overflow: hidden; position: relative; }
+#main-head .user .userhead .head img { position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; }
+#main-head .user .username { width: 100%; text-align: center; }
+#main-head .user .username > p { margin: 0; height: 25px; line-height: 25px; overflow: hidden; color: #fff; font-size: 1.2em; }
+#main-head .user .username .bingding { margin-top: 10px; padding: 0 20px; line-height: 30px; background: #FFF; display: inline-block; }
+/* 用户中心主体   */
+#main-content { position: relative; width: 100%; }
+#main-content .main-list { background: rgba(255,255,255,0.3); border-top: 1px solid rgba(255,255,255,0.2); border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 10px; }
+#main-content .main-list .list-title { position: relative; width: 100%; height: 40px; line-height: 40px; padding: 0 0 0 70px; color: #333A3E; }
+#main-content .main-list .list-title > i { width: 60px; height: 40px; display: block; position: absolute; left: 0; top: 0; font-size: 1.8em; line-height: 40px; text-align: center; border-right: 1px solid rgba(255,255,255,0.2); }
+#main-content .main-list .list { position: relative; width: 100%; height: 50px; font-size: 1.2em; line-height: 50px; padding: 0 40px 0 50px; color: #fff; display: block; }
+#main-content .main-list .list > i { width: 50px; height: 50px; display: block; position: absolute; left: 0; top: 0; font-size: 1.4em; line-height: 50px; text-align: center; }
+#main-content .main-list .list-border { border-bottom: 1px solid rgba(255,255,255,0.2) }
+#main-content .main-list .list:before { width: 40px; height: 40px; position: absolute; right: 0; top: 50%; font-family: FontAwesome; content: "\f105"; margin-top: -20px; font-size: 30px; line-height: 40px; text-align: center; color: rgba(255,255,255,0.6); }
+/*----设备中心界面----*/
+/* 耗电统计 */
+.chart-box { position: relative; overflow-y: auto; padding-bottom: 10px; }
+.chart-box .chart { width: 100%; margin: auto; }
+.count { width: 100%; background: rgba(0,0,0,0.3); padding: 15px 0; margin-bottom: 20px; }
+.count .count-list { width: 33.33%; float: left; }
+.count .count-num { font-size: 1.4em; width: 100%; text-align: center; color: #fff; margin: 0 0 5px 0; }
+.count .count-date { width: 100%; text-align: center; color: #fff; margin: 0; }
+/* 重点设备 */
+.device-center { position: relative; width: 100%; }
+.device-center .device-list { width: 100%; margin-bottom: 10px; position: relative; }
+.device-center .device-name { height: 40px; line-height: 40px; width: 100%; color: #fff; font-size: 1.3em; text-align: center; background: rgba(255,255,255,0.3); position: relative; }
+.device-center .device-name > span { position: absolute; left: 5px; top: 0; height: 40px; font-size: 0.8em; }
+.device-center .device-name .site { color: #fff; position: absolute; top: 0px; right: 0px; width: 50px; height: 40px; background: rgba(0,0,0,0.3); }
+.device-center .device-text { background: rgba(0,0,0,0.3); padding: 10px 0; position: relative; }
+.device-text .device-site { width: 35%; position: relative; float: left; padding: 10px; }
+.device-text .device-site .device-img { width: 100%; height: 80px; position: relative; }
+.device-text .device-site .device-img > i { width: 100%; height: 80px; display: block; line-height: 80px; text-align: center; font-size: 6em; color: #fff; }
+.device-switch { width: 100%; height: 24px; margin-top: 16px; }
+.device-switch .switch, .device-switch .data { width: 60px; height: 24px; margin: auto; -webkit-border-radius: 24px; border-radius: 24px; position: relative; line-height: 24px; text-align: center; background: rgba(255,255,255,0.3); color: #fff; display: block; }
+.device-switch .switch.toggle-on { border-color: rgba(137, 194, 217, .4); -webkit-transition: all .5s .15s ease-out; transition: all .5s .15s ease-out; }
+.device-switch .switch .toggle-button { position: absolute; width: 22px; height: 20px; top: 2px; right: 35px; background-color: #fff; border-radius: 10px; -webkit-transition: all .3s .1s, width .1s; transition: all .3s .1s, width .1s; }
+.device-switch .switch.switch-on .toggle-button { width: 60px; height: 24px; top: 0; right: 0; border-radius: 24px; background-color: #89c2da; box-shadow: 0 0 16px #4b7a8d; -webkit-transition: all .2s .1s, right .1s; transition: all .2s .1s, right .1s; }
+.device-switch .switch .toggle-text-on { position: absolute; top: 0; bottom: 0; left: 0; right: 0; text-align: center; color: rgba(0,0,0,0); }
+.device-switch .switch.switch-on .toggle-text-on { color: #3b6a7d; -webkit-transition: color .3s .15s; transition: color .3s .15s; }
+.device-switch .switch .toggle-text-off { position: absolute; top: 0; bottom: 0; right: 8px; color: #fff; -webkit-transition: color .3s .15s; transition: color .3s .15s; }
+.device-switch .switch.switch-on .toggle-text-off { color: rgba(0,0,0,0); }
+.device-text .device-txt { width: 65%; float: left; padding: 10px; height: 140px; position: relative; }
+.device-text .device-txt .repeat { position: absolute; top: 10px; right: 10px; font-size: 1.3em; width: 30px; line-height: 25px; height: 25px; text-align: center; display: block; background: #fff; border-radius: 3px; }
+.device-text .device-txt > p { margin: 0; height: 25px; line-height: 25px; color: #fff; margin-bottom: 5px; }
+.device-text .device-txt > p > span { display: block; float: left; text-align: center; line-height: 25px; }
+.device-text .device-txt > p > span.title { width: 50px; text-align: right; }
+.device-text .device-txt > p > span.txt { font-size: 1.6em; }
+.device-text .device-txt > p > span.txt small { font-size: 0.6em; color: #ccc; margin-left: 3px; }
+/* 添加设备 */
+.device-center .device-add { width: 100%; height: 180px; margin-bottom: 10px; }
+.device-center .device-add > i { font-size: 5em; line-height: 180px; display: block; color: rgba(255,255,255,0.5); height: 180px; width: 100%; text-align: center; background: rgba(255,255,255,0.3); }
+/* 更多设备 */
+.device-center .device-more { width: 100%; height: 30px; line-height: 30px; background: #fff; text-align: center; margin: 10px 0; }
+/*----所有设备界面----*/
+#device-box { -webkit-transition: all 1s ease; -moz-transition: all 1s ease; -o-transition: all 1s ease; transition: all 1s ease; overflow: hidden; }
+#filters { padding: 0; list-style: none; margin-bottom: 20px; text-align: center; }
+#filters li { display: inline-block; }
+#filters li span { display: block; padding: 10px 20px; text-decoration: none; color: #fff; cursor: pointer; }
+#filters li span.active { background: rgba(0,0,0,0.3); color: #fff; }
+#device-box .device-list { width: 100%; overflow: hidden; }
+/* 重点设备选项框 */
+.device-check > input { display: none; }
+.device-check > input + label { background: none; bottom: 0; right: 0; height: 50px; width: 50px; position: absolute; margin: 0; z-index: 3; }
+.device-check > input:checked + label:after { font-family: 'FontAwesome'; content: "\f00c"; color: #01C402; font-size: 25px; width: 35px; height: 35px; display: block; text-align: center; line-height: 40px; position: absolute; bottom: 0; right: 0; z-index: 2; }
+.device-check > span { width: 0; height: 0; position: absolute; bottom: 0; right: 0; content: ''; border-top: 60px solid transparent; border-bottom: 60px solid #fff; border-left: 60px solid transparent; z-index: 0; }
+/*----设备设置界面----*/
+.site-box { position: relative; width: 100%; margin-bottom: 10px; }
+.site-box .site-device { background: rgba(255,255,255,0.3); }
+.site-box .site-device .header { width: 100%; height: 50px; line-height: 30px; color: rgba(255,255,255,1); font-size: 1.3em; text-align: center; padding: 10px 0; position: relative; }
+.site-box .site-device .header > a { position: absolute; right: 10px; top: 10px; font-size: 1em; width: 30px; line-height: 25px; height: 25px; text-align: center; display: block; background: #fff; border-radius: 3px;  }
+.site-box .data { padding: 0 10px; overflow: hidden; }
+.site-box .data > p { margin: 0; padding: 25px 10px; width: 50%; display: block; float: left; color: #fff; text-align: center; position: relative; }
+.site-box .data > p:after { position: absolute; content: ''; background: rgba(0,0,0,0.1); }
+.site-box .data > p:nth-child(1):after { height: 80%; width: 1px; right: 0; bottom: 0; }
+.site-box .data > p:nth-child(2):after { height: 1px; width: 90%; left: 0; bottom: 0; }
+.site-box .data > p:nth-child(3):after { height: 1px; width: 90%; right: 0; top: -1px; }
+.site-box .data > p:nth-child(4):after { height: 80%; width: 1px; left: -1px; top: -1px; }
+.site-box .data > p > span.dtxt { display: block; font-size: 2.4em; }
+.site-box .data > p > span.dtitle { display: block; font-size: 1.2em; color: #eee; }
+/* 云灯设备数据表 */ 
+.site-box .data-list{ position:relative;}
+.site-box .data-list .device-switch { margin: 0; position: absolute; top: -37px; left: 10px; width: 60px; z-index: 1; }
+/* 空测设备数据表 */
+.site-box .chart-list { background: rgba(0,0,0,0.3); margin-top: 20px; }
+.site-box .chart-list .chart-title { width: 100%; height: 40px; line-height: 30px; font-size: 1.2em; color: #fff; padding: 5px 10px; position: relative; }
+.site-box .chart-list .chart-title > span { width: 120px; height: 30px; position: absolute; right: 10px; top: 5px; }
+.site-box .chart-list .chart-title > span > a { width: 30px; height: 20px; margin: 5px; display: block; float: left; line-height: 20px; color: #FFF; text-align: center; font-size: 0.8em; }
+.site-box .chart-list .chart-title > span > a.active { background: rgba(255,255,255,0.3); }
+/* 插板设备数据表 */
+.site-box .device-list { position: relative; }
+.site-box .device-list .device-switch { margin: 0; position: absolute; top: 8px; right: 30px; width: 60px; z-index: 1; }
+.site-box .device-list .title { width: 100%; height: 40px; line-height: 40px; font-size: 1.2em; position: relative; padding-left: 10px; background: rgba(0,0,0,0.4); color: #fff; }
+.site-box .device-list .title > span { position: absolute; right: 20px; top: 0; width: 50px; height: 40px; line-height: 40px; color: #fff; }
+.site-box .device-list .title:after { position: absolute; right: 10px; top: 0; width: 10px; height: 40px; line-height: 40px; font-family: 'FontAwesome'; content: "\f105"; text-align: center; }
+.site-box .device-list .title:before { width: 2px; height: 100%; opacity: 1; position: absolute; left: 0; top: 0; content: ''; }
+.site-box .device-list .title.collapsed { background: rgba(0,0,0,0.0); -webkit-transition-delay: 0.25s; transition-delay: 0.25s; -webkit-transition-duration: 0.35s; transition-duration: 0.35s; }
+.site-box .device-list .title#one:before { background: #F7464A; }
+.site-box .device-list .title#two:before { background: #FEB340; }
+.site-box .device-list .title#three:before { background: #26B1E8; }
+/* 设置列表 */
+.site-box .site-list { position: relative; width: 100%; color: rgba(255,255,255,1); background: rgba(0,0,0,0.3); }
+.site-box .site-title { width: 100%; height: 50px; position: relative; font-size: 1.2em; line-height: 50px; }
+.site-box .site-title > i { width: 50px; height: 50px; display: block; position: absolute; left: 0; top: 0; font-size: 1.4em; line-height: 50px; text-align: center; }
+.site-box .site-title > span { width: 100%; height: 50px; line-height: 50px; padding-left: 50px; display: block; }
+/* 设置颜色 */
+.site-box .site-content .swiper-container { width: 250px; height: 70px; margin: 0 auto; overflow: hidden; }
+.site-box .site-content .swiper-wrapper { position: relative; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; }
+.site-box .site-content .swiper-slide { opacity: 0.4; -webkit-transition: 300ms; transition: 300ms; -webkit-transform: scale(0); transform: scale(0); float: left; }
+.site-box .site-content .swiper-slide-visible { opacity: 0.5; -webkit-transform: scale(0.8); transform: scale(0.8); }
+.site-box .site-content .swiper-slide-active { top: 0; opacity: 1; -webkit-transform: scale(1); transform: scale(1); }
+/* 设置参数 */
+.site-box .site-content { width: 100%; background: rgba(0,0,0,0.2); padding: 10px; }
+.site-box .site-content .site-input { width: 60%; float: left; padding-right: 15px; }
+.site-box .site-content .site-input > p { margin: 15px 0; }
+.site-box .site-content .site-results { width: 40%; float: left; }
+.site-box .site-content .site-results .site-text { height: 50px; width: 100%; line-height: 50px; text-align: center; }
+.site-box .site-content .site-results .site-text > span { font-size: 1.5em; margin-left: 5px; }
+/* 设置提醒时间 */
+#open-clock, #close-clock { color: #000; }
+#open-clock .modal-title, #close-clock .modal-title { text-align: center; }
+.clockpicker { margin-bottom: 10px; }
+.clockpicker-popover { z-index: 999999; }
+.datepicker .date-list { height: 40px; width: 100%; position: relative; }
+.datepicker .date-list > input { display: none; }
+.datepicker .date-list > input + label { background: none; top: 0; left: 0; height: 100%; width: 100%; position: absolute; line-height: 40px; margin: 0; }
+.datepicker .date-list > input:checked + label:after { font-family: 'FontAwesome'; content: "\f14a"; width: 20px; height: 20px; display: block; text-align: center; line-height: 20px; position: absolute; top: 10px; right: 0; color: #01C402; font-size: 20px; }
+.datepicker .date-list > label >span { position: absolute; right: 30px; top: 0; height: 40px; }
+/*----耗能分析界面----*/
+.power-box { width: 100%; position: relative; }
+.power-device { width: 100%; background: rgba(255,255,255,0.3); margin-bottom: 10px; }
+.power-box .power-device .title { width: 100%; height: 30px; line-height: 30px; color: rgba(255,255,255,1); font-size: 1.3em; text-align: center; position: relative; }
+.power-box .power-device .title > a { position: absolute; right: 10px; top: 0; color: rgba(0,0,0,0.6); }
+.power-box .power-device .power-data { width: 100%; position: relative; }
+.power-box .power-device .power-data .chart { position: relative; }
+.power-box .power-device .power-data .chart .info { width: 100%; height: 30px; position: absolute; top: 50%; left: 0; margin-top: -30px; text-align: center; line-height: 30px; font-size: 1.3em; }
+.power-box .power-device .power-data .chart .text { width: 100%; height: 30px; position: absolute; top: 50%; left: 0; text-align: center; line-height: 30px; font-size: 2em; }
+.power-box .power-device .power-data .data > p { margin: 0; text-align: center; margin-bottom: 5px; }
+.power-box .power-device .power-data .data > ul { list-style: none; width: 100%; overflow: hidden; height: 30px; }
+.power-box .power-device .power-data .data > ul > li { width: 33.33333333%; float: left; height: 30px; line-height: 30px; text-align: center; }
+.power-box .power-device .power-data .data > ul > li.active { background: rgba(0,0,0,0.3); }
+.power-box .power-device .power-data .data > ul > li.active > a { color: #fff; }
+.power-box .power-device .power-data .data .tab-content { background: rgba(0,0,0,0.3); font-size: 3em; text-align: center; color: #fff; padding: 20px 0; }
+/*----设备绑定界面----*/
+#bingding-content { position: relative; width: 100%; margin-bottom: 10px; }
+#bingding-content .bingding-input { width: 100%; background: rgba(255,255,255,0.3); position: relative; height: 40px; border : 1px solid rgba(255,255,255,0.3); color: #000; margin-bottom: 20px; }
+#bingding-content .bingding-input > i { width: 40px; height: 40px; line-height: 40px; position: absolute; top: 0; left: 0; text-align: center; color: rgba(255,255,255,0.8); font-size: 1.4em; }
+#bingding-content .bingding-input > i:after { content: ""; width: 1px; height: 30px; position: absolute; top: 50%; right: -1px; background: #e5e5e5; margin-top: -15px; }
+#bingding-content .bingding-input > input { text-indent: 50px; background: none; border: 0; margin: 0; padding: 0; width: 100%; height: 40px; outline: none; color: #000; font-size: 1.2em; -webkit-transition-duration: 0.25s; transition-duration: 0.25s; }
+/* 绑定按钮 */
+#bingding-content .bingding-btn > input { width: 100%; height: 40px; background: #6EB416; padding: 0; margin: 0; border: 0; text-align: center; border-radius: 0; color: #fff; }
+/*----用户中心界面----*/
+#user-head { position: relative; width: 100%; padding: 10% 0 20% 0; }
+#user-head:before { position: absolute; width: 100%; height: 100%; top: 0; left: 0; background: -webkit-gradient(linear, 0% 10%, 0% 100%, from(rgba(0,0,0,0)), to(rgba(0,0,0,0.7))); content: ''; }
+#user-head .user { position: relative; width: 100%; }
+#user-head .user .userhead { width: 130px; height: 130px; margin: auto; background: rgba(0,0,0,0.3); border-radius: 50%; -moz-border-radius: 50%; -webkit-border-radius: 50%; padding: 5px; margin-bottom: 10px; }
+#user-head .user .userhead .head { width: 120px; height: 120px; border-radius: 50%; -moz-border-radius: 50%; -webkit-border-radius: 50%; overflow: hidden; position: relative; }
+#user-head .user .userhead .head img { position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; }
+#user-head .user .username { width: 100%; text-align: center; }
+#user-head .user .username > p.wechat { margin: 0; height: 25px; line-height: 25px; overflow: hidden; color: #fff; font-size: 1.6em; margin-bottom: 5px; }
+#user-head .user .username > p.sooall { margin: 0; height: 20px; line-height: 20px; overflow: hidden; color: #CBCECD; font-size: 1.3em; }
+#user-content { position: relative; width: 100%; background: #fff; }
+#user-content .user-list .list-title { width: 100%; height: 40px; line-height: 40px; padding: 0 15px; color: #94999C; background: #F2F4F5; border-top: 1px solid #E6E8E9; border-bottom: 1px solid #E6E8E9; font-size: 1.2em; }
+#user-content .user-list .list { width: 100%; height: 50px; line-height: 50px; padding: 0 15px; display: block; color: #333A3E; background: #fff; font-size: 1.4em; position: relative; }
+#user-content .user-list .list > span { height: 50px; position: absolute; top: 0; right: 15px; color: #94999C; }
+.user-footer { background: #fff; padding-top: 30px; }
+.user-footer #copyright { margin: 0; color: #94999C; }

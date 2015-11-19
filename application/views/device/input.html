@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>录入设备</title>
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/js/jquery.js"></script>
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/js/jquery.validate.min.js"></script>
+<script type="text/javascript" >
+$(function() {
+	$("#form1").validate({
+		rules: {
+   			code: {
+				required: true,
+				minlength:12,
+				maxlength:12,
+				remote:{
+					url: "<?= site_url(array('device','device','device_check')); ?>",     //后台处理程序
+					type: "post",              									 //数据发送方式
+					dataType: "json"						 //接受数据格式   
+				}
+			},
+   			salt: {
+    			required: true,
+				minlength:6,
+				maxlength:6
+   			},
+   			device_name: 'required'
+  		},
+        messages: {
+   			code: {
+				required: "设备编码不能为空",
+				minlength: "设备编码不能小于12位",
+				maxlength: "设备编码不能大于12位",
+				remote: "该设备不存在或者已经绑定用户"
+			},
+   			salt: {
+				required: "校验码不能为空",
+				minlength: "校验码不能小于6位",
+				maxlength: "校验码不能大于6位"
+   			},
+			device_name: "请输入设备名称"
+  		},
+		submitHandler: function(form){  
+			var code = $('input[name=code]').val();
+			var salt = $('input[name=salt]').val();
+			var device_name = $('input[name=device_name]').val();
+			$.post("<?= site_url(array('device','device','device_bind')); ?>", { 'code' : code, 'salt' : salt, 'device_name' : device_name }, function(data){  
+				if( data.res == 1 ){
+					alert('录入成功');
+				}else{
+					alert( data.info );
+				}},"json"
+			);  
+		}  
+    });
+});
+</script>
+</head>
+
+<body>
+	<form name="form1" id="form1" method="post" >
+        设备编码:<input type="text" name="code" value="<? echo set_value('code') ?>"  /><? echo form_error('code'); ?><br>
+        校验码:<input type="text" name="salt" value="<? echo set_value('salt') ?>"  /><? echo form_error('salt'); ?><br>
+        设备名称:<input type="text" name="device_name" value="<? echo set_value('device_name') ?>" /><? echo form_error('device_name'); ?><br>
+        <input type="submit" value="提交"  />
+    </form>
+</body>
+</html>

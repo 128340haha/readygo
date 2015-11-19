@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html" />
+<!-- 指定以最新的IE版本模式来显示网页 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- 针对360浏览器的内核调用,强制调用极速模式 -->
+<meta name="renderer" content="webkit" />
+<!--[if lt IE 10]>
+<meta name="renderer" content="ie-stand" />
+<![endif]-->
+<!--[if !IE]>
+<meta name="renderer" content="ie-stand" />
+<!<![endif]-->
+<!--[if lt IE 9]>
+      <script language="javascript" type="text/javascript" src="js/bootstrap/html5shiv.js"></script>
+<![endif]-->
+<!-- 确保设备能正常显示响应式页面 -->
+<!-- 告诉webkit内核浏览器初始缩放比例为1 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!-- 判断浏览器版本.IE8以下版本,bootstrap支持不了.加个提示 -->
+<!--[if IE]>      
+      <!--[if IE 6]>
+          <div class="ie"></div>
+      <![endif]-->
+<!-- 判断浏览器版本IE6以下版本 -->
+<!--[if lt IE 6]> 
+           <div class="ie"></div>
+      <![endif]-->
+<!--[if IE 7]>
+           <div class="ie"></div>
+      <![endif]-->
+<![endif]-->
+<!-- 百度等搜索,会把description显示在搜索结果里面.这个地方非常总要.但要注意不要超过150字符 -->
+<meta name="description" content="百度等搜索,会把description显示在搜索结果里面.这个地方非常总要.但要注意不要超过150字符">
+<!-- 关于文档的关键字标签 -->
+<meta name="keywords" content="关于文档的关键字标">
+<title>个人中心</title>
+<!-- 更换第三方图标库,Font Awesome <i class="icon-magic">-->
+<link href="<?= base_url(); ?>assets/wechat/css/bootstrap.css" rel="stylesheet">
+<link href="<?= base_url(); ?>assets/wechat/css/index.css" rel="stylesheet">
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/jquery-1.11.1.min.js"></script>
+<script src="<?= base_url(); ?>assets/wechat/js/touch.min.js"></script>
+<script>
+	$(function(){
+		touch.on('#bind', 'tap doubletap', function(ev){
+			window.location = "<?= base_url() ?>wechat/login/index";
+		})
+		touch.on('#oneReg', 'tap doubletap', function(ev){
+			if( confirm( '一键注册将为您快速注册与绑定,您确定要继续吗?' ) ){
+				window.location = "<?= base_url() ?>wechat/ucenter/onekey_reg";
+			}
+		})
+	})
+</script>
+</head>
+
+<body>
+<section id="wrap">
+	<div id="main-head">
+       <div class="container-fluid">
+            <div class="user">
+                <div class="userhead img-responsive">
+                	<div class="head">
+                    	<img src="<?= $headimgurl ?>" />
+                    </div>
+                </div>
+                <div class="username" >
+                    <p><? if( $bind == 0 ){ ?>Wechat<? }else{ ?>Username<? } ?>：<?= $nickname ?></p>
+                    <? if( $bind == 0 ){ ?>
+                    <p>请绑定myhome账号，获得更多功能支持</p>
+                    <a href="#" <? if( $bind == 0 ){ ?> id="bind" <? } ?> class="bingding">马上绑定</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="#" <? if( $bind == 0 ){ ?> id="oneReg" <? } ?> class="bingding">一键注册</a>
+                    <? } ?>
+                </div>
+
+            </div>
+       </div>
+    </div>
+    <div id="main-content">
+    	 <div class="container-fluid">
+        <div class="main-list">
+          		<div class="list-title list-border">
+                	<i class="fa fa-user"></i>用户 
+                </div>
+                <a class="list" href="<? if( $bind == 0 ){ ?>#<? }else{ echo base_url(); ?>wechat/ucenter/infomation<? } ?>">
+                      <i class="fa fa-newspaper-o"></i>用户中心 
+                </a>
+        </div>
+        <div class="main-list">
+ 				<div class="list-title list-border">
+                	<i class="fa fa-hdd-o"></i>设备 
+                </div>
+                <a class="list list-border" href="<?= base_url() ?>wechat/device/index">
+                     <i class="fa fa-tablet"></i>设备中心 
+                </a>
+                <a class="list list-border" href="<?= base_url() ?>wechat/device/device_bind" >
+                     <i class="fa fa-exchange"></i>设备绑定 
+                </a>
+                <a class="list" href="#">
+                    <i class="fa fa-area-chart"></i> 耗能分析 
+                </a>
+  
+        </div>
+        <div class="main-list">
+            	<div class="list-title list-border">
+                	<i class="fa fa-gamepad"></i>游戏 
+                </div>
+            
+                <a class="list" href="#">
+                     <i class="fa fa-spinner"></i>游戏中心 
+                </a>
+            
+       
+        </div>
+        </div>
+    </div>
+    <? $this->load->view( 'wechat/copyright.html' ); ?>
+</section>
+<!--[if lt IE 9]>
+      <script src="js/bootstrap/respond.min.js"></script>
+    <![endif]-->
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/ie10-viewport-bug-workaround.js"></script>
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/ie-emulation-modes-warning.js"></script>
+<!-- 对IE低版本的一个小技巧.禁止在IE模式下,直接本地文件浏览 -->
+<!--[if lt IE 9]><script src="js/bootstrap/ie8-responsive-file-warning.js"></script><![endif]-->
+
+</body>
+</html>

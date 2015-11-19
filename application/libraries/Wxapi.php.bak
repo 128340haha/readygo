@@ -1,0 +1,412 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Wxapi extends CI_Model{
+	private $url = '';
+	private $overtime = '';
+	private $appid = 'wxdfab6f0f3d42b908';
+	private $appsecret = '5db9fd0e963ee07655f430e29bc3098d';
+	private $token_access = '';
+	public function __construct() {	
+		parent::__construct();
+		$this->load->model( 'User_model', 'user' );
+		define("TOKEN", "IDreamFactory");
+	}
+	
+	/**
+	 * 写入
+	 * @param string $param
+	 * @return boolean|unknown
+	 */
+	public function wechat_insert( $param = '' ){
+		if( empty( $param ) ){
+			return false;
+		}
+		$str = $this->db->insert( 'wechat_user', $param );
+		return $str;
+	}
+	
+	/**
+	 * 用户绑定
+	 * @param string $username
+	 * @param string $openid
+	 * @return boolean
+	 */
+	public function user_bind( $username = '', $openid = '' ){
+		if( empty( $username ) || empty( $openid ) ){
+			return false;
+		}
+		$uinfo = $this->user->user_record( array( 'username'=>$username ), 1 );	
+		$str = $this->db->update( 'wechat_user', array( 'user_id'=>$uinfo['id'] ), array( 'openid'=>$openid ) );
+		return $str;
+	}
+	
+	
+	
+	/**
+	 * 查询微信绑定信息
+	 * @param string $openid
+	 * @return boolean
+	 */
+	public function wechat_info( $where = '' ){
+		if( empty( $where ) ){
+			return false;
+		}
+		$this->db->from( 'wechat_user' );
+		$this->db->where( $where );
+		$query = $this->db->get();
+		return $query->row_array();
+	}
+	
+	
+	/**
+	 * 判断绑定状态
+	 * @param string $openid
+	 * @return boolean
+	 */
+	public function bind_info( $openid = '' ){
+		if( empty( $openid ) ){
+			return false;
+		}
+		$where = array( 'openid'=>$openid );
+		//查询微信已存信息
+		$info = $this->wechat_info( $where );
+		if( empty( $info ) ){
+			//无微信信息,需要把当前用户数据写入
+			$param = array( 'openid'=>$openid, 'last_login'=>time(), 'user_id'=>0 );
+			$this->wechat_insert( $param );
+			return false;
+		}else{
+			//有微信信息，查询是否存在绑定信息
+			if( $info['user_id'] > 0 ){
+				//已经绑定，返回用户信息
+				return $this->user->user_record( array( 'id'=>$info['user_id'] ) );
+			}else{
+				//未绑定
+				return false;
+			}
+		}
+	}
+	
+	
+	
+	/**
+	 * 获取微信通行证
+	 * @return multitype:string |multitype:NULL |multitype:number string
+	 */
+	public function token_access(){
+		$token = $this->get_token();
+		if( empty( $token ) || $token['overdue'] < time() ){
+			//过期或者没有数据，重新获取
+			//pass
+		}else{
+			//直接使用
+			$this->token_access = $token['token'];
+			return array( 'errcode'=>'0' );
+		}
+		$target = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$this->appid."&secret=".$this->appsecret;
+		$res = $this->curl_get( $target );
+		if( $res && empty( $res->errcode ) ){
+			//通过
+			$this->token_access = $res->access_token;
+			$this->update_token( $res->access_token );
+			return array( 'errcode'=>'0' );
+		}elseif( !empty( $res->errcode ) ){
+			return array( 'errcode'=>$res->errcode, 'errmsg'=>$res->errmsg );
+		}else{
+			return array( 'errcode'=>40000, 'errmsg'=>'返回数据失败' );
+		}
+	}
+	
+	/**
+	 * 获取当前存储的token
+	 * @return unknown
+	 */
+	public function get_token(){
+		$this->db->where( array( 'id'=>1 ) );
+		$query = $this->db->get('token_access');
+		$row = $query->row_array();
+		return $row;
+	}
+	
+	/**
+	 * 更新token库
+	 * @param unknown $token
+	 */
+	public function update_token( $token ){
+		if( empty( $token ) ){
+			return false;
+		}
+		//7200 是腾讯2小时时限
+		$param = array( 'token'=>$token, 'overdue'=>time() + 7200 );
+		$str = $this->db->update( 'token_access', $param, array( 'id'=>1 ) );
+		if( $str ){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	/**
+	 * 获取当前访问人员的open
+	 * @param string $code
+	 * @return boolean
+	 */
+	public function code_access_token( $code = '' ){
+		if( empty( $code ) ){
+			return false;
+		}else{
+			$target = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$this->appid."&secret=".$this->appsecret."&code=".$code."&grant_type=authorization_code";
+			$res = $this->curl_get( $target );
+			if( empty( $res->openid ) ){
+				return false;
+			}else{
+				return $res->openid;
+			}
+		}
+	}
+	
+	
+	/**
+	 * 发起微信服务端访问
+	 * @param string $target
+	 * @return boolean|mixed
+	 */
+	private function curl_get( $target = '' ){
+		if( empty( $target ) ){
+			return false;
+		}
+		// 初始化一个 cURL 对象
+		$curl = curl_init();
+		// 设置你需要抓取的URL
+		curl_setopt($curl, CURLOPT_URL, $target);
+		// 设置header
+		curl_setopt($curl, CURLOPT_HEADER, 0);
+		// 设置cURL 参数，要求结果保存到字符串中还是输出到屏幕上。
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);	
+		//https请求 不验证证书和hosts
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);//这个是重点。
+		//https请求需要
+		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+		// 运行cURL，请求网页
+		$data = curl_exec($curl);
+		// 关闭URL请求
+		curl_close($curl);
+		if( $data ){
+			//获取数据成功
+			$res = json_decode( $data );
+			return $res;
+		}else{
+			return false;
+		}
+	}
+	
+	/**
+	 * 接收文本
+	 * @param unknown $obj
+	 * @return string
+	 */
+	public function getText( $obj ){
+		if( empty( $obj ) ){
+			return '';
+		}
+		$this->writelog( $obj->Content, 1 );
+		$this->writelog( $obj->FromUserName, 2 );
+		$this->writelog( $obj->ToUserName, 3 );
+	}
+	
+	
+	/**
+	 * 接收到事件
+	 * @param unknown $obj
+	 * @return string
+	 */
+	public function eventModel( $obj ){
+		if( empty( $obj ) ){
+			return '';
+		}
+		$this->writelog( $obj->EventKey );
+		switch ( $obj->EventKey ){
+			case 'ReadyToWork':		//环境质量   待定~
+				$this->responseText( $obj );
+				break;
+		}
+	}
+	
+	/**
+	 * 返回信息
+	 * @param unknown $obj
+	 */
+	public function responseText( $obj ){
+		$textTpl = "<xml>
+			<ToUserName><![CDATA[%s]]></ToUserName>
+			<FromUserName><![CDATA[%s]]></FromUserName>
+			<CreateTime>%s</CreateTime>
+			<MsgType><![CDATA[%s]]></MsgType>
+			<Content><![CDATA[%s]]></Content>
+		</xml>";
+		$msgType = "text";
+		$contentStr = "开发中..敬请期待~";
+		$resultStr = sprintf($textTpl, $obj->FromUserName, $obj->ToUserName, time(), $msgType, $contentStr);
+		echo $resultStr;
+	}
+	
+	
+/*****************下面的测试与认证函数*******************/	
+	public function valid( $url = '' )
+    {
+    	if( !empty( $_GET["echostr"] ) ){
+        	$echoStr = $_GET["echostr"];
+    	}
+        //valid signature , option
+        if($this->checkSignature( $url )){
+        	echo $echoStr;
+        	exit;
+        }
+    }
+    
+    public function fileurl( $url = '' ){
+    	$this->url = $url;
+    }
+
+    public function writelog($str, $model = 1 ){
+    	$open=fopen($this->url."/log".$model.".txt","a" );
+    	fwrite($open,$str);
+    	fclose($open);
+    }
+    
+    public function responseMsg(){
+    	//get post data, May be due to the different environments
+    	$postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
+    
+    	//extract post data
+    	if (!empty($postStr)){
+    		/* libxml_disable_entity_loader is to prevent XML eXternal Entity Injection,
+    		 the best way is to check the validity of xml by yourself */
+    		libxml_disable_entity_loader(true);
+    		$postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+    		$fromUsername = $postObj->FromUserName;
+    		$toUsername = $postObj->ToUserName;
+    		$keyword = trim($postObj->Content);
+    		$time = time();
+    		$textTpl = "<xml>
+							<ToUserName><![CDATA[%s]]></ToUserName>
+							<FromUserName><![CDATA[%s]]></FromUserName>
+							<CreateTime>%s</CreateTime>
+							<MsgType><![CDATA[%s]]></MsgType>
+							<Content><![CDATA[%s]]></Content>
+						</xml>";
+    		if(!empty( $keyword )){
+    			$msgType = "text";
+    			$contentStr = "应该能通用的吧~！";
+    			$resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+    			echo $resultStr;
+    		}else{
+    			echo "Input something...";
+    		}
+    	}else {
+    		echo "";
+    		exit;
+    	}
+    }
+    
+    /*
+     * 响应易信平台推送消息
+    * 可以根据消息类型处理不同的消息
+    * 除了验证开发者、创建推广二维码等，其余基本需要该函数来统一调度；
+    */
+    public function listen(){
+    	// 接收易信post方式推送来的消息；
+    	$postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
+    	//  写入日志；
+    	$this->writelog('收到易信平台推送的消息：123');
+    	if (!empty($postStr)){
+    		// 将推送的XML消息解析为对象；
+    		$postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+    		// MsgType类型为：text（文本消息）image（图片消息）audio（语音消息）video（视频消息）
+    		// event location（地理位置消息）
+    		// event（事件消息）：subscribe（订阅） unsubscribe（取消订阅）YIXINSCAN（扫描推广二维码）CLICK（自定义菜单点击）
+    		$msgType = trim($postObj->MsgType); // 消息类型；文本、菜单点击等
+    		// 可以直接调用 handleMessage()函数，switch一下是为了清晰明了；
+    		switch($msgType){
+    			case 'text': // 文本消息类型；
+    				$this->getText($postObj);
+    				break;
+    			case 'event': // 事件消息类型 包括关注、取消关注、自定义菜单点击等；
+    				$this->eventModel($postObj);
+    				break;
+    			case 'image': // 图片消息类型；
+    				$this->handleMessage($postObj);
+    				break;
+    			case 'location': // 地理位置信息（用户主动）；
+    				$this->handleMessage($postObj);
+    				break;
+    			default:
+    				$resultStr = "未处理事件: " . $msgType;
+    			//	$this->log($resultStr);
+    				break;
+    		}
+    	}else{
+    		echo ''; // 收到的推送内容为空，直接响应空值给微信平台；
+    	}
+    }
+    
+		
+	private function checkSignature( $url = '' )
+	{
+        // you must define TOKEN by yourself
+        if (!defined("TOKEN")) {
+            throw new Exception('TOKEN is not defined!');
+        }
+        if( !empty( $_GET["signature"] ) ){
+        	$signature = $_GET["signature"];
+        }else{
+        	$signature = '';
+        }
+        if( !empty( $_GET["timestamp"] ) ){
+        	$timestamp = $_GET["timestamp"];
+        }else{
+        	$timestamp = '';
+        }
+        if( !empty( $_GET["nonce"] ) ){
+        	$nonce = $_GET["nonce"];
+        }else{
+        	$nonce = '';
+        }
+		$token = TOKEN;
+		$tmpArr = array($token, $timestamp, $nonce);
+        // use SORT_STRING rule
+		sort($tmpArr, SORT_STRING);
+		$tmpStr = implode( $tmpArr );
+		$tmpStr = sha1( $tmpStr );
+//		$this->writelog( $tmpStr, 1, $url );
+//		$this->writelog( $signature, 2, $url );
+		if( $tmpStr == $signature ){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	
+/*****************************************************
+ ****************************************************/	
+	public function getUserInfo( $openid ){
+		$access = $this->token_access();
+		if( $access['errcode'] === '0' ){
+			//获取权限成功~！
+			//获取当前访问用户的OPENID	
+			$target ="https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$this->token_access."&openid=".$openid."&lang=zh_CN";
+			$info = $this->curl_get( $target );
+			return $info;
+		}else{
+			//权限获取失败
+			return $access;
+		}
+	}
+	
+	
+	
+	
+	
+	
+}

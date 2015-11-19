@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>无标题文档</title>
+<style>
+html,body{ margin:0; padding:0; height:100%;  font-family: Helvetica, Tahoma, Arial, STXihei, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;}
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+ 
+#box{ width:100%;  height:100%;  margin:auto; text-align:center;background: url(<?= base_url() ?>assets/lamp/images/bg.jpg) no-repeat  scroll center center / cover ;}
+#light{ width:100%; height:100%; background-repeat:repeat-x; background-position:top;}
+#light.c1{ background-image:url(<?= base_url() ?>assets/lamp/images/c1.png);}
+#light.c2{ background-image:url(<?= base_url() ?>assets/lamp/images/c2.png);}
+#light.c3{ background-image:url(<?= base_url() ?>assets/lamp/images/c3.png);}
+#light.c4{ background-image:url(<?= base_url() ?>assets/lamp/images/c4.png);}
+#light.c5{ background-image:url(<?= base_url() ?>assets/lamp/images/c5.png);}
+#light.c6{ background-image:url(<?= base_url() ?>assets/lamp/images/c6.png);}
+#light.c7{ background-image:url(<?= base_url() ?>assets/lamp/images/c7.png);}
+#light.c8{ background-image:url(<?= base_url() ?>assets/lamp/images/c8.png);}
+#light.c9{ background-image:url(<?= base_url() ?>assets/lamp/images/c9.png);}
+#title{ width:100%; height:100px;  color:#000; font-size:22px; font-weight:bolder; position:absolute; top:80px; left:0; color:#fff; z-index:99; }
+#title > p{ margin:0; height:30px; line-height:30px; }
+#title > p#color{ font-size:36px; height:50px; line-height:50px; margin-top:20px;}
+#img{ position:absolute; top:50px; left:0; width:100%; z-index:90;}
+#img > p{ width:100%; height:20px; line-height:20px; margin:0; }
+
+#textbox{ width:90%;height:250px; position:fixed; bottom:20px; left:5%; background: url(<?= base_url() ?>assets/lamp/images/textbg.png) no-repeat  scroll center center; background-size:100% 100%; }
+#textbox > p{ width:100%; height:30px; line-height:30px; font-weight:bolder; text-align:right; margin:40px 0 0 0 ; color:#fff; }
+#textbox > img{ position:absolute; bottom:20px; left:50%; margin-left:-75px;}
+</style>
+</head>
+
+<body>
+<div id="box">
+    <div id="light" class="l"> </div>
+    <div id="title">
+    	<p>您今天的幸运色是</p>
+        <p id="color"><?= $tcolor ?></p>
+    </div>
+    <div id="img"><img src="<?= base_url() ?>assets/lamp/images/light.png"/></div>
+    <div id="textbox">
+    	<p>关注更多资讯</p>
+    	<img src="<?= base_url() ?>assets/lamp/images/qrcode.jpg"/>
+    </div>
+</div>
+
+<script>
+window.onload=function(){
+	var color ="<?= $tcolor ?>";
+	var cs = '';
+	switch (color){
+		case '青绿色':
+			cs =  'c1' ;
+			break;
+		case '紫色':
+			cs =  'c2' ;
+			break;
+		case '紫红色':
+			cs =  'c3' ;
+			break;
+		case '蓝色':
+			cs =  'c4' ;
+			break;
+		case '橙黄色':
+			cs =  'c5' ;
+			break;
+		case '红色':
+			cs =  'c6' ;
+			break;
+		case '橙红色':
+			cs =  'c7' ;
+			break;
+		case '绿色':
+			cs =  'c8' ;
+			break;
+		case '白色':
+			cs =  'c9' ;
+			break;
+		
+	}
+	
+	document.getElementById('light').className = cs;
+	
+	var fcolor = '<?= $color ?>';
+	
+	document.getElementById('color').style.color = 'rgba('+fcolor+',1)';
+	
+}
+</script>
+</body>
+</html>

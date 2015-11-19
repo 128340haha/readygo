@@ -1,0 +1,82 @@
+<script type="text/javascript" >
+	
+	function del( id ){
+		if( confirm( '您确定要删除吗？' ) ){
+			var from_url = $('#from_url').val();
+			window.location = "<?= base_url(array('admin','device','delete_device')); ?>?id="+id+'&from_url='+from_url
+		}
+	}
+</script>
+
+<div id="main-content">
+    <!-- End .clear -->
+    <div class="content-box">
+      <!-- Start Content Box -->
+      <div class="content-box-header">
+        <h3>设备列表</h3>
+        <div class="clear"></div>
+      </div>
+      <!-- End .content-box-header -->
+      <div class="content-box-content">
+        <div class="tab-content default-tab" id="tab1">
+          <!-- This is the target div. id must match the href of this div's tab -->
+          <table>
+            <thead>
+              <tr>
+                <th>设备id</th>
+                <th width="350">设备名称</th>
+                <th>所属分类</th>
+                <th>设备编码</th>
+                <th>验证码</th>
+                <th width="400">已绑定用户</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <td colspan="6">  
+                  <div class="pagination"> 
+                  <?= $bar ?>
+                  <!--
+                  	<a href="#" title="First Page">&laquo; First</a>
+                    <a href="#" title="Previous Page">&laquo; Previous</a> 
+                    <a href="#" class="number" title="1">1</a> 
+                    <a href="#" class="number" title="2">2</a> 
+                    <a href="#" class="number current" title="3">3</a> 
+                    <a href="#" class="number" title="4">4</a> 
+                    <a href="#" title="Next Page">Next &raquo;</a>
+                    <a href="#" title="Last Page">Last &raquo;</a> 
+                  -->
+                  </div>
+                  <!-- End .pagination -->
+                  <div class="clear"></div>
+                </td>
+              </tr>
+            </tfoot>
+            <tbody>
+            <? if( $list ){
+            	foreach( $list as $li ){
+            ?>
+                  <tr>
+                    <td><?= $li['device_id'] ?></td>
+                    <td><?= $li['device_name'] ?></td>
+                    <td><?= $li['type_name'] ?></td>
+                    <td><?= $li['code'] ?></td>
+                    <td><?= $li['salt'] ?></td>
+                    <td style="word-break:break-all"><?= $li['users'] ?></td>
+                    <td>
+                      <!-- Icons -->
+                      <a href="<?= base_url().'admin/device/device_param?id='.$li['id'] ?>" title="编辑设备"><img src="<?= base_url().'assets/admin/icons/' ?>pencil.png" alt="编辑设备" /></a> &nbsp;&nbsp;<a href="javascript:void(del('<?= $li['id'] ?>'))" title="删除设备"><img src="<?= base_url().'assets/admin/icons/' ?>cross.png" alt="删除设备" /></a> &nbsp;&nbsp;<a href="<?= base_url().'admin/device/device_users?id='.$li['id'] ?>" title="绑定信息"><img src="<?= base_url().'assets/admin/icons/' ?>hammer_screwdriver.png" alt="绑定信息" /></a> &nbsp;&nbsp;<a href="<?= base_url().'admin/device/device_data?id='.$li['id'] ?>" title="耗能记录" ><img width="16" height="16" src="<?= base_url().'assets/admin/icons/' ?>mydevice.jpg" alt="耗能记录" /></a></td>
+                  </tr>
+            <?
+              	}
+              }
+            ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- End .content-box-content -->
+      <input type="hidden" id="from_url" name="from_url" value="<? if( empty( $from_url ) ){ echo ''; }else{ echo $from_url; } ?>"  />
+    </div>
+ <?= $foot ?>

@@ -1,0 +1,43 @@
+<div class="container-grid-layout loading">
+	<div id="content" style="display: block;">
+		<div class="box-id-content">
+			<div class="box-title">
+				<i class="icon-halfblock"></i>
+				游戏列表
+			</div>
+			<div id="main_content" class="box-inner dyn clearfix">
+				<div id="content_recently_content" class="main-content-page">
+					<ul class="recently-list clearfix" id="dyn_list" mode="dyn">	
+            	<?
+													
+					if ($list) {
+							foreach ( $list as $lt ) {
+				?>
+                <li class="REVIEW">
+							<div class="recently-list-item clearfix">
+								<div class="recently-list-info">
+									<div class="recently-list-info-face">
+                                    	<img alt="游戏" src="<?= base_url() ?>assets/user/images/harddisk.png">
+									</div>
+									<div class="info-r">
+										<div class="recently-list-info-text">
+											游戏ID：
+											<?= $lt['id'] ?>
+										</div>
+										<div class="recently-list-info-comment">
+											<p class="txt" id="<?= $lt['id'] ?>">
+                                    			<?= $lt['game_name']?>
+                                    		</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+                <? }  } ?>
+            </ul>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

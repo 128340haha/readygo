@@ -1,0 +1,114 @@
+<script type="text/javascript" src="<?= base_url() ?>/assets/public/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript">
+	function use_time(){
+		WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'%y-%M-%d',onpicked:function(){ reflash(this) }});
+	}
+
+	function reflash(){
+		var date = $('#date').val();
+		var code = $('#code').html();
+		var models = $('#dyn_filter li');
+		for( var i = 0; i < models.length; i++ ){
+			if( $(models[i]).attr('class') == 'on' ){
+				var model = $(models[i]).attr( 'type' );
+			}
+		}
+		window.location = "<?= base_url() ?>device/index/device_data?model="+model+"&date="+date+"&code="+code
+	}
+
+	$(function(){
+		$("#dyn_filter li").click(
+			function(){
+				var model = $(this).attr('type');
+				var date = $('#date').val();
+				var code = $('#code').html();
+				window.location = "<?= base_url() ?>device/index/device_data?model="+model+"&date="+date+"&code="+code
+			}
+		)	
+	})
+</script>
+<div class="container-grid-layout loading">
+	<div id="content" style="display: block;">
+		<div class="box-id-content">
+			<div class="box-title">
+				<i class="icon-halfblock"></i>
+				设备耗能信息
+			</div>
+			<div id="main_content" class="box-inner dyn clearfix">
+				<div id="content_recently_content" class="main-content-page">
+					<div class="top-search clearfix">
+                        <div class="sbi-m left">
+                        	查询日期：<input class="user-id" style="width:80px;" onclick="use_time()" type="text"  name="date"  id="date" value="<?= $date ?>" >
+						</div>
+						<ul class="search-list left" id="dyn_filter" mode="dyn">
+							<li <? if( $model == 1 ){ ?> class="on" <? } ?> type='1' >日</li>
+							<li <? if( $model == 2 ){ ?> class="on" <? } ?> type='2' >周</li>
+							<li <? if( $model == 3 ){ ?> class="on" <? } ?> type='3' >月</li>
+						</ul>
+                        <div style="float:left; line-height:30px;">
+                        设备名称：
+                        <?= $device_name ?>
+                        &nbsp;&nbsp;&nbsp;
+                        设备码:
+                        <span id="code"><?= $code ?></span>
+                        &nbsp;&nbsp;&nbsp;
+                        自定义名称:
+                        <?= $name ?>
+                        </div>
+					</div>
+					<ul class="recently-list clearfix" id="dyn_list" mode="dyn">	
+            	<?
+													
+					if ($list) {
+							foreach ( $list as $lt ) {
+				?>
+                <li class="REVIEW">
+                        <div class="recently-list-item clearfix">
+                            <div class="recently-list-info">
+                                <div class="info-r">
+                                    <div class="recently-list-info-comment">
+                                        <p class="txt" id="<?= $lt['id'] ?>">
+                                        	<? if( $model == 1 ){ echo date( 'Y-m-d G时', $lt['time'] ); }else{ echo date( 'Y-m-d', $lt['time'] ); } ?>&nbsp;&nbsp;
+                                        	<? 
+                                            	switch( substr( $code, 0, 1 ) ){
+                                                	case 0: 
+                                                        $lt['electricity'] = $lt['electricity'] / 1000;
+                                            ?>
+                                            		电量:<?= $lt['electricity'] ?>kWh&nbsp;&nbsp;
+                                            <?		break;
+                                                    case 4:
+                                            ?>
+                                            		电量:<?= $lt['electricity'] ?>kWh&nbsp;&nbsp;
+                                            <?  	break;
+                                            		case 3:
+                                                   		$lt['hcho'] = $lt['hcho'] / 10;
+                                            ?>
+                                            		温度:<?= $lt['temp'] ?>℃&nbsp;&nbsp;相对湿度:<?= $lt['rh'] ?>%&nbsp;&nbsp;CO2浓度:<?= $lt['co2'] ?>ppm&nbsp;&nbsp;PM2.5浓度:<?= $lt['pm'] ?>ug/m3&nbsp;&nbsp;甲醛浓度:<?= $lt['hcho'] ?>ug/m3&nbsp;&nbsp;
+                                            <?  	break;
+                                            	} ?>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                <? }  }else{ ?>
+                 <li class="REVIEW">
+                    <div class="recently-list-item clearfix">
+                        <div class="recently-list-info">
+                            <div class="info-r">
+                                <div class="recently-list-info-comment">
+           							没有找到相关数据记录
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <? } ?>
+            </ul>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

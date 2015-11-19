@@ -1,0 +1,333 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>功能测试主页</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<!--<link href="http://fonts.googleapis.com/css?family=IM+Fell+English:400,400italic|Open+Sans:300,400" rel="stylesheet" type="text/css">--->
+<?= link_tag('assets/business/css/style.css'); ?> 
+<!--                       Javascripts                       -->
+<!-- jQuery -->
+<script type="text/javascript" src="<?= base_url('assets/public/js').'/jquery.min.js' ?>"></script>
+	 	<!---strat-slider---->
+        <?= link_tag('assets/business/css/slider.css'); ?> 
+        <script type="text/javascript" src="<?= base_url('assets/business/js').'/modernizr.custom.28468.js' ?>"></script>
+		<script type="text/javascript" src="<?= base_url('assets/business/js').'/jquery.cslider.js' ?>"></script>
+			<script type="text/javascript">
+				$(function() {
+					$('#da-slider').cslider({
+						autoplay	: true,
+						bgincrement	: 500
+					});
+				
+				});
+			</script>
+	<!-- start gallery_sale -->
+    <script type="text/javascript" src="<?= base_url('assets/business/js').'/jquery.easing.min.js' ?>"></script>
+	<script type="text/javascript" src="<?= base_url('assets/business/js').'/jquery.mixitup.min.js' ?>"></script>
+	<script type="text/javascript">
+	$(function () {
+		
+		var filterList = {
+		
+			init: function () {
+			
+				// MixItUp plugin
+				// http://mixitup.io
+				$('#portfoliolist').mixitup({
+					targetSelector: '.portfolio',
+					filterSelector: '.filter',
+					effects: ['fade'],
+					easing: 'snap',
+					// call the hover effect
+					onMixEnd: filterList.hoverEffect()
+				});				
+			
+			},
+			
+			hoverEffect: function () {
+			
+				// Simple parallax effect
+				$('#portfoliolist .portfolio').hover(
+					function () {
+						$(this).find('.label').stop().animate({bottom: 0}, 200, 'easeOutQuad');
+						$(this).find('img').stop().animate({top: -30}, 500, 'easeOutQuad');				
+					},
+					function () {
+						$(this).find('.label').stop().animate({bottom: -40}, 200, 'easeInQuad');
+						$(this).find('img').stop().animate({top: 0}, 300, 'easeOutQuad');								
+					}		
+				);				
+			
+			}
+
+		};
+		
+		// Run the show!
+		filterList.init();
+	});	
+	</script>
+</head>
+<body>
+<!-- start header -->
+<div class="header_bg">
+<div class="wrap">
+	<div class="header">
+		<div class="logo">
+			<a href="<?= base_url('business/index/index') ?>"><img src="<?= base_url('assets/business') ?>/images/logo.png" width="60" alt=""/> </a>
+		</div>
+		<div class="social-icons">
+		    <ul>
+		      <li><a href="<?= base_url('business/index/login') ?>" title="合作商后台登录" ></a></li>
+			  <li><a href="#" ></a></li>
+			</ul>
+		</div>
+		<div class="h_menu">
+			<ul>
+				<li class="active"><a href="#">主页</a></li>
+				<li><a href="<?= base_url('business/index/work') ?>">合作商</a></li>
+				<li><a href="<?= base_url('business/index/about') ?>">关于我们</a></li>
+				<li><a href="<?= base_url('forum/index/') ?>">论坛</a></li>
+			</ul>
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>
+</div>
+<!-- start slider -->
+<div class="slider_bg">
+<div class="wrap">
+	<div class="slider">
+				<!---start-da-slider----->
+				<div id="da-slider" class="da-slider">
+				<div class="da-slide">
+					<h2>自由的开发平台</h2>
+					<p>自定义web站点,自定义app应用,自由开发掌控的设备应用平台,"我"的地盘,听"我"的！</p>
+					<a href="<?= base_url('business/index/join') ?>" class="da-link">加入我们</a>
+				</div>
+				<div class="da-slide">
+					<h2>量身定制的功能应用</h2>
+					<p>只要你敢于迈出这一步，只要你拥有足够的资源,我们可以为您量身开发您的站点与应用,指点江山,决胜千里之外！</p>
+					<a href="<?= base_url('business/index/join') ?>" class="da-link">加入我们</a>
+				</div>
+				<div class="da-slide">
+					<h2>Lorem Ipsum is simply amet</h2>
+					<p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text.</p>
+					<a href="#" class="da-link">Join us</a>
+				</div>
+				<nav class="da-arrows">
+					<span class="da-arrows-prev"></span>
+					<span class="da-arrows-next"></span>
+				</nav>
+			</div>
+		</div>
+</div>
+</div>
+<!-- start top_grid -->
+<div class="top_bg">
+<div class="wrap">
+	<div class="top_grid">
+		<h2>our work</h2>
+		<ul id="filters" class="clearfix">
+						<li><span class="filter active" data-filter="icon logo web">UI</span></li>
+						<li><span class="filter" data-filter="app card web">website</span></li>
+						<li><span class="filter" data-filter="icon web card">photography</span></li>
+						<li><span class="filter" data-filter="web app icon card">freebie</span></li>
+						<li><span class="filter" data-filter="icon app web logo">identity</span></li>
+						<li><span class="filter" data-filter="app card icon logo web">all</span></li>
+					</ul>
+	<div class="clear"></div>
+	</div>
+</div>
+</div>
+<!-- start main -->
+<div class="main_bg">
+<div class="wrap">
+<div class="main">
+		<div id="portfoliolist">
+		<div class="grid_list">
+				<div class="portfolio logo1" data-cat="logo">
+					<div class="portfolio-wrapper">				
+						<a  href="javascript:void(0)">
+							<img src="<?= base_url('assets/business') ?>/images/pic1.jpg"  alt="Image 2" />
+						</a>
+						<div class="label">
+							<div class="label-text">
+								<a  class="text-title">手机app</a>
+								<span class="text-category">application</span>
+							</div>
+							<a  href="javascript:void(0)"><div class="label-bg"></div></a>
+						</div>
+					</div>
+				</div>	
+				<div class="clear"></div>
+			</div>	
+			<div class="grid_list1 grid_top">		
+			<div class="portfolio app" data-cat="app">
+				<div class="portfolio-wrapper">			
+					<a  href="javascript:void(0)">
+						<img src="<?= base_url('assets/business') ?>/images/pic2.jpg"  alt="Image 2" />
+					</a>
+					<div class="label">
+						<div class="label-text">
+								<a class="text-title">智能运动设备</a>
+								<span class="text-category">Intelligent Home Furnishing</span>
+						</div>
+						<a  href="javascript:void(0)"><div class="label-bg"></div></a>
+					</div>
+				</div>
+			</div>	
+			<div class="clear"></div>
+			</div>	
+			<div class="grid_list2 grid_top">
+				<div class="portfolio web" data-cat="web">
+					<div class="portfolio-wrapper">						
+						<a  href="javascript:void(0)">
+							<img src="<?= base_url('assets/business') ?>/images/pic4.jpg"  alt="Image 2" />
+						</a>
+						<div class="label">
+							<div class="label-text">
+									<a class="text-title">work #5</a>
+									<span class="text-category">photography</span>
+							</div>
+							<a  href="javascript:void(0)"><div class="label-bg"></div></a>
+						</div>
+					</div>
+				</div>
+				<div class="portfolio web grid_top" data-cat="web">
+					<div class="portfolio-wrapper">						
+						<a  href="javascript:void(0)">
+							<img src="<?= base_url('assets/business') ?>/images/pic6.jpg"  alt="Image 2" />
+						</a>
+						<div class="label">
+							<div class="label-text">
+									<a class="text-title">work #6</a>
+									<span class="text-category">photography</span>
+							</div>
+							<a  href="javascript:void(0)"><div class="label-bg"></div></a>
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>				
+			<div class="grid_list2 grid_top">
+				<div class="portfolio card" data-cat="card">
+					<div class="portfolio-wrapper">			
+						<a  href="javascript:void(0)">
+							<img src="<?= base_url('assets/business') ?>/images/pic3.jpg"  alt="Image 2" />
+						</a>
+						<div class="label">
+							<div class="label-text">
+									<a class="text-title">web站点</a>
+									<span class="text-category">php aspx jsp</span>
+							</div>
+							<a  href="javascript:void(0)"><div class="label-bg"></div></a>
+						</div>
+					</div>
+				</div>	
+				<div class="portfolio card grid_top" data-cat="card">
+					<div class="portfolio-wrapper">			
+						<a  href="javascript:void(0)">
+							<img src="<?= base_url('assets/business') ?>/images/pic5.jpg"  alt="Image 2" />
+						</a>
+						<div class="label">
+							<div class="label-text">
+									<a class="text-title">work #5</a>
+									<span class="text-category">photography</span>
+							</div>
+							<a  href="javascript:void(0)"><div class="label-bg"></div></a>
+						</div>
+					</div>
+				</div>	
+				<div class="clear"></div>
+			</div>	
+		</div>
+	<!-- container -->
+    <script type="text/javascript" src="<?= base_url('assets/business/js').'/fliplightbox.min.js' ?>"></script>
+	<script type="text/javascript">$('body').flipLightBox()</script>
+	<div class="clear"></div>
+	</div>
+<!---End-gallery----->
+</div>
+</div>
+<!-- start mid_grid -->
+<div class="mid_bg">
+<div class="wrap">
+<div class="main">
+	<h2 class="style">about me</h2>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+<div class="mid_bg1">
+<div class="wrap">
+<div class="main">
+	<p class="para">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+				<section>
+				<ul class="lb-album">
+					<li>
+						<a href="javascript:void(0)">
+							<img src="<?= base_url('assets/business') ?>/images/icon3.jpg" alt="image01">
+							<span>
+								<h3>云灯</h3>
+								<p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form.</p>
+							</span>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:void(0)">
+							<img src="<?= base_url('assets/business') ?>/images/icon1.jpg" alt="image02">
+							<span>
+								<h3>发电自行车</h3>
+								<p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form.</p>
+							</span>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:void(0)">
+							<img src="<?= base_url('assets/business') ?>/images/icon2.jpg" alt="image03">
+							<span>
+								<h3>UI kit</h3>
+								<p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form.</p>
+							</span>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:void(0)">
+							<img src="<?= base_url('assets/business') ?>/images/icon3.jpg" alt="image04">
+							<span>
+								<h3>flat UI</h3>
+								<p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form.</p>
+							</span>
+						</a>
+					</li>
+					<div class="clear"></div>
+				</ul>
+			</section>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+<!-- start footer -->
+<div class="footer_bg">
+<div class="wrap">
+<div class="footer">
+		<div class="soc-icons">
+		    <ul>
+		      <li><a href="#" target="_blank"></a></li>
+			  <li><a href="#" target="_blank"></a></li>
+		      <li><a href="#" target="_blank"></a></li>
+			  <li><a href="#" target="_blank"></a></li>
+		      <li><a href="#" target="_blank"></a></li>
+			  <li><a href="#" target="_blank"></a></li>			  
+			</ul>
+		</div>
+		<div class="copy">
+			<p class="link"><span>Copyright &copy; 2014.Company name 声物功能测试模板v1.0</span></p>
+		</div>
+</div>
+</div>
+</div>
+<div style="display:none"><!--<script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script>--></div>
+</body>
+</html>

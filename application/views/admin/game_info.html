@@ -1,0 +1,84 @@
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/js/jquery.validate.min.js"></script>
+<script type="text/javascript" >
+$(function() {
+  $("#form1").validate({
+    rules: {
+        name: {
+          required: true,
+        },
+		ascno: {
+          required: true,
+		  digits:true
+        }
+      },
+    messages: {
+      name: {
+        required: '游戏名不能为空',
+      },
+	   ascno: {
+        required: '排序不能为空',
+		digits:'必须是整数',
+      }
+    }
+  });
+});
+
+
+</script>
+<div id="main-content">
+    <!-- End .clear -->
+    <div class="content-box">
+      <!-- Start Content Box -->
+      <div class="content-box-header">
+        <h3>游戏信息</h3>
+        <div class="clear"></div>
+      </div>
+      <!-- End .content-box-header -->
+      <div class="content-box-content">
+        <div class="tab-content default-tab" id="tab1">
+            <form name="form1" id="form1" method="post" enctype="multipart/form-data" action="<?= base_url().'admin/route/game_action' ?>" >
+                <p>
+                  <label>游戏名称</label>
+                  <input class="text-input small-input" type="text" name="name" value="<?php echo $name ?>" />
+                  <span class="input-notification"></span>
+                </p>
+                <p>
+                  <label>图片</label>
+                  <img alt="" src="<?php if( !empty( $image ) ){ echo base_url().'uploads/route/'.$image; } ?>" /><br>
+                  <input class="text-input small-input" type="file" name="image" value="" />&nbsp;&nbsp;<span style="color:red;">注意:传图片的宽为300px,高为200px</span>
+                  <span class="input-notification"></span>
+                </p>
+                <p>
+                  <label>描述</label>
+                  <textarea class="text-input textarea" name="desc" ><?php echo $desc ?></textarea>
+                </p>
+                <p>
+                  <label>资源路径</label>
+                  <? if( $action == 'edit' ){ ?>
+                  <a style="color:red;" href="<?php if( !empty( $resource ) ){ echo base_url().'uploads/route/'.$resource; } ?>" >点我进行下载</a>
+                  <span class="input-notification"></span>
+                  <? } ?>
+                  <input class="text-input small-input" type="file" name="resource" value="" />
+                  <span class="input-notification"></span>
+                </p>
+                <p>
+                  <label>排序</label>
+                  <input class="text-input small-input" name="ascno" value="<?php echo $ascno ?>"  />
+                </p>
+                <p>
+                  <label>游戏状态</label>
+                  <input type="radio" name="status" value="0" <?php if( $status == 0 ){ echo 'checked'; } ?> >开发中
+                  <input type="radio" name="status" value="1" <?php if( $status == 1 ){ echo 'checked'; } ?> >开发完成
+                  <input type="radio" name="status" value="2" <?php if( $status == 2 ){ echo 'checked'; } ?> >维护中
+                </p>
+                <br>
+                <input type="hidden" name="action" value="<?= $action ?>" />
+                <input type="hidden" name="id" value="<?= $id ?>" />
+                <input type="hidden" id="from_url" name="from_url" value="<? if( empty( $from_url ) ){ echo ''; }else{ echo $from_url; } ?>"  />
+                <input class="button" type="submit" value="提交" />
+                <input class="button" type="button" onClick="javascript:history.go(-1)" value="返回" />
+            </form>
+        </div>
+      </div>
+    </div>
+</div>

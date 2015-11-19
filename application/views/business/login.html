@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<!-- Required Stylesheets -->
+<?= link_tag('assets/business/css/mws.style.css'); ?> 
+<?= link_tag('assets/business/css/icons/icons.css'); ?> 
+<!-- JavaScript Plugins -->
+
+<script type="text/javascript" src="<?= base_url('assets/business') ?>/js/jquery.min.js"></script>
+<script type="text/javascript" src="<?= base_url('assets/public'); ?>/js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("div#mws-login .mws-login-back").mouseover(function(event) {
+			$(this).find("a").animate({'left':0})
+		}).mouseout(function(event) {
+			$(this).find("a").animate({'left':70})
+		});
+		
+		$('#captcha').click( 
+			function(){
+				refresh_code();
+			}
+		);	
+	});
+	
+	function refresh_code(){
+		$.get("<?= site_url(array('business','index','captcha')); ?>", { "model":2, "func": Math.random() },
+			function(data){
+				$('#captcha').attr( 'src', data );
+			}
+		);
+	}
+	
+	$(function() {
+	$("#form1").validate({
+		rules: {
+   			username: {
+				required: true,
+    			minlength:6,
+				maxlength:30
+			},
+   			password: {
+    			required: true,
+    			minlength:6,
+				maxlength:30
+   			},
+   			captcha: 'required'
+  		},
+        messages: {
+   			username: {
+				required: "用户名不能为空",
+    			minlength: "用户名不能小于6位",
+				maxlength: "用户名不能大于30位"
+			},
+   			password: {
+				required: "密码不能为空",
+				minlength: "密码不能小于6位",
+				maxlength: "密码不能大于30位"
+   			},
+			captcha: "请输入验证码"
+  		}
+    });
+});
+	
+</script>
+
+<title>MWS Admin - Login Page</title>
+
+</head>
+
+<body>
+	<div id="mws-login">
+    	<h1><? if( empty( $error ) ){ echo '管理登陆'; }else{ ?><span style="color:red;"><? echo $error; ?></span><? } ?></h1>
+        <div class="mws-login-lock"><img src="<?= base_url('assets/business') ?>/css/icons/24/locked-2.png" alt="" /></div>
+    	<div id="mws-login-form">
+        	<form name="form1" id="form1" class="mws-form" action="<?= base_url('business/index/biz_login') ?>" method="post">
+                <div class="mws-form-row">
+                	<div class="mws-form-item large">
+                    	<input type="text" name="username" class="mws-login-username mws-textinput" placeholder="账号" value="<? echo set_value('username') ?>" />
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                	<div class="mws-form-item large">
+                    	<input type="password" name="password" class="mws-login-password mws-textinput" placeholder="密码" value="" />
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                	<div class="mws-form-item large">
+                    	<input type="text" name="captcha" style="width:35%" class="mws-textinput" placeholder="验证码" />
+                        <img width="150" id='captcha' style="vertical-align:middle; cursor:pointer; margin-left:4%;" height="50" src="<?= $captcha ?>" >
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                	<input type="submit" value="登录" class="mws-button green mws-login-button" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+<div style="display:none"></div>
+</body>
+</html>

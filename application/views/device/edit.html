@@ -1,0 +1,57 @@
+<script type="text/javascript" >
+	function check_data(){
+		var name = $('input[name=device_name]');
+		if( name.val() == '' ){
+			alert( '自定义设备名不能为空' )
+			return false;
+		}
+		return true;
+	}
+</script>
+<div class="container-grid-layout loading">
+	<div id="content" style="display: block;">
+		<div class="box-id-content">
+			<div class="box-title">
+				<i class="icon-halfblock"></i>
+				设备绑定
+			</div>
+			<div id="main_content" class="box-inner dyn clearfix">
+				<div class="sr-b">
+                <form name="form1" id="form1" method="post" action="<?= base_url() ?>device/index/edit_action" onSubmit="return check_data()">
+			<ul>
+				<li>
+					<div class="sb-info">
+						<p class="sbi-l">设备编码：</p>
+												<div class="sbi-m">
+							<input class="user-id" type="text" name="code" readonly="readonly" value="<?= $info['code'] ?>" placeholder="设备编码" id="code">
+						</div>
+						<p class="sbi-r">
+							
+						</p>
+					</div>
+				</li>
+                <li>
+					<div class="sb-info">
+						<p class="sbi-l">自定义设备名：</p>
+												<div class="sbi-m">
+							<input class="user-id" type="text" name="device_name" value="<?= $info['name'] ?>" placeholder="设备名" id="name">
+						</div>
+						<p class="sbi-r">
+							
+						</p>
+					</div>
+				</li>
+			</ul>
+            <p class="sbi-r mt85">
+            	<input type="hidden" name="code" value="<?= $info['code'] ?>" >
+                <input type="hidden" name="id" value="<?= $info['id'] ?>" >
+                <input class="sure" type="submit" value="确认" >
+                <span class="mt85"> </span>
+                <input class="sure" type="reset" value="重置" id="reset">
+            </p>
+            </form>
+		</div>
+			</div>
+		</div>
+	</div>
+</div>

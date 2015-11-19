@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>注册页面</title>
+
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/js/jquery.js"></script>
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/js/jquery.validate.min.js"></script>
+<script type="text/javascript" >
+
+function refresh_code(){
+	$.get("<?= site_url(array('user','reg','captcha')); ?>", { "model":2, "func": Math.random() },
+	function(data){
+		$('#captcha').attr( 'src', data );
+   });
+}
+
+$(document).ready(function(){
+	$('#captcha').click( 
+		function(){
+			refresh_code();
+		}
+	);	
+})
+
+$(function() {
+	$("#form1").validate({
+		rules: {
+   			username: {
+				required: true,
+    			minlength:6,
+				maxlength:30,
+				remote:{
+					url: "<?= site_url(array('user','reg','new_user')); ?>",     //后台处理程序
+					type: "post",              									 //数据发送方式
+					dataType: "json"						 //接受数据格式   
+				}	
+			},
+   			password: {
+    			required: true,
+    			minlength:6,
+				maxlength:30
+   			},
+   			ckpwd: {
+    			required: true,
+    			equalTo: "#password"
+   			},
+   			reg_captcha: 'required'
+  		},
+        messages: {
+   			username: {
+				required: "用户名不能为空",
+    			minlength: "用户名不能小于6位",
+				maxlength: "用户名不能大于30位",
+				remote: "用户名已存在"
+			},
+   			password: {
+				required: "密码不能为空",
+				minlength: "密码不能小于6位",
+				maxlength: "密码不能大于30位"
+   			},
+   			ckpwd: {
+				required: "确认密码不能为空",
+				equalTo: "两次输入密码不一致不一致",
+   			},
+			reg_captcha: "请输入验证码"
+  		},
+		submitHandler: function(form){  
+			var username = $('input[name=username]').val();
+			var password = $('input[name=password]').val();
+			var ckpwd = $('input[name=ckpwd]').val();
+			var reg_captcha = $('input[name=reg_captcha]').val();
+      		if( $(form).valid() ){  
+                $.post("<?= site_url(array('user','reg','register')); ?>", { 'username' : username, 'password' : password, 'captcha' : reg_captcha, 'ckpwd' : ckpwd }, function(data){  
+                    if( data.res == 1 ){
+						alert('注册成功');
+						window.location = '<?= base_url() ?>user/login/index';
+					}else{
+						alert( data.info );
+						refresh_code();
+					}},"json"
+				);  
+            }
+		}  
+    });
+});
+
+</script>
+</head>
+
+<body>
+<div style="margin-left:auto; margin-right:auto;"><? if( $error ){ echo $error; } ?></div>
+	<form name="form1" id="form1" method="post" >
+        账号:<input type="text" name="username" value="<? echo set_value('username') ?>"  /><? echo form_error('username'); ?><br>
+        密码:<input type="password" name="password" id="password" value=""  /><? echo form_error('password'); ?><br>
+     确认密码:<input type="password" name="ckpwd" value="" /><? echo form_error('ckpwd'); ?><br>
+   <!--     邮箱:<input type="text" name="mail" value="<? echo set_value('mail') ?>" /><? echo form_error('mail'); ?><br>
+        手机:<input type="text" name="phone" value="<? echo set_value('phone') ?>" /><? echo form_error('phone'); ?><br>
+        年龄:<input type="text" name="age" value="<? echo set_value('age') ?>" /><? echo form_error('age'); ?><br>
+        身高:<input type="text" name="stature" value="<? echo set_value('stature') ?>" /><? echo form_error('stature'); ?><br>
+        体重:<input type="text" name="weight" value="<? echo set_value('weight') ?>" /><? echo form_error('weight'); ?><br>
+        性别:<select name="sex" >
+        		<option value="0" <?php echo set_select('sex', '0', TRUE); ?>  >保密</option>
+                <option value="1" <?php echo set_select('sex', '1', TRUE); ?>  >男</option>
+                <option value="2" <?php echo set_select('sex', '2', TRUE); ?>  >女</option>
+            </select><br>
+    -->        
+      验证码:<input type="text" name="reg_captcha" value="<? echo set_value('reg_captcha'); ?>" /><? echo form_error('reg_captcha'); ?><img width="170" id='captcha' style="vertical-align:middle; cursor:pointer;" height="70" src="<?= $reg_captcha ?>" ><br>
+        <input type="submit" value="提交"  />
+        <input type="button" onclick="javascript:history.go(-1)" value="返回"  />
+    </form>
+</body>
+</html>

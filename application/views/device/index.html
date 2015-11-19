@@ -1,0 +1,96 @@
+<script type="text/javascript" >
+	function act( code, action ){
+		if( action == 'edit' ){
+			window.location = "<?= base_url(array('device','index','device_edit')); ?>?code="+code;
+		}else if( action == 'cancel' ){
+			if( confirm( '你确定要取消该设备的绑定？' ) ){
+				$.post("<?= site_url(array('device','index','cancel')); ?>", { "code":code },
+					function(data){
+						if( data == 'true' ){
+							alert('操作成功');
+							window.location.reload();
+						}else{
+							alert( '操作失败,请刷新后再试!' );
+						}
+					}
+				);
+			}
+		}else{
+			return false;
+		}
+	}
+</script>
+<div class="container-grid-layout loading">
+	<div id="content" style="display: block;">
+		<div class="box-id-content">
+			<div class="box-title">
+				<i class="icon-halfblock"></i>
+				我的设备
+			</div>
+			<div id="main_content" class="box-inner dyn clearfix">
+				<div id="content_recently_content" class="main-content-page">
+					<div class="top-search clearfix">
+						<ul class="search-list left" id="dyn_filter" mode="dyn">
+							<li type="0" <? if( empty( $key ) ){ ?> class="on" <? } ?>>全部</li>
+							<li <? if( $key == 'light' ){ ?> class="on" <? } ?> type="light">云灯</li>
+							<li <? if( $key == 'socket' ){ ?> class="on" <? } ?>
+								type="socket">单插</li>
+							<li <? if( $key == 'airck' ){ ?> class="on" <? } ?> type="airck">空气检测</li>
+							<li <? if( $key == 'bike' ){ ?> class="on" <? } ?> type="bike">脚踏车</li>
+						</ul>
+					</div>
+					<ul class="recently-list clearfix" id="dyn_list" mode="dyn">	
+            	<?
+													
+					if ($list) {
+							foreach ( $list as $lt ) {
+				?>
+                <li class="REVIEW">
+							<div class="recently-list-item clearfix">
+								<div class="recently-list-info">
+									<div class="recently-list-info-face">
+                                    	<? if( $lt['type_id'] > 0 && $lt['type_id'] < 1000 ){ ?>
+											<img alt="插板" src="<?= base_url() ?>assets/forum/images/socket.png">
+                                        <? }elseif( $lt['type_id'] > 3000 && $lt['type_id'] < 4000 ){ ?>
+                                        	<img alt="空测" src="<?= base_url() ?>assets/forum/images/stickies.png">
+                                        <? }elseif( $lt['type_id'] > 4000 && $lt['type_id'] < 5000 ){ ?>
+                                        	<img alt="云灯" src="<?= base_url() ?>assets/forum/images/light.png">
+                                        <? }elseif( $lt['type_id'] > 6000 && $lt['type_id'] < 7000 ){ ?>
+                                        	<img alt="单车" src="<?= base_url() ?>assets/forum/images/bike.png">
+                                        <? } ?>
+									</div>
+									<div class="info-r">
+										<div class="recently-list-info-text">
+                                        	设备类型：
+											<?= $lt['type_name'] ?>
+                                            &nbsp;&nbsp;&nbsp;
+											设备名称：
+											<?= $lt['device_name'] ?>
+                                             &nbsp;&nbsp;&nbsp;
+                                            设备码:
+                                            <?= $lt['code'] ?>
+											<div class="date"><?= date('Y-m-d H:i:s', $lt['add_time']) ?></div>
+										</div>
+										<div class="recently-list-info-comment">
+											<p class="txt" id="<?= $lt['id'] ?>">
+                                    			<?= $lt['name']?>
+                                    		</p>
+											<p class="more">
+												...&nbsp;
+												<a href="JavaScript:void( act( '<?= $lt['code'] ?>', 'edit' ) )">编辑</a>&nbsp;&nbsp;&nbsp;
+                                                <a href="JavaScript:void( act( '<?= $lt['code'] ?>', 'cancel' ) )">取消绑定</a>&nbsp;&nbsp;&nbsp;
+                                                <a href="<?= base_url() ?>device/index/device_data?model=1&code=<?= $lt['code'] ?>" target="_blank">设备信息</a>
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+                <? }  } ?>
+            </ul>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

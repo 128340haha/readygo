@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns=http://www.w3.org/1999/xhtml><head>
+	<meta charset="utf-8">
+	<title>个人中心</title>
+	<link rel="Stylesheet" type="text/css" href="<?= base_url(); ?>assets/user/css/core.css" /> 
+	<link rel="Stylesheet" type="text/css" href="<?= base_url(); ?>assets/user/css/member_v2.css" /> 
+    <link rel="Stylesheet" type="text/css" href="<?= base_url(); ?>assets/user/css/zclc2.css" /> 
+    <script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/js/jquery.js"></script>
+    <style>
+	.showlive{ margin-left:30px; display:none; color:#C90; cursor:pointer; }
+	.current{ color:red; margin-left:30px; }
+	.showlive a:hover{ color:#C90; display:inline; }
+	.mt85{ margin-left:85px; }
+	</style>
+    <script type="text/javascript" >
+		$(function(){
+			$(".txt").hover(
+			  function () {
+				 	$('#s_'+this.id).css( 'display','inline' );
+			  },
+			  function () {
+				 if( $('#s_'+this.id).attr('class') == 'showlive' ){
+				 	$('#s_'+this.id).css( 'display','none' );
+				 }
+			  }
+			);
+			
+			$('#dyn_filter li').click(
+				function(){
+					var key = $(this).attr( 'type' );
+					if( '<?= uri_string() ?>' == "user/ucenter/index" ){
+						window.location = '<?= base_url() ?>user/ucenter/index?key='+key;
+					}else if( '<?= uri_string() ?>' == "device/index" ){
+						window.location = '<?= base_url() ?>device/index?key='+key;
+					}	
+				}
+			)
+		})
+		
+		function set_show( obj ){
+			var code = $(obj).attr('code');
+			if( code == '' || code == undefined ){
+				alert('主要参数丢失,请刷新后再试！')
+				return false;
+			}
+			$.post("<?= site_url(array('forum','index','change_live')); ?>", { 'code' : code, 'nolive' : 1 }, function(data){  
+				if( data.res == 1 ){
+					$('.current').html('设置为论坛显示');
+					$('.current').css( 'display','none' );
+					$('.current').attr('class','showlive');		
+					$(obj).html('论坛显示设备数据');
+					$(obj).attr('class','current')
+				}else{
+					alert( data.info );
+				}},"json"
+			); 
+		}
+
+	</script>
+</head>
+
+<!-- URYYYYYYYYYYYYYYYYYY! -->
+<body>
+<!-- Header Begin -->
+	<div class="z_top">
+		<div class="z_header">
+		</div>
+	</div>
+<!-- Header End -->
+
+<!-- Banner Begin -->
+	<div class="container banner">
+		<div class="container-inner">
+			<div class="banner-233">
+				<a href="javascript:void(0);" style="display: block; width: 100%; height: 100%;"></a>
+			</div>
+		</div>
+	</div>
+<!-- Banner End -->
+	
+<!-- Body Begin -->
+	<div class="container content">
+		<div class="container-inner clearfix">
+			<div class="navi">
+                <div class="box-title"><i class="icon-block"></i>用户中心</div>
+                <div class="box-inner">
+                    <div class="side-navi">
+                        <a class="clickable <? if( uri_string()=='user/ucenter/index' ){ echo 'on'; } ?>" href="<?= base_url() ?>user/ucenter/index" id="btn_main"><i class="icon-home"></i>主页</a>
+                        <a class="clickable sub"><i class="icon-upload"></i>个人信息</a>
+                        <div id="side-navi-item-menu-post" class="side-navi-item-menu">
+                            <a class="clickable <? if( uri_string()=='user/ucenter/user' ){ echo 'on'; } ?>" href="javascript:void(0)" id="btn_video_submit"><i class="icon-upload-gray"></i>我的信息</a>
+                            <a class="clickable <? if( uri_string()=='user/ucenter/face' ){ echo 'on'; } ?>" href="<?= base_url() ?>user/ucenter/face" id="btn_video_manage"><i class="icon-vfolder-gray"></i>头像设置</a>
+                            <a class="clickable <? if( uri_string()=='user/ucenter/site' ){ echo 'on'; } ?>" href="javascript:void(0)" id="btn_special_manage"><i class="icon-paper-gray"></i>账号安全</a>
+                        </div>
+                        <a class="clickable sub"><i class="icon-upload"></i>设备管理</a>
+                        <div id="side-navi-item-menu-post" class="side-navi-item-menu">
+                            <a class="clickable <? if( uri_string()=='device/index' ){ echo 'on'; } ?>" href="<?= base_url() ?>device/index/" id="btn_video_submit"><i class="icon-upload-gray"></i>设备列表</a>
+                            <a class="clickable <? if( uri_string()=='device/index/device_input' ){ echo 'on'; } ?>" href="<?= base_url() ?>device/index/device_input" id="btn_video_manage"><i class="icon-vfolder-gray"></i>设备绑定</a>
+                            <a class="clickable <? if( uri_string()=='device/index/device_data' ){ echo 'on'; } ?>" href="#" id="btn_special_manage"><i class="icon-paper-gray"></i>设备耗能</a>
+                        </div>
+                        <a class="clickable sub"><i class="icon-folder"></i>游戏管理</a>
+                        <div id="side-navi-item-game-post" class="side-navi-item-menu">
+                            <a class="clickable <? if( uri_string()=='user/ucenter/game_list' ){ echo 'on'; } ?>" href="<?= base_url() ?>user/ucenter/game_list" id="game_list"><i class="icon-upload-gray"></i>游戏列表</a>
+                            <a href="javascript:void(0)" id="game_info"><i class="icon-vfolder-gray"></i>游戏统计</a>
+                        </div>   
+                        <a class="clickable sub"><i class="icon-subscribe"></i>论坛</a>
+                        <div id="side-navi-item-forum-post" class="side-navi-item-menu">
+                            <a class="clickable <? if( uri_string()=='user/ucenter/forums' ){ echo 'on'; } ?>" href="<?= base_url() ?>user/ucenter/forums" id="forum_list"><i class="icon-upload-gray"></i>发帖列表</a>
+                            <a class="clickable <? if( uri_string()=='user/ucenter/response' ){ echo 'on'; } ?>" href="<?= base_url() ?>user/ucenter/response" id="forum_info"><i class="icon-vfolder-gray"></i>我的回复</a>							<a class="clickable" href="<?= base_url() ?>forum/index/" target="_top" id="forum_list"><i class="icon-upload-gray"></i>返回论坛</a>
+                        </div> 
+                        <!--
+                        <a class="clickable n" href="#mylist_manage" id="btn_mylist_manage"><i class="icon-list"></i>MyList</a>
+                        <a class="clickable n" href="#friend_manage" id="btn_friend_manage"><i class="icon-dual-user"></i>好友</a>
+						<a class="clickable n" href="#message" id="btn_message"><i class="icon-message"></i>信息中心</a>
+                        <a class="clickable n" href="#space" id="btn_space"><i class="icon-dango"></i>空间</a>
+						<a class="clickable n" href="https://account.bilibili.com/" target="_blank" id="btn_profile"><i class="icon-user"></i>账号</a>
+						<a class="clickable n" href="#store" id="btn_store"><i class="icon-cart"></i>商城</a>
+						-->
+												
+                    </div>
+                 </div>
+            </div>
+            <?= $main ?>
+		</div>
+	</div>
+<!-- Body Begin -->
+
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/js/jquery.js"></script>
+<script type="text/javascript" src="<?= base_url(); ?>assets/user/js/member-common.js"></script>
+
+</body>
+</html>

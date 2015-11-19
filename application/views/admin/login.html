@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>后台登陆</title>
+<?= link_tag('assets/admin/css/style.css'); ?>
+</head>
+	<body>
+		<div id="container">
+			<form method="post" name="form1" action="<?= site_url('admin/admin/login_validation') ?>">
+				<div class="login">后台登录</div>
+				<div class="username-text">账号:</div>
+				<div class="password-text">密码:</div>
+				<div class="username-field">
+					<input type="text" name="admin" value="" />
+				</div>
+				<div class="password-field">
+					<input type="password" name="password" value="" />
+				</div>
+				<div class="forgot-usr-pwd"><?= $error ?></div>
+				<input type="submit" name="submit" value="GO" />
+			</form>
+		</div>
+	</body>
+</html>

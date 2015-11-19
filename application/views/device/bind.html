@@ -1,0 +1,77 @@
+<script type="text/javascript" >
+	function check_data(){
+		var code = $('input[name=code]');
+		if( code.val().length == 12 ){
+			//pass
+		}else{
+			alert( '设备编码格式不对' )
+			return false;
+		}
+		var salt = $('input[name=salt]');
+		if( salt.val().length == 6 ){
+			//pass
+		}else{
+			alert( '校验码格式不对' )
+			return false;
+		}
+		var name = $('input[name=device_name]');
+		if( name.val() == '' ){
+			alert( '自定义设备名不能为空' )
+			return false;
+		}
+		return true;
+	}
+</script>
+<div class="container-grid-layout loading">
+	<div id="content" style="display: block;">
+		<div class="box-id-content">
+			<div class="box-title">
+				<i class="icon-halfblock"></i>
+				设备绑定
+			</div>
+			<div id="main_content" class="box-inner dyn clearfix">
+				<div class="sr-b">
+                <form name="form1" id="form1" method="post" action="<?= base_url() ?>device/index/device_bind" onSubmit="return check_data()">
+			<ul>
+				<li>
+					<div class="sb-info">
+						<p class="sbi-l">设备编码：</p>
+												<div class="sbi-m">
+							<input class="user-id" type="text" name="code" placeholder="设备编码" id="code">
+						</div>
+						<p class="sbi-r">
+							
+						</p>
+					</div>
+				</li>
+				<li>
+					<div class="sb-info">
+						<p class="sbi-l">校验码：</p>
+												<div class="sbi-m">
+							<input class="user-id" type="text" name="salt" placeholder="校验码" id="salt">
+						</div>
+											</div>
+				</li>
+                <li>
+					<div class="sb-info">
+						<p class="sbi-l">自定义设备名：</p>
+												<div class="sbi-m">
+							<input class="user-id" type="text" name="device_name" placeholder="设备名" id="name">
+						</div>
+						<p class="sbi-r">
+							
+						</p>
+					</div>
+				</li>
+			</ul>
+            <p class="sbi-r mt85">
+                <input class="sure" type="submit" value="确认" >
+                <span class="mt85"> </span>
+                <input class="sure" type="reset" value="重置" id="reset">
+            </p>
+            </form>
+		</div>
+			</div>
+		</div>
+	</div>
+</div>

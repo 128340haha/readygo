@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>登录页面</title>
+<link href="<?= base_url(); ?>assets/login/css/style.css" rel="stylesheet" type="text/css" media="all" />
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/js/jquery.js"></script>
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/js/jquery.validate.min.js"></script>
+<script type="text/javascript" >
+
+function refresh_code(){
+	$.get("<?= site_url(array('user','login','captcha')); ?>", { "model":2, "func": Math.random() },
+		function(data){
+			$('#captcha').attr( 'src', data );
+		}
+	);
+}
+
+$(document).ready(function(){
+	$('#captcha').click( 
+		function(){
+			refresh_code();
+		}
+	);	
+})
+
+$(function() {
+	$("#form1").validate({
+	/*	rules: {
+   			username: {
+				required: true,
+    			minlength:6,
+				maxlength:30
+			},
+   			password: {
+    			required: true,
+    			minlength:6,
+				maxlength:30
+   			},
+   			captcha: 'required'
+  		},
+        messages: {
+   			username: {
+				required: "用户名不能为空",
+    			minlength: "用户名不能小于6位",
+				maxlength: "用户名不能大于30位"
+			},
+   			password: {
+				required: "密码不能为空",
+				minlength: "密码不能小于6位",
+				maxlength: "密码不能大于30位"
+   			},
+			captcha: "请输入验证码"
+  		},
+	*/	
+		submitHandler: function(form){  
+			var username = $('input[name=username]').val();
+			var password = $('input[name=password]').val();
+			var captcha = $('input[name=captcha]').val();
+			$.post("<?= site_url(array('user','login','auth')); ?>", { 'username' : username, 'password' : password, 'captcha' : captcha }, function(data){  
+				if( data.res == 1 ){
+					window.location = "<?= base_url(array('forum','index')); ?>";
+				}else{
+					alert( data.info );
+					refresh_code();
+				}},"json"
+			);  
+		}  
+    });
+});
+
+	function myReg(){
+		window.location = "<?= site_url(array('user','reg')); ?>";
+	}
+
+</script>
+</head>
+
+<body>
+
+<div class="message warning">
+<div class="inset">
+	<div class="login-head">
+		<h1>Login Form</h1>			
+	</div>
+		<form name="form1" id="form1" method="post">
+			<li>
+				<input type="text" class="text" name="username" value="" placeholder="账号" ><span class="icon user"> </span>
+			</li>
+				<div class="clear"> </div>
+			<li>
+				<input type="password" value=""  name="password" placeholder="密码"><span class="icon lock"> </span>
+			</li>
+            <div class="clear"> </div>
+			<li style="width:170px; float:left; margin-right:30px;">
+				<input type="text" class="captcha"  name="captcha" value="" placeholder="验证码">
+			</li>
+            <img width="170" id='captcha' style="vertical-align:middle; cursor:pointer; float:left;" height="50" src="<?= $captcha ?>" >
+			<div class="clear"> </div>
+			<div class="submit">
+				<input type="submit" onclick="myFunction()" value="登录" >
+				<input type="button" style="float:right;" onclick="myReg()" value="注册" >
+						  <div class="clear"></div>	
+			</div>
+				
+		</form>
+		</div>					
+	</div>
+	</div>
+	<div class="clear"> </div>
+<!--- footer --->
+<!--
+<div style="margin-left:auto; margin-right:auto;"><? if( $error ){ echo $error; } ?></div>
+	<form name="form1" id="form1" method="post" >
+        账号:<input type="text" name="username" value="<? echo set_value('username') ?>"  /><? echo form_error('username'); ?><br>
+        密码:<input type="password" name="password" value="<? echo set_value('password') ?>"  /><? echo form_error('password'); ?><br>
+        验证码:<input type="text" name="captcha" value="<? echo set_value('captcha') ?>" /><? echo form_error('captcha'); ?><img width="170" id='captcha' style="vertical-align:middle; cursor:pointer;" height="70" src="<?= $captcha ?>" ><br>
+        <input type="submit" value="提交"  />
+        <a href="<?= site_url(array('user','reg')); ?>">注册</a>
+    </form>
+-->    
+ 
+</body>
+</html>

@@ -1,0 +1,50 @@
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/js/jquery.validate.min.js"></script>
+<script type="text/javascript" >
+
+</script>
+<div id="main-content">
+    <!-- End .clear -->
+    <div class="content-box">
+      <!-- Start Content Box -->
+      <div class="content-box-header">
+        <h3>分类信息</h3>
+        <div class="clear"></div>
+      </div>
+      <!-- End .content-box-header -->
+      <div class="content-box-content">
+        <div class="tab-content default-tab" id="tab1">
+            <form name="form1" id="form1" method="post" action="<?= base_url().'admin/device/update_parent' ?>" >
+            	<p>
+                  <label>当前id</label>
+                  <input class="text-input small-input" type="text" readonly name="id" value="<?php echo $id ?>" />
+                  <span class="input-notification"></span>
+                </p>
+                <p>
+                  <label>设备码</label>
+                  <input class="text-input small-input" type="text" readonly name="code" value="<?php echo $code ?>" />
+                  <span class="input-notification"></span>
+                </p>
+                <p>
+                  <label>自定义名称</label>
+                  <input class="text-input small-input" type="text" readonly name="name" value="<?php echo $name ?>" />
+                  <span class="input-notification"></span>
+                </p>
+                <p>
+                  <label>用户id</label>
+                  <input class="text-input small-input" type="text" readonly name="user_id" value="<?php echo $user_id ?>" />
+                  <span class="input-notification"></span>
+                </p>
+                <p>
+                  <label>主机设备ID</label>
+                  <input class="text-input small-input" type="text" name="pid" value="<?php echo $pid ?>" />
+                  <span class="input-notification"></span>
+                </p>
+                <br>
+                <input type="hidden" id="from_url" name="from_url" value="<? if( empty( $from_url ) ){ echo ''; }else{ echo $from_url; } ?>"  />
+                <input class="button" type="submit" value="提交" />
+                <input class="button" type="button" onClick="javascript:history.go(-1)" value="返回" />
+            </form>
+        </div>
+      </div>
+    </div>
+</div>

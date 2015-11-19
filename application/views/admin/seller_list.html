@@ -1,0 +1,90 @@
+<script type="text/javascript" >
+	function change_status( obj ){
+		var val = $(obj).attr( 'val' );
+		var sid = $(obj).attr( 'sid' );
+		if( val == 1 ){
+			val = 0
+		}else{
+			val = 1;
+		}
+		$.post("<?= base_url(array('admin','seller','change_status')); ?>", { 'val' : val, 'id' : sid }, function(data){
+			if( data.res == 1 ){
+				if( val == 1 ){
+					$(obj).attr( 'src', "<?= base_url().'assets/admin/icons/tick_circle.png' ?>" );
+				}else{
+					$(obj).attr( 'src', "<?= base_url().'assets/admin/icons/cross.png' ?>" );
+				}
+				$(obj).attr( 'val', val );
+			}else{
+				alert('更改失败');
+			}},"json"
+		);  
+	}
+	
+	
+	function del( id ){
+		if( confirm( '您确定要删除吗？' ) ){
+			window.location = "<?= base_url(array('admin','seller','del_seller')); ?>?id="+id
+		}
+	}
+</script>
+
+<div id="main-content">
+    <!-- End .clear -->
+    <div class="content-box">
+      <!-- Start Content Box -->
+      <div class="content-box-header">
+        <h3>商家列表</h3>
+        <div class="clear"></div>
+      </div>
+      <!-- End .content-box-header -->
+      <div class="content-box-content">
+        <div class="tab-content default-tab" id="tab1">
+          <!-- This is the target div. id must match the href of this div's tab -->
+          <table>
+            <thead>
+              <tr>
+                <th>商家名</th>
+                <th>电话</th>
+                <th>appid</th>
+                <th>appkey</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <td colspan="6">
+                  <div class="pagination"> 
+                  <?= $bar ?>
+                  </div>
+                  <!-- End .pagination -->
+                  <div class="clear"></div>
+                </td>
+              </tr>
+            </tfoot>
+            <tbody>
+            <? if( $list ){
+            	foreach( $list as $li ){
+            ?>
+                  <tr>
+                    <td><?= $li['sellername'] ?></td>
+                    <td><?= $li['phone'] ?></td>
+                    <td><?= $li['appid'] ?></td>
+                    <td><?= $li['appkey'] ?></td>
+                    <td><img style="cursor:pointer;" onclick="change_status(this)" val="<?= $li['status'] ?>" sid="<?= $li['id'] ?>" src="<? if( $li['status'] == 1 ){ echo base_url().'assets/admin/icons/tick_circle.png'; }else{ echo base_url().'assets/admin/icons/cross.png';  } ?> " ></td>
+                    <td>
+                      <!-- Icons -->
+                      <a href="<?= base_url().'admin/seller/edit?id='.$li['id'] ?>" title="编辑"><img src="<?= base_url().'assets/admin/icons/' ?>pencil.png" alt="编辑" /></a> &nbsp;&nbsp;<a href="javascript:void(del('<?= $li['id'] ?>'))" title="删除"><img src="<?= base_url().'assets/admin/icons/' ?>cross.png" alt="删除" /></a> </td>
+                  </tr>
+            <?
+              	}
+              }
+            ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- End .content-box-content -->
+    </div>
+ <?= $foot ?>

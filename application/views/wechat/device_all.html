@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html" />
+<!-- 告诉webkit内核浏览器初始缩放比例为1 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>我的设备列表</title>
+<!-- 更换第三方图标库,Font Awesome <i class="icon-magic">-->
+<link href="<?= base_url(); ?>assets/wechat/css/bootstrap.css" rel="stylesheet">
+<link href="<?= base_url(); ?>assets/wechat/css/index.css" rel="stylesheet">
+<link href="<?= base_url(); ?>assets/wechat/css/sweet-alert.css" rel="stylesheet">
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/jquery-1.11.1.min.js"></script>
+<script src="<?= base_url(); ?>assets/wechat/js/touch.min.js"></script>
+<script src="<?= base_url(); ?>assets/wechat/js/sweet-alert.min.js"></script>
+<script type="text/javascript" >
+	var codes = '<?= $codes ?>';
+	var page = 1;
+	var allpage = '<?= $allpage ?>';
+	var maxcheck = 2;
+	
+	/* ajax获取数据函数 */
+	function ajax_socket( code, model ){
+		$.ajax({
+		   type: "POST",
+		   url: "<?= base_url() ?>wechat/device/socket",
+		   data: "codes="+code+"&token="+Math.random(),
+		   dataType: "json",
+		   success: function(msg){
+			 if( msg == 0 ){
+				 //不查询
+			 }else{
+				 for( var k in msg ){
+					 if( msg[k]['error'] == 1 ){
+						if( model == 1 ){
+							swal("失败",  msg[k]['mess'], "error");
+						}else{
+							$('#'+k+'_t').html( msg[k]['name']+'<span style="color:red">['+msg[k]['mess']+']</span>' );
+						}
+					 }else{
+						show_default( k, msg[k] );
+					 } 
+				 }
+			 }
+		   }
+		});	
+	}
+	
+	$(function(){
+		//自动获取相关即时数据
+		var code_list = codes.split( ',' )
+		if( code_list.length > 0 ){
+			for( var i in code_list ){
+				ajax_socket( code_list[i], 0 )
+			}
+		}
+		
+		touch.on('#filters li', 'tap doubletap', function(ev){
+			var key = $(this).attr('key');
+			if( key == 'all' ){
+				key = '';
+			}
+			window.location = '<?= base_url() ?>wechat/device/device_all?key='+key;
+		})
+
+		touch.on('#moreDevice', 'tap doubletap', function(ev){
+			allpage = parseInt( allpage );
+			if( page <= allpage ){
+				//获取新数据
+				$.ajax({
+				   type: "POST",
+				   url: "<?= base_url() ?>wechat/device/morePage",
+				   data: "page="+page+'&codes='+codes,
+				   dataType: "json",
+				   success: function(msg){
+					 if( msg.error == 0 ){
+						 //数据框搭建
+						 add_newdevice( msg.list );
+						 allpage = msg.bar.all_page;
+						 if( page > allpage ){
+							$('#moreDevice').css( 'display', 'none' );
+						}
+					 }else{
+						 swal("失败", msg.mess, "error");
+					 }
+				   }
+				});		
+			}
+			page++;
+			if( page > allpage ){
+				$('#moreDevice').css( 'display', 'none' );
+			}
+		})
+		
+	});
+	
+		function set_points( obj ){
+			var target = $('input[name=device]');
+			var keyid = $(obj).attr('for');
+			var show_input = $('#'+keyid);
+			var checkedCount = 0;
+			for(var c = 0; c < target.length; c++){
+				if( target[c].checked ){
+					checkedCount++
+				}	
+			}
+			if (show_input.get(0).checked) {
+				//取消操作
+				var ss = 0;
+			}else{
+				//设定操作
+				checkedCount++;
+				if (checkedCount > maxcheck) {
+					show_input.get(0).checked = true;
+					swal("失败", "重点监视设备上限两项!", "error");
+					return false;
+				}
+				var ss = 1;	
+			}
+			var cd = show_input.attr('code');
+			$.ajax({
+			   type: "POST",
+			   url: "<?= base_url() ?>wechat/device/wshow",
+			   data: "code="+cd+"&val="+ss+'&ascno='+checkedCount,
+			   success: function(msg){
+				 if( msg == 1 ){
+					 //成功
+				 }else{
+					 swal("失败", msg, "error");
+				 }
+			   }
+			});		
+		}
+		
+		function add_newdevice( list ){
+			for( var i in list ){
+				var num = list[i].code.length - 8;
+				var type = parseInt( list[i].code.substr( 0, num ) );
+				if( type > 0 && type < 1000 ){
+					//单插
+					var switch_html = '<DIV class="switch" model="socket" id="'+list[i].code+'_switch" onClick="change_switch(this,\''+list[i].code+'\')"><DIV class="toggle-button"></DIV><DIV class="toggle-text-off">OFF</DIV><DIV class="toggle-text-on">ON</DIV></DIV>';
+					var txt_html = '<a class="repeat" href="javascript:void( ajax_socket(\''+list[i].code+'\', 1) )"><i class="fa fa-repeat"></i></a><p><span class="title">电压：</span><span id="'+list[i].code+'_voltage" class="txt">0</span>V</p><p><span class="title">电流：</span><span id="'+list[i].code+'_current" class="txt">0</span>A</p><p><span class="title">功率：</span><span id="'+list[i].code+'_power" class="txt">0</span>W</p><p><span class="title">电量：</span><span id="'+list[i].code+'_electricity" class="txt">0</span>kWh</p>';
+					var img = '<i class="fa fa-plug"></i>';
+					var dtitle = '单插';
+				}else if( type > 3000 && type < 4000 ){
+					//空测
+					var switch_html = '<DIV class="data" CODE="'+list[i].code+'" > 数据 </DIV>';
+					var txt_html = '<a class="repeat" href="javascript:void( ajax_socket(\''+list[i].code+'\', 1) )"><i class="fa fa-repeat"> </i></a><p><span class="title">温度：</span><span id="'+list[i].code+'_temp" class="txt">0</span>℃</p><p><span class="title">湿度：</span><span id="'+list[i].code+'_rh" class="txt">0</span>%</p><p><span class="title">甲醛：</span><span id="'+list[i].code+'_hcho" class="txt">0</span>ug/m3</p><p><span class="title">PM2.5：</span><span id="'+list[i].code+'_pm" class="txt">0</span>ug/m3</p>';		
+					var img = '<i class="fa fa-life-ring"></i>';
+					var dtitle = '空测';
+				}else if( type > 4000 && type < 5000 ){
+					//云灯
+					var switch_html = '<DIV class="switch" model="socket" id="'+list[i].code+'_switch" onClick="change_switch(this,\''+list[i].code+'\')"><DIV class="toggle-button"></DIV><DIV class="toggle-text-off">OFF</DIV><DIV class="toggle-text-on">ON</DIV></DIV>';
+					var txt_html = '<p><span class="title">颜色：</span><span class="txt"><i id="'+list[i].code+'_p1" class="fa fa-circle" style="color:rgba(216,64,54,1);"></i></span></p><p><span class="title">亮度：</span><span id="id="'+list[i].code+'_p2" class="txt">0</span></p>';
+					var img = '<i class="fa fa-lightbulb-o"></i>';
+					var dtitle = '云灯';
+				}else if( type > 6000 && type < 7000 ){
+					//自行车
+					var dtitle = '自行车';
+				}
+				
+				<? if( empty( $key ) ){ ?>
+					var ppts = '<DIV class="device-check"><span></span><input TYPE="checkbox" id="device'+list[i].code+'" CODE="'+list[i].code+'" NAME="device" /><label class="points" onClick="set_points(this)" FOR="device'+list[i].code+'"></label></DIV>';
+				<? }else{ ?>
+					var ppts = '';
+				<? } ?>
+				var model_html = '<DIV class="device-list"><DIV class="device-name"><DIV id="'+list[i].code+'_t">'+dtitle+'</DIV><a href="javascript:device_site( \''+list[i].code+'\' )" class="site"><i class="fa fa-sliders"></i></a></DIV>	    <DIV class="device-text clearfix">'+ppts+'<DIV class="device-site"><DIV class="device-img">'+img+'</i></DIV><DIV class="device-switch">'+switch_html+'</DIV></DIV><DIV class="device-txt">'+txt_html+'		</div></div></div>';
+				$('#device-box').append( model_html );
+				ajax_socket( list[i].code, 0 );
+			}
+		}
+		
+		
+		
+		function show_default( code, value ){
+			var num = code.length - 8;
+			var type = parseInt( code.substr( 0, num ) );
+			if( type > 0 && type < 1000 ){
+				//单插
+				$('#'+code+'_t').html( value.name );
+				$('#'+code+'_voltage').html( value.voltage );
+				$('#'+code+'_current').html( value.current );
+				$('#'+code+'_power').html( value.power );
+				$('#'+code+'_electricity').html( value.electricity );
+				var _switch = $('#'+code+'_switch');
+				if( value['switch'] == 1 ){
+					_switch.attr('class','switch switch-on');
+				}else{
+					_switch.attr('class','switch');
+				}
+			}else if( type > 3000 && type < 4000 ){
+				//空测
+				$('#'+code+'_t').html( value.name );
+				$('#'+code+'_temp').html( value.temp );
+				$('#'+code+'_rh').html( value.rh );
+				$('#'+code+'_hcho').html( value.hcho );
+				$('#'+code+'_pm').html( value.pm );
+			}else if( type > 4000 && type < 5000 ){
+				//云灯
+				var color = value.color.replace(/,/g,'')
+				$('#'+code+'_t').html( value.name );
+				$('#'+code+'_p1').css( 'color', '#'+color );
+				$('#'+code+'_p2').html( value.light );
+				var _switch = $('#'+code+'_switch');
+				if( value['switch'] == 1 ){
+					_switch.attr('class','switch switch-on');
+				}else{
+					_switch.attr('class','switch');
+				}
+			}else if( type > 6000 && type < 7000 ){
+				//自行车
+				
+			}
+		}
+		
+		function change_switch( obj, code ){
+			var key = $(obj).attr( 'class' );
+			var mod = $(obj).attr( 'model' );
+			if( key == 'switch switch-off' || key == 'switch' ){
+			//	alert('开')
+				if( mod == 'socket' ){
+					var val = 0x01
+				}else if( mod == 'light' ){
+					var val = 0x00;
+				}
+			}else if( key == 'switch switch-on' ){
+			//	alert('关')
+				if( mod == 'socket' ){
+					var val = 0x00
+				}else if( mod == 'light' ){
+					var val = 0xff;
+				}
+			}
+			$.ajax({
+			   type: "POST",
+			   url: "<?= base_url() ?>wechat/device/control",
+			   data: "code="+code+"&val="+val+"&token="+Math.random(),
+			   success: function(msg){
+				 if( msg == 1 ){
+					 //操作成功
+					 if( mod == 'socket' ){
+						 setTimeout( function(){ ajax_socket( code, 1 ) }, 3000 )		 
+					 }
+				 }else{
+					 swal("失败",  msg, "error");
+				 }
+			   }
+			});
+		}
+	
+	var list_data = '<? if( !empty( $list ) ){ echo json_encode( $list ); } ?>';
+	
+	function device_site( code ){
+		window.location = "<?= base_url() ?>wechat/device/device_site?code="+code;
+	}
+</script>
+</head>
+
+<body>
+<form name="myform">
+    <section id="wrap">
+        <div id="header">
+            <a href="<?= base_url() ?>wechat/device/index" class="fa fa-angle-left">
+            </a>
+            <span>所有设备</span>
+        </div>
+        <div class="header-tips"> 点击设备勾选为重点设备 
+            <a href="<?= base_url() ?>wechat/device/device_bind">
+                绑定新设备
+            </a>
+        </div>
+        <div class="device-center">
+            <div class="container-fluid">
+                <ul id="filters" class="clearfix">
+                    <li><span key="all" class="filter <? if( empty( $key ) ){ ?>active<? } ?>">全部</span></li>
+                    <li><span key="light" class="filter <? if( $key == 'light' ){ ?>active<? } ?>">云灯</span></li>
+                    <li><span key="airck" class="filter <? if( $key == 'airck' ){ ?>active<? } ?>">空测</span></li>
+                    <li><span key="socket" class="filter <? if( $key == 'socket' ){ ?>active<? } ?>">插板</span></li>
+                </ul>
+                <div id="device-box">
+                	<? foreach( $list as $lt ){ 
+                         if( $lt['type_id'] > 0 && $lt['type_id'] < 1000 ){
+                    ?>
+                    <div class="device-list">
+                        <div class="device-name"><div id="<?= $lt['code'] ?>_t">插板</div><a href="javascript:device_site( '<?= $lt['code'] ?>' )" class="site"><i class="fa fa-sliders"></i></a></div>
+                        <div class="device-text clearfix">
+                            <? if( empty( $key ) ){ ?>
+                            <div class="device-check">
+                                <span></span>
+                                <input type="checkbox" id="device<?= $lt['code'] ?>" code="<?= $lt['code'] ?>" name="device" <? if( $lt['checked'] == 1 ){ ?> checked <? } ?>/>
+                                <label class="points" for="device<?= $lt['code'] ?>" onClick="set_points(this)"></label>
+                            </div>
+                            <? } ?>
+                            <div class="device-site">
+                                <div class="device-img">
+                                    <i class="fa fa-plug"></i>
+                                </div>
+                                <div class="device-switch">
+                                    <div class="switch" model="socket" id="<?= $lt['code'] ?>_switch" onClick="change_switch(this,'<?= $lt['code'] ?>')">
+                                        <div class="toggle-button"></div>
+                                        <div class="toggle-text-off">OFF</div>
+                                        <div class="toggle-text-on">ON</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="device-txt">
+                                <a class="repeat" href="javascript:void( ajax_socket('<?= $lt['code'] ?>', 1) )"><i class="fa fa-repeat"></i></a>
+                                <p><span class="title">电压：</span><span id="<?= $lt['code'] ?>_voltage" class="txt">0</span>V</p>
+                                <p><span class="title">电流：</span><span id="<?= $lt['code'] ?>_current" class="txt">0</span>A</p>
+                                <p><span class="title">功率：</span><span id="<?= $lt['code'] ?>_power" class="txt">0</span>W</p>
+                                <p><span class="title">电量：</span><span id="<?= $lt['code'] ?>_electricity" class="txt">0</span>kWh</p>
+                            </div>
+                        </div>
+                    </div>
+                    <? }elseif( $lt['type_id'] > 3000 && $lt['type_id'] < 4000 ){	?>
+                    <div class="device-list">
+                        <div class="device-name"><div id="<?= $lt['code'] ?>_t">空气监测</div><a href="javascript:device_site( '<?= $lt['code'] ?>' )" class="site"><i class="fa fa-sliders"></i></a></div>
+                        <div class="device-text clearfix">
+                        	<? if( empty( $key ) ){ ?>
+                            <div class="device-check">
+                            	<span></span>
+                                <input type="checkbox" id="device<?= $lt['code'] ?>" code="<?= $lt['code'] ?>" name="device" <? if( $lt['checked'] == 1 ){ ?> checked <? } ?>/>
+                                <label class="points" for="device<?= $lt['code'] ?>" onClick="set_points(this)"></label>
+                            </div>
+                            <? } ?>
+                            <div class="device-site">
+                                <div class="device-img">
+                                    <i class="fa fa-life-ring"></i>
+                                </div>
+                                <div class="device-switch">
+                                    <div class="data" onClick="device_site( '<?= $lt['code'] ?>' )" code="<?= $lt['code'] ?>" > 数据记录 </div>
+                                </div>
+                            </div>
+                            <div class="device-txt">
+                            	<a class="repeat" href="javascript:void( ajax_socket('<?= $lt['code'] ?>', 1) )"><i class="fa fa-repeat"> </i></a>
+                                <p><span class="title">温度：</span><span id="<?= $lt['code'] ?>_temp" class="txt">0</span>℃</p>
+                                <p><span class="title">湿度：</span><span id="<?= $lt['code'] ?>_rh" class="txt">0</span>%</p>
+                                <p><span class="title">甲醛：</span><span id="<?= $lt['code'] ?>_hcho" class="txt">0</span>ug/m3</p>
+                                <p><span class="title">PM2.5：</span><span id="<?= $lt['code'] ?>_pm" class="txt">0</span>ug/m3</p>
+                            </div>
+                        </div>
+                    </div>
+                    <? }elseif( $lt['type_id'] > 4000 && $lt['type_id'] < 5000 ){	?>
+                	<div class="device-list">
+                        <div class="device-name"><div id="<?= $lt['code'] ?>_t">云灯</div><a href="javascript:device_site( '<?= $lt['code'] ?>' )" class="site"><i class="fa fa-sliders"></i></a></div>
+                        <div class="device-text clearfix">
+                            <? if( empty( $key ) ){ ?>
+                            <div class="device-check">
+                                <span></span>
+                                <input type="checkbox" id="device<?= $lt['code'] ?>" code="<?= $lt['code'] ?>" name="device" <? if( $lt['checked'] == 1 ){ ?> checked <? } ?>/>
+                                <label class="points" for="device<?= $lt['code'] ?>" onClick="set_points(this)"></label>
+                            </div>
+                            <? } ?>
+                            <div class="device-site">
+                                <div class="device-img">
+                                    <i class="fa fa-lightbulb-o"></i>
+                                </div>
+                                <div class="device-switch">
+                                    <div class="switch" model="light" id="<?= $lt['code'] ?>_switch" onClick="change_switch(this,'<?= $lt['code'] ?>')">
+                                        <div class="toggle-button"></div>
+                                        <div class="toggle-text-off">OFF</div>
+                                        <div class="toggle-text-on">ON</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="device-txt">
+                                <p><span class="title">颜色：</span><span class="txt"><i id="<?= $lt['code'] ?>_p1" class="fa fa-circle" style="color:rgba(216,64,54,1);"></i></span></p>
+                                <p><span class="title">亮度：</span><span id="id="<?= $lt['code'] ?>_p2" class="txt">0</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <? }	} ?>
+                </div>
+                <? if( $allpage > 1 ){ ?>
+                <div class="col-xs-12">
+                	<div class="device-more" id="moreDevice">显示更多</div>
+                </div>
+                <? } ?>
+            </div>
+        </div>
+        <? $this->load->view( 'wechat/copyright.html' ); ?>
+    </section>
+</form>
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/bootstrap.min.js"></script>
+<script>
+var roll = 1;
+
+window.onload = function(){
+	<? if( $succ == 1 ){ ?>
+		swal("成功",  '添加成功', "success");
+	<? } ?>
+}
+/* 按钮开关 */
+$('.switch').click(function(e){
+  e.preventDefault(); // The flicker is a codepen thing
+  $(this).toggleClass('switch-on');
+});
+</script>
+</body>
+</html>

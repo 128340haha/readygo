@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html" />
+<!-- 指定以最新的IE版本模式来显示网页 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- 针对360浏览器的内核调用,强制调用极速模式 -->
+<meta name="renderer" content="webkit" />
+<!--[if lt IE 10]>
+<meta name="renderer" content="ie-stand" />
+<![endif]-->
+<!--[if !IE]>
+<meta name="renderer" content="ie-stand" />
+<!<![endif]-->
+<!--[if lt IE 9]>
+      <script language="javascript" type="text/javascript" src="<?= base_url() ?>assets/business/js/bootstrap/html5shiv.js"></script>
+<![endif]-->
+<!-- 确保设备能正常显示响应式页面 -->
+<!-- 告诉webkit内核浏览器初始缩放比例为1 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!-- 判断浏览器版本.IE8以下版本,bootstrap支持不了.加个提示 -->
+<!--[if IE]>      
+      <!--[if IE 6]>
+          <div class="ie"></div>
+      <![endif]-->
+<!-- 判断浏览器版本IE6以下版本 -->
+<!--[if lt IE 6]> 
+           <div class="ie"></div>
+      <![endif]-->
+<!--[if IE 7]>
+           <div class="ie"></div>
+      <![endif]-->
+<![endif]-->
+<!-- 百度等搜索,会把description显示在搜索结果里面.这个地方非常总要.但要注意不要超过150字符 -->
+<meta name="description" content="百度等搜索,会把description显示在搜索结果里面.这个地方非常总要.但要注意不要超过150字符">
+<!-- 关于文档的关键字标签 -->
+<meta name="keywords" content="关于文档的关键字标">
+<title>游戏下载</title>
+<!-- 更换第三方图标库,Font Awesome <i class="fa fa-medium">-->
+<link href="<?= base_url() ?>assets/business/css/bootstrap.css" rel="stylesheet">
+<link href="<?= base_url() ?>assets/business/css/index.css" rel="stylesheet">
+</head>
+
+<body>
+<? $this->load->view('business/direct.html') ?>
+<section class="banner partner">
+    <div class="content">
+        <div class="title">游戏下载</div>
+    </div>
+</section>
+<section id="partner" class="wrap">
+    <div class="content">
+        <div class="row">
+        	<?php if( $list ){ 
+            		 foreach( $list as $li ){
+            ?>
+            <div class="col-xs-12 col-sm-4 col-md-4">
+                <div class="partner-box">
+                    <div class="img">
+                        <img src="<?= base_url() ?>uploads/route/<?= $li['image'] ?>" class="img-responsive"/>
+                    </div>
+                    <div class="txt">
+                        <h4><?= $li['name'] ?><small></small></h4>
+                        <p><?= $li['desc'] ?></p>
+                        <a href="###" class="btn btn-primary pull-right">
+                            <? if( $li['status']==0 ){ ?>开发中<? }elseif( $li['status']==1 ){ ?>开发完成<? }elseif( $li['status']==2 ){ ?>维护中<? } ?>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <? } } ?>
+        </div>
+    </div>
+</section>
+<? $this->load->view('business/share.html') ?>
+<script src="<?= base_url() ?>assets/business/js/bootstrap/jquery-1.11.1.min.js"></script>
+<script src="<?= base_url() ?>assets/business/js/bootstrap/bootstrap.min.js"></script>
+<!--[if lt IE 9]>
+      <script src="<?= base_url() ?>assets/business/js/bootstrap/respond.min.js"></script>
+    <![endif]-->
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="<?= base_url() ?>assets/business/js/bootstrap/ie10-viewport-bug-workaround.js"></script>
+<script src="<?= base_url() ?>assets/business/js/bootstrap/ie-emulation-modes-warning.js"></script>
+<!-- 对IE低版本的一个小技巧.禁止在IE模式下,直接本地文件浏览 -->
+<!--[if lt IE 9]><script src="<?= base_url() ?>assets/business/js/bootstrap/ie8-responsive-file-warning.js"></script><![endif]-->
+<script src="<?= base_url() ?>assets/business/js/index.js"></script>
+</body>
+</html>

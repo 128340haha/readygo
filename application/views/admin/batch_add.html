@@ -1,0 +1,123 @@
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+function change_type( obj ){
+  //数量
+  var num = $(obj).find("option:selected").attr('num');
+    //maxi_device_d
+  var maxid = $(obj).find("option:selected").attr('maxid');
+  //ID
+  var tid = $(obj).val();
+  //计算与显示
+  fill_blank( num, maxid, tid );
+}
+
+
+function change_number( obj ){
+  if( isNaN( obj.value ) || obj.value <= 0 || obj.value > 9999 ){
+     alert( '添加个数异常' );
+     obj.value = '';
+     return;
+  }
+  var num = $('select[name=type_id]').find("option:selected").attr('num');
+  //maxi_device_d
+  var maxid = $('select[name=type_id]').find("option:selected").attr('maxid');
+  //ID
+  var tid = $('select[name=type_id]').val();
+  //计算与显示
+  fill_blank( num, maxid, tid );
+}
+
+
+function fill_blank( num, maxid, tid ){
+  //显示数量
+  $('#show_num').html( num );
+  //制作设备号自动填充
+  var head = pad( tid, 4 );
+  var foot = pad( parseInt(maxid)+1, 8 );
+  $('input[name=start]').val( head+foot );
+  var add_num = parseInt( $('input[name=number]').val() );
+  if( add_num > 0 ){
+    var end = parseInt(maxid)+add_num;
+    var newfoot = pad( end,8 );
+    $('input[name=end]').val( head+''+newfoot );
+  }
+}
+
+
+function pad(num, n) {
+  return Array( (n-(''+num).length+1) ).join(0)+num;
+}
+
+$(function(){
+   //数量
+  var num = $('select[name=type_id]').find("option:selected").attr('num');
+     //数量
+  var maxid = $('select[name=type_id]').find("option:selected").attr('maxid');
+  //ID
+  var tid = $('select[name=type_id]').val();
+  //计算与显示
+  fill_blank( num, maxid, tid );
+})
+
+function check_data(){
+  var device_name = $('input[name=device_name]').val();
+  if( device_name == '' || device_name == undefined || device_name == null ){
+    alert('设备名称不能为空');
+    return false;
+  }
+  var number = $('input[name=number]').val();
+  if( isNaN( number ) || number == '' || number == null ){
+    alert('添加数量不能为空或者格式不对');
+    return false;
+  }
+}
+
+</script>
+<style type="text/css">
+  .line{ margin-bottom: 10px; }
+</style>
+<div id="main-content">
+    <!-- End .clear -->
+    <div class="content-box">
+      <!-- Start Content Box -->
+      <div class="content-box-header">
+        <h3>批量添加</h3>
+        <div class="clear"></div>
+      </div>
+      <!-- End .content-box-header -->
+      <div class="content-box-content">
+        <div class="tab-content default-tab" id="tab1">
+            <form name="form1" id="form1" method="post" action="<?= base_url().'admin/device/batch_action' ?>" onsubmit="return check_data()">
+                <p>
+                  <label>类型</label>
+                  <select  onchange="change_type(this)" name="type_id">
+                  <? 
+                  	if( $types ){
+                  		foreach( $types as $tp ){
+                  ?>
+                    <option num="<?= $tp['num'] ?>" maxid="<?= $tp['maxid'] ?>" value="<?= $tp['id'] ?>"><?= $tp['type_name'] ?></option>
+                  <?
+                  	}	}
+                  ?>
+                  </select>
+                </p>
+                <p>
+                  <label>设备批量添加</label>
+                  <div class="line">当前分类设备数量<span style="color:red;" id="show_num"></span></div>
+                   <div class="line">设备名称<input class="text-input"  type="text" name="device_name" value="" /></div>
+                  <div class="line">我要添加<input class="text-input" onchange="change_number(this)" size="4" type="text" name="number" value="" />个</div>
+                  <div>预计设备编号会:<br>
+                    从<input class="text-input" type="text" readonly name="start" value="" /><br>
+                    到<input class="text-input" type="text" readonly name="end" value="" />
+                  </div>
+                  <br>
+                  <span style='color:red; '>注意:批量添加设备以数量为主，如果其他管理员在同时进行添加操作，可能出现设备编号显示误差，最终以生成的excel为准!</span>
+                </p>          
+                <br>
+                <input class="button" type="submit" value="提交" />
+                <input class="button" type="button" onClick="javascript:history.go(-1)" value="返回" />
+            </form>
+        </div>
+      </div>
+    </div>
+</div>

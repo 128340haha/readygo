@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html" />
+<!-- 指定以最新的IE版本模式来显示网页 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- 针对360浏览器的内核调用,强制调用极速模式 -->
+<meta name="renderer" content="webkit" />
+<!--[if lt IE 10]>
+<meta name="renderer" content="ie-stand" />
+<![endif]-->
+<!--[if !IE]>
+<meta name="renderer" content="ie-stand" />
+<!<![endif]-->
+<!--[if lt IE 9]>
+      <script language="javascript" type="text/javascript" src="js/bootstrap/html5shiv.js"></script>
+<![endif]-->
+<!-- 确保设备能正常显示响应式页面 -->
+<!-- 告诉webkit内核浏览器初始缩放比例为1 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!-- 判断浏览器版本.IE8以下版本,bootstrap支持不了.加个提示 -->
+<!--[if IE]>      
+      <!--[if IE 6]>
+          <div class="ie"></div>
+      <![endif]-->
+<!-- 判断浏览器版本IE6以下版本 -->
+<!--[if lt IE 6]> 
+           <div class="ie"></div>
+      <![endif]-->
+<!--[if IE 7]>
+           <div class="ie"></div>
+      <![endif]-->
+<![endif]-->
+<!-- 百度等搜索,会把description显示在搜索结果里面.这个地方非常总要.但要注意不要超过150字符 -->
+<meta name="description" content="百度等搜索,会把description显示在搜索结果里面.这个地方非常总要.但要注意不要超过150字符">
+<!-- 关于文档的关键字标签 -->
+<meta name="keywords" content="关于文档的关键字标">
+<title>设备中心</title>
+<!-- 更换第三方图标库,Font Awesome <i class="icon-magic">-->
+<link href="<?= base_url(); ?>assets/wechat/css/bootstrap.css" rel="stylesheet">
+<link href="<?= base_url(); ?>assets/wechat/css/index.css" rel="stylesheet">
+<link href="<?= base_url(); ?>assets/wechat/css/sweet-alert.css" rel="stylesheet">
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/jquery-1.11.1.min.js"></script>
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/bootstrap.min.js"></script>
+<script src="<?= base_url(); ?>assets/wechat/js/touch.min.js"></script>
+<script src="<?= base_url(); ?>assets/wechat/js/sweet-alert.min.js"></script>
+<script src="<?= base_url(); ?>assets/wechat/js/echarts.js"></script>
+<script type="text/javascript" >
+	var codes = '<?= $codes ?>';
+	var number = '<?= $num ?>';
+	/* ajax获取数据函数 */
+	function ajax_socket( code, model ){
+		$.ajax({
+		   type: "POST",
+		   url: "<?= base_url() ?>wechat/device/socket",
+		   data: "codes="+code+"&token="+Math.random(),
+		   dataType: "json",
+		   success: function(msg){
+			 if( msg == 0 ){
+				 //不查询
+			 }else{
+				 for( var k in msg ){
+					 if( msg[k]['error'] == 1 ){
+						if( model == 1 ){
+							swal("失败",  msg[k]['mess'], "error");
+						}else{
+							$('#'+k+'_t').html( msg[k]['name']+'<span style="color:red">['+msg[k]['mess']+']</span>' );
+						}
+					 }else{
+						 show_default( k, msg[k] ); 
+					 }
+				 }
+			 }
+		   }
+		});
+	}
+	$(function(){
+		//点击切换显示数据
+		touch.on('.count-list', 'tap doubletap', function(ev){
+			if( $(this).attr('class') == 'count-list' ){
+				var id = $(this).attr('id');
+			}else{
+				var token = $(this).parent();
+				var id = token[0]['id'];
+			}
+			if( defaults == id ){
+				return;
+			}
+			var option = format_chart( ticks[id], id );
+			require('echarts').init(chart).setOption( option );	
+			defaults = id;
+			$('.header-tips').html( title[id] );
+		})
+		
+		//页面进入后发起访问获取设备当前最新信息
+		if( parseInt( number ) > 0 ){
+			var code_list = codes.split( ',' )
+			for( var p in code_list ){
+				if( code_list[p] != '' ){
+					ajax_socket( code_list[p], 0 );
+				}
+			}
+		}
+		
+		/* 我的设备列表 */
+		touch.on('#myDevice,.device-add', 'tap doubletap', function(ev){
+			window.location = '<?= base_url() ?>wechat/device/device_all';
+		});
+		
+		/* 点击更新空测设备 */
+		touch.on('.newdata', 'tap doubletap', function(ev){
+			var code = $(this).attr('code');
+			$.ajax({
+			   type: "POST",
+			   url: "<?= base_url() ?>wechat/device/socket",
+			   data: "codes="+code+"&token="+Math.random(),
+			   dataType: "json",
+			   success: function(msg){
+				 if( msg == 0 ){
+					 //不查询
+				 }else{
+					 for( var k in msg ){
+						 if( msg[k]['error'] == 1 ){
+						 	swal("失败",  msg[k]['mess'], "error");
+						 }else{
+						 	show_default( k, msg[k] );
+						 }
+					 }
+				 }
+			   }
+			});
+		})
+	})
+	
+	/* 获取数据后写入页面 */
+	function show_default( code, value ){
+		var num = code.length - 8;
+		var type = parseInt( code.substr( 0, num ) );
+		if( type > 0 && type < 1000 ){
+			//单插
+			$('#'+code+'_t').html( value.name );
+			$('#'+code+'_voltage').html( value.voltage );
+			$('#'+code+'_current').html( value.current );
+			$('#'+code+'_power').html( value.power );
+			$('#'+code+'_electricity').html( value.electricity );
+			var _switch = $('#'+code+'_switch');
+			if( value['switch'] == 1 ){
+				_switch.attr('class','switch switch-on');
+			}else{
+				_switch.attr('class','switch');
+			}
+		}else if( type > 3000 && type < 4000 ){
+			//空测
+			$('#'+code+'_t').html( value.name );
+			$('#'+code+'_temp').html( value.temp );
+			$('#'+code+'_rh').html( value.rh );
+			$('#'+code+'_hcho').html( value.hcho );
+			$('#'+code+'_pm').html( value.pm );
+		}else if( type > 4000 && type < 5000 ){
+			//云灯
+			var color = value.color.replace(/,/g,'')
+			$('#'+code+'_t').html( value.name );
+			$('#'+code+'_p1').css( 'color', '#'+color );
+			$('#'+code+'_p2').html( value.light );
+			var _switch = $('#'+code+'_switch');
+			if( value['switch'] == 1 ){
+				_switch.attr('class','switch switch-on');
+			}else{
+				_switch.attr('class','switch');
+			}
+		}else if( type > 6000 && type < 7000 ){
+			//自行车
+			
+		}
+	}
+	
+	/* 模块设备 */
+	function format_chart( type, key ){
+		if( number > 0 ){
+			var xx = type;
+			var yy = list_data[key];
+		}else{
+			var xx = ticks[defaults];
+			var yy = [[0,0,0,0,0,0,0]];
+		}
+		var show_data = new Array();
+		var vv = '';
+		for( var z in yy ){
+			if( yy[z] ){
+				vv = { name:name_data[z],	type:'line', smooth:true, itemStyle: {normal: {areaStyle: {type: 'default'}}},	data:data_obj( yy[z], ',', key ) };
+				show_data.push( vv );
+			}else{
+				vv = { name:name_data[z],	type:'line', smooth:true, itemStyle: {normal: {areaStyle: {type: 'default'}}},	data:data_obj( nodata[key], ',', key ) };
+				show_data.push( vv );
+			}
+		}
+		if( key == 'week' ){
+			end=100;
+		}else if( key == 'day' ){
+			end=26;	
+		}else if( key == 'month' ){
+			end=22
+		}
+		//表格信息格式化
+		var option = {
+			color: ['rgba(97,107,106,1)','rgba(255,255,255,1)'],
+			tooltip : {
+				trigger: 'axis'
+			},
+			grid :{
+				x:40,
+				y:30,
+				x2:40,
+				y2:60,
+				borderWidth:0
+			},
+			dataZoom : {
+				show : true,
+				realtime : true,
+				showDetail:false,
+				height: 20,
+				backgroundColor: 'rgba(255,255,255,0.2)',
+				dataBackgroundColor: 'rgba(0,0,0,0.3)',
+				fillerColor: 'rgba(0,0,0,0.6)',
+				handleColor: 'rgba(0,0,0,0.3)',
+				start : 0,
+				end : end,
+				handleSize:10,
+				 
+			},
+			xAxis : [
+				{
+					type : 'category',
+					boundaryGap : true,
+					data : type,
+					axisLine : {    // 轴线
+						show: true,
+						lineStyle: {
+							color: 'rgba(255,255,255,0.1)',
+							type: 'solid',
+							width: 1
+						}
+					},
+					splitLine : {
+						show:true,
+						lineStyle: {
+							color: 'rgba(255,255,255,0.1)',
+							type: 'solid',
+							width: 1
+						}
+					},
+					axisLabel : {
+						show:true,
+						textStyle: {
+							color: '#fff',
+						}
+					},
+					axisTick : {    // 轴标记
+						show:true,
+						length: 5,
+						lineStyle: {
+							color: 'rgba(255,255,255,0.1)',
+							width: 3
+						}
+					},
+					 position: 'bottom',
+					boundaryGap: true,
+					
+				}
+			],
+			yAxis : [
+				{
+					type : 'value',
+					axisLine : {    // 轴线
+						show: false,
+						
+					},
+					splitLine : {
+						show:true,
+						lineStyle: {
+							color: 'rgba(255,255,255,0.1)',
+							type: 'solid',
+							width: 1
+						}
+					},
+					axisLabel : {
+						show:true,
+						textStyle: {
+							color: '#fff',
+						}
+					}
+				}
+			],
+			series : show_data
+		};    
+		return option;
+	}
+	
+	/* 页面跳转 */
+	function device_site( code ){
+		window.location = "<?= base_url() ?>wechat/device/device_site?code="+code;
+	}
+
+	/* 开关 */
+	function change_switch( obj, code ){
+		var key = $(obj).attr( 'class' );
+		var mod = $(obj).attr( 'model' );
+		if( key == 'switch switch-off' || key == 'switch' ){
+		//	alert('开')
+			if( mod == 'socket' ){
+				var val = 0x01
+			}else if( mod == 'light' ){
+				var val = 0x00;
+			}
+		}else if( key == 'switch switch-on' ){
+		//	alert('关')
+			if( mod == 'socket' ){
+				var val = 0x00
+			}else if( mod == 'light' ){
+				var val = 0xff;
+			}
+		}
+		$.ajax({
+		   type: "POST",
+		   url: "<?= base_url() ?>wechat/device/control",
+		   data: "code="+code+"&val="+val+"&token="+Math.random(),
+		   success: function(msg){
+			 if( msg == 1 ){
+				 //操作成功
+			 }else{
+				 swal("失败",  msg, "error");
+			 }
+		   }
+		});
+	}
+	
+	
+	/* 数据格式化 */
+	function data_obj( str, sign, key ){
+		var node = new Array();
+		var param = str.toString().split( sign );
+		var zombie = nodata[key].toString().split( ',' );
+		for( var x in zombie ){
+			if( typeof(param[x]) == "undefined" || !param[x] ){
+				node.push( zombie[x] );
+			}else{
+				node.push( param[x] );
+			}
+		}
+		return node;
+	}
+</script>
+</head>
+
+<body>
+<section id="wrap">
+	<div id="header">
+          <a href="<?= base_url() ?>wechat/ucenter/index" class="fa fa-angle-left"></a>
+          <span>设备中心</span>
+    </div>
+    <div class="header-tips">最近一周用电</div>
+	<!--统计表-->
+    <div class="chart-box">
+         <div id="chart" style="height:300px;"></div>
+    </div>
+    <!--统计数据-->
+    <div class="count clearfix">
+        <div class="count-list" id="day">
+            <p class="count-num"><?= $totle['day'] ?>kWh</p>
+            <p class="count-date">今日用电</p>
+        </div>
+        <div class="count-list" id="week">
+            <p class="count-num"><?= $totle['week'] ?>kWh</p>
+            <p class="count-date">本周用电</p>
+        </div>
+        <div class="count-list" id="month">
+            <p class="count-num"><?= $totle['month'] ?>kWh</p>
+            <p class="count-date">本月用电</p>
+        </div>
+    </div>
+    <!--重点产品-->
+    <div class="device-center">
+        <div class="container-fluid">
+            <div class="row">
+            	<? 
+                if( $list ){
+                	foreach( $list['week'] as $cd=>$lt ){ 
+                    	$bench = strlen( $cd ) - 8;
+						$type = (int)substr( $cd, 0, $bench );
+                    	if( $type > 0 && $type < 1000 ){
+                ?>
+                	<div class="col-xs-12">
+                        <div class="device-list">
+                            <div class="device-name"><div id="<?= $cd ?>_t">插板</div><a href="javascript:device_site( '<?= $cd ?>' )" class="site"><i class="fa fa-sliders"></i></a></div>
+                            <div class="device-text clearfix">
+                                <div class="device-site">
+                                    <div class="device-img">
+                                        <i class="fa fa-plug"></i>
+                                    </div>
+                                    <div class="device-switch">
+                                         <div class="switch" model="socket" id="<?= $cd ?>_switch" onClick="change_switch(this,'<?= $cd ?>')">
+                                         		<div class="toggle-button"></div>
+                                                <div class="toggle-text-off">OFF</div>
+                                                <div class="toggle-text-on">ON</div>
+                                          </div>
+                                    
+                                    </div>
+                                </div>
+                                <div class="device-txt">
+                                	<a class="repeat" href="javascript:void( ajax_socket('<?= $cd ?>', 1) )"><i class="fa fa-repeat"></i></a>
+                                    <p><span class="title">电压：</span><span id="<?= $cd ?>_voltage" class="txt">0</span>V</p>
+                                    <p><span class="title">电流：</span><span id="<?= $cd ?>_current" class="txt">0</span>A</p>
+                                    <p><span class="title">功率：</span><span id="<?= $cd ?>_power" class="txt">0</span>W</p>
+                                    <p><span class="title">电量：</span><span id="<?= $cd ?>_electricity" class="txt">0</span>kWh</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <? 	}elseif( $type > 3000 && $type < 4000 ){  ?>
+        			<div class="col-xs-12">
+                        <div class="device-list">
+                            <div class="device-name"><div id="<?= $cd ?>_t">空气监测</div><a href="javascript:device_site( '<?= $cd ?>' )" class="site"><i class="fa fa-sliders"></i></a></div>
+                            <div class="device-text clearfix">
+                                <div class="device-site">
+                                    <div class="device-img">
+                                        <i class="fa fa-life-ring"></i>
+                                    </div>
+                                    <div class="device-switch">
+                                         <div class="data newdata" onClick="device_site( '<?= $cd ?>' )" code="<?= $cd ?>" > 数据记录 </div>
+                                    </div>
+                                </div>
+                                <div class="device-txt">
+                                	<a class="repeat" href="javascript:void( ajax_socket('<?= $cd ?>', 1) )"><i class="fa fa-repeat"> </i></a>
+                                    <p><span class="title">温度：</span><span id="<?= $cd ?>_temp" class="txt">0</span>℃</p>
+                                    <p><span class="title">湿度：</span><span id="<?= $cd ?>_rh" class="txt">0</span>%</p>
+                                    <p><span class="title">甲醛：</span><span id="<?= $cd ?>_hcho" class="txt">0</span>ug/m3</p>
+                                    <p><span class="title">PM2.5：</span><span id="<?= $cd ?>_pm" class="txt">0</span>ug/m3</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+				<?	}elseif( $type > 4000 && $type < 5000 ){	?>
+                	<div class="col-xs-12">
+                        <div class="device-list">
+                            <div class="device-name"></span><div id="<?= $cd ?>_t">云灯</div><a href="javascript:device_site( '<?= $cd ?>' )" class="site"><i class="fa fa-sliders"></i></a></div>
+                            <div class="device-text clearfix">
+                                <div class="device-site">
+                                    <div class="device-img">
+                                        <i class="fa fa-lightbulb-o"></i>
+                                    </div>
+                                    <div class="device-switch">
+                                         <div class="switch" model="light" id="<?= $cd ?>_switch" onClick="change_switch(this,'<?= $cd ?>')">
+                                         		<div class="toggle-button"></div>
+                                                <div class="toggle-text-off">OFF</div>
+                                                <div class="toggle-text-on">ON</div>
+                                          </div>
+                                    
+                                    </div>
+                                </div>
+                                <div class="device-txt">
+                                    <p><span class="title">颜色：</span><span class="txt"><i id="<?= $cd ?>_p1" class="fa fa-circle" style="color:rgba(0,0,0,99);"></i></span></p>
+                                    <p><span class="title">亮度：</span><span class="txt" id="<?= $cd ?>_p2">0</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?	}	}	} 
+                if( $num < 2 ){
+                ?>
+                <!--添加产品-->
+                <div class="col-xs-12">
+                        <div class="device-add">
+                            <i class="fa fa-plus-circle"></i>
+                        </div>
+                    </div>
+                <? } ?>
+                <!--更多产品-->
+                <div class="col-xs-12">
+                	<div class="device-more" id="myDevice">我的设备</div>
+                    <div class="device-more" id="moreDevice">更多设备</div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+  
+    <? $this->load->view( 'wechat/copyright.html' ); ?>
+</section>
+<!--[if lt IE 9]>
+      <script src="js/bootstrap/respond.min.js"></script>
+    <![endif]-->
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script>
+	var record_list = '<? if( $num > 0 ){ echo json_encode( $list ); } ?>';
+	var	list_data = eval('(' + record_list + ')');
+	var name_list = '<? if( $num > 0 ){ echo json_encode( $names ); } ?>';
+	var name_data = eval('(' + name_list + ')');
+	var defaults = 'week';
+	var end = 100;
+	var title = new Array();
+	title['day'] = "近一天的用电";
+	title['week'] = "近一周的用电";
+	title['month'] = "近一月的用电";
+
+	var ticks = new Array();
+	ticks['day'] = ["0点","1点","2点","3点","4点","5点","6点","7点","8点","9点","10点","11点","12点","13点","14点","15点","16点","17点","18点","19点","20点","21点","22点","23点"];
+	ticks['week'] = ["周日","周一","周二","周三","周四","周五","周六"];
+	ticks['month'] = [<?= $days ?>];
+	
+	var nodata = new Array();;
+	nodata['day'] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+	nodata['week'] = [0,0,0,0,0,0,0];
+	nodata['month'] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+	for( var m = 28; m < ticks['month'].length; m++ ){
+		nodata['month'].push( 0 );
+	}
+	window.onload = function(){
+		require.config({
+			paths: {
+				echarts: '<?= base_url(); ?>assets/wechat/js'
+			}
+		});
+		var chart = document.getElementById('chart');
+		// 按需加载
+		require(['echarts','echarts/chart/line'],  
+		function requireCallback(ec) {
+			myChart = ec.init(chart);
+			window.onresize = myChart.resize;	 
+			var option = format_chart( ticks[defaults], defaults );		
+			myChart.setOption(option, true)
+		});
+
+	}
+/* 按钮开关 */
+$('.switch').click(function(e){
+  e.preventDefault(); 
+  $(this).toggleClass('switch-on');
+});
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,127 @@
+<div class="container-grid-layout loading">
+            	<div id="content" style="display: block;"><div class="box-id-profile">
+	<div class="box-title"><i class="icon-halfblock"></i>我的信息</div>
+	<div id="main_content" class="box-inner clearfix">
+		<div class="profile-face"><a href="<?= base_url() ?>user/ucenter/face" target="_blank"><div class="mask">更换头像</div><img width="90" height="90" src="<?= $face ?>_middle.jpg"></a></div>
+		<div class="profile-infor">
+			<div class="profile-infor-l1">
+				<h3 tips="UID: 90248" tips-pos="r" initialized="true"><?= $_SESSION['username'] ?></h3>
+							</div>
+			<div class="profile-infor-l2">
+				<div class="profile-infor-rank">
+					<span class="profile-uid-tag"><a href="javascript:void(0)" target="_blank" tips="点击查看账号功能" tips-pos="r" initialized="true">正式会员</a></span>
+						<span class="id-state">
+						    						    <!-- <b class="b0">正常使用</b> -->
+						    						</span>
+				</div>
+				<div class="profile-infor-res clearfix">
+				    				    <i class="icon-coin"></i><h4 tips="硬币" tips-pos="r" initialized="true">438</h4>
+					<i class="icon-points ml10"></i><h4 tips="积分（纪念用）" tips-pos="r" style="color:#aaa;" initialized="true">19250</h4>
+									</div>
+			</div>
+		</div>
+		<div class="profile-r">
+			<div class="profile-counter">
+				<div class="profile-counter-g">
+					<p><a class="t" href="#favorite_manage">我的回复</a></p>
+					<p><a href="#favorite_manage"><?= $statistics['back'] ?></a></p>
+				</div>
+				<div class="profile-counter-g">
+					<p><a class="t" href="#sp_subscribe">我的主题</a></p>
+					<p><a href="#sp_subscribe"><?= $statistics['tie'] ?></a></p>
+				</div>
+				<div class="profile-counter-g">
+					<p><a class="t" href="#video_manage">我的消息</a></p>
+					<p><a href="#video_manage">0</a></p>
+				</div>
+				<div class="profile-counter-g">
+					<p><a class="t" href="#friend_manage">我的关注</a></p>
+					<p><a href="#friend_manage">0</a></p>
+				</div>
+			</div>
+			<div class="profile-stat clearfix">
+				<div class="stat-val">
+					<span class="t">帖子总回复</span>
+					<span class="v">0</span>
+				</div>
+				<div class="stat-val">
+					<span class="t">帖子总点击</span>
+					<span class="v">0</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="box-id-content">
+	<div class="box-title"><i class="icon-halfblock"></i>我的设备</div>
+	<div id="main_content" class="box-inner dyn clearfix">
+		<div id="content_recently_content" class="main-content-page">
+			<div class="top-search clearfix">
+				<ul class="search-list left" id="dyn_filter" mode="dyn">
+					<li type="0" <? if( empty( $key ) ){ ?> class="on"<? } ?> >全部</li>
+					<li <? if( $key == 'light' ){ ?> class="on"<? } ?> type="light">云灯</li>
+					<li <? if( $key == 'socket' ){ ?> class="on"<? } ?> type="socket">单插</li>
+					<li <? if( $key == 'airck' ){ ?> class="on"<? } ?> type="airck">空气检测</li>
+					<li <? if( $key == 'bike' ){ ?> class="on"<? } ?> type="bike">脚踏车</li>
+				</ul>
+			</div>
+			<ul class="recently-list clearfix" id="dyn_list" mode="dyn">	
+            	<? if( $list ){ 
+                		foreach( $list as $lt ){
+                ?>
+                <li class="REVIEW">	
+                    <div class="recently-list-item clearfix">		
+                        <div class="recently-list-info">			
+                            <div class="recently-list-info-face">
+                            	<? if( $lt['type_id'] > 0 && $lt['type_id'] < 1000 ){ ?>
+                                    <img alt="插板" src="<?= base_url() ?>assets/forum/images/socket.png">
+                                <? }elseif( $lt['type_id'] > 3000 && $lt['type_id'] < 4000 ){ ?>
+                                    <img alt="空测" src="<?= base_url() ?>assets/forum/images/stickies.png">
+                                <? }elseif( $lt['type_id'] > 4000 && $lt['type_id'] < 5000 ){ ?>
+                                    <img alt="云灯" src="<?= base_url() ?>assets/forum/images/light.png">
+                                <? }elseif( $lt['type_id'] > 6000 && $lt['type_id'] < 7000 ){ ?>
+                                    <img alt="单车" src="<?= base_url() ?>assets/forum/images/bike.png">
+                                <? } ?>
+                            </div>			
+                            <div class="info-r">
+                                <div class="recently-list-info-text">
+                                	设备类型：
+                                    <?= $lt['type_name'] ?> 
+                                    &nbsp;&nbsp;&nbsp;
+                                    设备名称： 
+                                    <?= $lt['device_name'] ?>
+                                    &nbsp;&nbsp;&nbsp;
+                                    设备码:
+                                    <?= $lt['code'] ?>
+                                    <div class="date"><?= date('Y-m-d H:i:s', $lt['add_time']) ?></div>
+                                </div>			
+                                <div class="recently-list-info-comment">
+                                    <p class="txt" id="<?= $lt['id'] ?>">
+                                    	<?= $lt['name'] ?>
+                                        <? if( $showlive == $lt['code'] ){ 
+                                            echo '<span id="s_'.$lt['id'].'" code="'.$lt['code'].'" onclick="set_show(this)" class="current">论坛显示设备数据</span>'; 
+                                        }else{
+                                            echo '<span id="s_'.$lt["id"].'" code="'.$lt['code'].'" onclick="set_show(this)" class="showlive">设置为论坛显示</span>'; 
+                                        } 
+                                        ?>
+                                    </p>
+                                    <p class="more">...&nbsp;
+                                        <a href="<?= base_url() ?>device/index/device_data?model=1&code=<?= $lt['code'] ?>" target="_blank">[查看设备信息]</a>
+                                    </p>
+                                </div>
+                            </div>		
+                        </div>	
+                    </div>
+                </li>
+                <? }  } ?>
+            </ul>
+
+		</div>
+	</div>
+</div>
+
+
+
+</div>
+			</div>

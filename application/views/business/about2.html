@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html" />
+<!-- 指定以最新的IE版本模式来显示网页 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- 针对360浏览器的内核调用,强制调用极速模式 -->
+<meta name="renderer" content="webkit" />
+<!--[if lt IE 10]>
+<meta name="renderer" content="ie-stand" />
+<![endif]-->
+<!--[if !IE]>
+<meta name="renderer" content="ie-stand" />
+<!<![endif]-->
+<!--[if lt IE 9]>
+      <script language="javascript" type="text/javascript" src="<?= base_url() ?>assets/business/js/bootstrap/html5shiv.js"></script>
+<![endif]-->
+<!-- 确保设备能正常显示响应式页面 -->
+<!-- 告诉webkit内核浏览器初始缩放比例为1 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!-- 判断浏览器版本.IE8以下版本,bootstrap支持不了.加个提示 -->
+<!--[if IE]>      
+      <!--[if IE 6]>
+          <div class="ie"></div>
+      <![endif]-->
+<!-- 判断浏览器版本IE6以下版本 -->
+<!--[if lt IE 6]> 
+           <div class="ie"></div>
+      <![endif]-->
+<!--[if IE 7]>
+           <div class="ie"></div>
+      <![endif]-->
+<![endif]-->
+<!-- 百度等搜索,会把description显示在搜索结果里面.这个地方非常总要.但要注意不要超过150字符 -->
+<meta name="description" content="百度等搜索,会把description显示在搜索结果里面.这个地方非常总要.但要注意不要超过150字符">
+<!-- 关于文档的关键字标签 -->
+<meta name="keywords" content="关于文档的关键字标">
+<title>关于我们</title>
+<!-- 更换第三方图标库,Font Awesome <i class="fa fa-medium">-->
+<link href="<?= base_url() ?>assets/business/css/bootstrap.css" rel="stylesheet">
+<link href="<?= base_url() ?>assets/business/css/index.css" rel="stylesheet">
+</head>
+
+<body>
+<? $this->load->view('business/direct.html') ?>
+<section class="banner about">
+    <div class="content">
+        <div class="title">关于我们</div>
+    </div>
+</section>
+<section id="about" class="wrap">
+    <div class="content">
+        <p>我们是一家致力于促进创新科技产品的服务型企业。我们通过提供一站式的软/硬件技术支持，使设计者能根据创意，简单快速地开发出产品原型。</p>
+        <p>3年以来，我们不断加大技术和研发投入，努力优化供应链和销售渠道，使得企业的服务能力一直处于行业领先状态。此外，为鼓励民族自主创新精神，坚持不懈的努力为我们赢得了行业尊重和客户信任。目前，我们已经与众多设计者建立了紧密的合作关系，其中包括Google, MICROSOFT, MIT, NASA, MAKEZINE等知名企业和组织。</p>
+        <p>在创新互助共赢的平台下，我们涉及新媒体艺术、嵌入式平台、物联网、智能家居、便携式仪器等领域。基于对行业的深厚理解，以及不断的自我完善，我们正加快步伐，为实现"以促进传播全民创新精神"的愿景目标而前进。</p>
+    </div>
+</section>
+<? $this->load->view('business/share.html') ?>
+<script src="<?= base_url() ?>assets/business/js/bootstrap/jquery-1.11.1.min.js"></script>
+<script src="<?= base_url() ?>assets/business/js/bootstrap/bootstrap.min.js"></script>
+<!--[if lt IE 9]>
+      <script src="<?= base_url() ?>assets/business/js/bootstrap/respond.min.js"></script>
+    <![endif]-->
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="<?= base_url() ?>assets/business/js/bootstrap/ie10-viewport-bug-workaround.js"></script>
+<script src="<?= base_url() ?>assets/business/js/bootstrap/ie-emulation-modes-warning.js"></script>
+<!-- 对IE低版本的一个小技巧.禁止在IE模式下,直接本地文件浏览 -->
+<!--[if lt IE 9]><script src="<?= base_url() ?>assets/business/js/bootstrap/ie8-responsive-file-warning.js"></script><![endif]-->
+<script src="<?= base_url() ?>assets/business/js/index.js"></script>
+</body>
+</html>

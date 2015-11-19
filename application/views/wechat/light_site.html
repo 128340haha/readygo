@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html" />
+<!-- 告诉webkit内核浏览器初始缩放比例为1 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>云灯控制</title>
+<!-- 更换第三方图标库,Font Awesome <i class="icon-magic">-->
+<link href="<?= base_url(); ?>assets/wechat/css/bootstrap.css" rel="stylesheet">
+<link href="<?= base_url(); ?>assets/wechat/css/index.css" rel="stylesheet">
+<!-- 滑动条css-->
+<link href="<?= base_url(); ?>assets/wechat/css/bootstrap-slider.min.css" rel="stylesheet">
+<!-- 时间提醒css-->
+<link href="<?= base_url(); ?>assets/wechat/css/jquery-clockpicker.min.css" rel="stylesheet">
+<!-- 提示框css-->
+<link href="<?= base_url(); ?>assets/wechat/css/sweet-alert.css" rel="stylesheet">
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/jquery-1.11.1.min.js"></script>
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/bootstrap.min.js"></script>
+<!--弹出提示框js-->
+<script src="<?= base_url(); ?>assets/wechat/js/sweet-alert.min.js"></script>
+<script type="text/javascript" >
+	var code = '<?= $code ?>';
+	/* ajax获取数据函数 */
+	function ajax_socket( code, model ){;
+		$.ajax({
+		   type: "POST",
+		   url: "<?= base_url() ?>wechat/device/socket",
+		   data: "codes="+code+"&source=site&token="+Math.random(),
+		   dataType: "json",
+		   success: function(msg){
+			 if( msg == 0 ){
+				 //不查询 
+			 }else{
+				 for( var k in msg ){
+					 if( msg[k]['error'] == 1 ){
+						if( model == 1 ){
+							swal("失败",  msg[k]['mess'], "error");
+						}else{
+							$('#title').html( msg[k]['name']+'<span style="color:red">['+msg[k]['mess']+']</span>' );
+						}
+					 }else{
+						show_default( k, msg[k] );
+					 } 
+				 }
+			 }
+		   }
+		});	
+	}
+	
+	function show_default( code, res ){
+		var num = code.length - 8;
+		var type = parseInt( code.substr( 0, num ) );
+		if( type > 4000 && type < 5000 ){
+			//云灯控制
+			var color = res.color.replace(/,/g,'')
+			$('#title').html( res.name );
+			$('#p1').css( 'color', '#'+color );
+		//	$("#lightness").slider({value:res.light,min:0,max:100,step:1 });
+			$("#lightness").slider('setValue', res.light);
+			$('#lightness-level').html( res.light );
+			//云灯数据
+			$('#voltage').html( res.voltage );
+			$('#current').html( res.current );
+			$('#power').html( res.power );
+			$('#electricity').html( res.electricity );
+			
+			var _switch = $('#_switch');
+			if( res['switch'] == 1 ){
+				_switch.attr('class','switch switch-on');
+			}else{
+				_switch.attr('class','switch');
+			}
+		}
+	}
+	
+	function change_switch( obj ){
+		var key = $(obj).attr( 'class' );
+		if( key == 'switch switch-off' || key == 'switch' ){
+		//	alert('开')
+			var val = 0x00;
+		}else if( key == 'switch switch-on' ){
+		//	alert('关')
+			var val = 0xff;
+		}
+		$.ajax({
+		   type: "POST",
+		   url: "<?= base_url() ?>wechat/device/control",
+		   data: "code="+code+"&val="+val+"&token="+Math.random(),
+		   success: function(msg){
+			 if( msg == 1 ){
+				 //操作成功
+			 }else{
+				 swal("失败", msg, "error");
+			 }
+		   }
+		});
+	}
+	
+	function set_light( act, value ){
+		if( act == 'bright' ){
+			var color = $('#p1').css('color').match(/\d+/g);
+			var light = value;
+		}else if( act == 'color' ){
+			var color = value;
+			var light = $('#lightness').val();
+		}
+		var val = color+','+light;
+		$.ajax({
+		   type: "POST",
+		   url: "<?= base_url() ?>wechat/device/change",
+		   data: "code="+code+'&type=2&value='+val,
+		   success: function(msg){
+			 if( msg == 1 ){
+				 //操作成功
+				 setTimeout( function(){ ajax_socket( code, 1 ) }, 3000 )	
+			 }else{
+				 swal("失败", msg, "error");
+			 }
+		   }
+		});
+	}
+	
+	/* 数据格式化 */
+	function data_obj( str, sign, key ){
+		var node = new Array();
+		var param = str.toString().split( sign );
+		var zombie = nodata[key].toString().split( ',' );
+		for( var x in zombie ){
+			if( typeof(param[x]) == "undefined" || !param[x] ){
+				node.push( zombie[x] );
+			}else{
+				node.push( param[x] );
+			}
+		}
+		return node;
+	}
+	
+	
+	function format_chart( type, key ){
+		option = {
+			color: ['rgba(255,255,255,1)'],
+			tooltip : {
+				trigger: 'axis'
+			},
+			grid :{
+				x:40,
+				y:30,
+				x2:40,
+				y2:60,
+				borderWidth:0
+			},
+			dataZoom : {
+				show : true,
+				realtime : true,
+				showDetail:false,
+				height: 20,
+				backgroundColor: 'rgba(255,255,255,0.2)',
+				dataBackgroundColor: 'rgba(0,0,0,0.3)',
+				fillerColor: 'rgba(0,0,0,0.6)',
+				handleColor: 'rgba(0,0,0,0.3)',
+				start : 0,
+				end : end,
+				handleSize:10,
+				 
+			},
+			xAxis : [
+				{
+					type : 'category',
+					boundaryGap : true,
+					data : type,
+					axisLine : {    // 轴线
+						show: true,
+						lineStyle: {
+							color: 'rgba(255,255,255,0.1)',
+							type: 'solid',
+							width: 1
+						}
+					},
+					splitLine : {
+						show:true,
+						lineStyle: {
+							color: 'rgba(255,255,255,0.1)',
+							type: 'solid',
+							width: 1
+						}
+					},
+					axisLabel : {
+						show:true,
+						textStyle: {
+							color: '#fff',
+						}
+					},
+					axisTick : {    // 轴标记
+						show:true,
+						length: 5,
+						lineStyle: {
+							color: 'rgba(255,255,255,0.1)',
+							width: 3
+						}
+					},
+					 position: 'bottom',
+					boundaryGap: true,
+					
+				}
+			],
+			yAxis : [
+				{
+					type : 'value',
+					axisLine : {    // 轴线
+						show: false,
+						
+					},
+					splitLine : {
+						show:true,
+						lineStyle: {
+							color: 'rgba(255,255,255,0.1)',
+							type: 'solid',
+							width: 1
+						}
+					},
+					axisLabel : {
+						show:true,
+						textStyle: {
+							color: '#fff',
+						}
+					}
+				}
+			],
+		   series : [
+				{
+					name:'电量',
+					type:'line',
+					smooth:true,
+					itemStyle: {normal: {areaStyle: {type: 'default'}}},
+					data:data_obj( All_data[key], ',', key ),
+				}
+			]
+		};    
+		return option;
+	}
+	
+	
+	/* 改变曲线图显示方式 */
+	function change_show( key ){
+		if( key == defaults ){
+			return false;
+		}
+		if( key == 'week' ){
+			end=100;
+			type = Week_number;
+		}else if( key == 'day' ){
+			end=26;	
+			type = Day_number;
+		}else if( key == 'month' ){
+			end=22
+			type = Month_number;
+		}
+		var option = format_chart( type, key );
+		require('echarts').init(chart).setOption( option );	
+		defaults = key;
+	}
+	
+</script>
+</head>
+
+<body>
+<form name="myform">
+    <section id="wrap">
+        <div id="header">
+            <a href="javascript:window.location='<?= base_url() ?>wechat/device/device_all'" class="fa fa-angle-left">
+            </a>
+            <span id="title">设备</span>
+        </div>
+        <div class="site-box">
+            <div class="container-fluid">
+                <div class="site-device">
+                    <div class="header">电量统计</div>
+                    <div class="chart-box">
+                        <div id="chart" style="height:300px;">
+                        </div>
+                    </div>
+                    <div class="count clearfix">
+                        <div class="count-list" onClick="change_show( 'day' )">
+                            <p class="count-num"><?= round($totle['day'],3, PHP_ROUND_HALF_UP); ?>kWh</p>
+                            <p class="count-date">今日用电</p>
+                        </div>
+                        <div class="count-list" onClick="change_show( 'week' )">
+                            <p class="count-num"><?= round($totle['week'],3, PHP_ROUND_HALF_UP); ?>kWh</p>
+                            <p class="count-date">本周用电</p>
+                        </div>
+                        <div class="count-list" onClick="change_show( 'month' )">
+                            <p class="count-num"><?= round($totle['month'],3, PHP_ROUND_HALF_UP); ?>kWh</p>
+                            <p class="count-date">本月用电</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="site-device">
+                    <div class="header">实时数据
+                    	<a href="javascript:void( ajax_socket('<?= $code ?>', 1) )">
+                            <i class="fa fa-repeat"></i>
+                        </a></div>
+                    <div class="data-list">
+                        <div class="data">
+                            <p>
+                                <span class="dtxt"><span id="voltage">0</span><small>V</small></span>
+                                <span class="dtitle">电压</span>
+                            </p>
+                            <p>
+                                <span class="dtxt"><span id="current">0</span><small>A</small></span>
+                                <span class="dtitle">电流</span>
+                            </p>
+                            <p>
+                                <span class="dtxt"><span id="power">0</span><small>W</small></span>
+                                <span class="dtitle">功率</span>
+                            </p>
+                            <p>
+                                <span class="dtxt"><span id="electricity">0</span><small>kWh</small></span>
+                                <span class="dtitle">电量</span>
+                            </p>
+                        </div>
+                        <div class="device-switch">
+                            <div class="switch" id="_switch" onClick="change_switch(this)">
+                                <div class="toggle-button"></div>
+                                <div class="toggle-text-off">OFF</div>
+                                <div class="toggle-text-on">ON</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="site-list">
+                    <div class="site-title" data-toggle="collapse" href="#site-color">
+                        <i class="fa fa-yelp"></i>
+                        <span>灯光颜色</span>
+                        <i id="p1" class="fa fa-circle" style="margin-left:5.2em; color:rgba(216,64,54,1);"></i>
+                    </div>
+                    <div class="collapse" id="site-color">
+                        <div class="site-content clearfix" >
+                            <div class="swiper-container">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide" style="background-color:rgba(255,255,255,1)">
+                                    </div>
+                                    <div class="swiper-slide" style="background-color:rgba(255,255,0,1)">
+                                    </div>
+                                    <div class="swiper-slide" style="background-color:rgba(255,200,0,1)">
+                                    </div>
+                                    <div class="swiper-slide" style="background-color:rgba(255,150,0,1)">
+                                    </div>
+                                    <div class="swiper-slide" style="background-color:rgba(255,100,0,1)">
+                                    </div>
+                                    <div class="swiper-slide" style="background-color:rgba(255,0,0,1)">
+                                    </div>
+                                    <div class="swiper-slide" style="background-color:rgba(200,0,125,1)">
+                                    </div>
+                                    <div class="swiper-slide" style="background-color:rgba(100,50,150,1)">
+                                    </div>
+                                    <div class="swiper-slide" style="background-color:rgba(60,80,160,1)">
+                                    </div>
+                                    <div class="swiper-slide" style="background-color:rgba(40,110,180,1)">
+                                    </div>
+                                    <div class="swiper-slide" style="background-color:rgba(0,150,180,1)">
+                                    </div>
+                                    <div class="swiper-slide" style="background-color:rgba(0,150,90,1)">
+                                    </div>
+                                    <div class="swiper-slide" style="background-color:rgba(150,200,0,1)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="site-list">
+                    <div class="site-title" data-toggle="collapse" href="#site-light">
+                        <i class="fa fa-adjust"></i>
+                        <span>灯光亮度</span>
+                    </div>
+                    <div class="collapse" id="site-light">
+                        <div class="site-content clearfix" >
+                            <div class="site-input">
+                                <p>
+                                    <input id="lightness" type="text" />
+                                </p>
+                            </div>
+                            <div class="site-results">
+                                <div class="site-text">灯光亮度：<span id="lightness-level">60</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--
+                <div class="site-list">
+                    <div class="site-title" data-toggle="modal" href="#open-clock">
+                        <i class="fa fa-clock-o"></i>
+                        <span>定时打开</span>
+                    </div>
+                    <div class="modal fade" id="open-clock" role="dialog"  aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">定时打开</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="input-group clockpicker">
+                                        <input type="text" class="form-control" value="09:30">
+                                        <span class="input-group-addon">
+                                        <span class="fa fa-clock-o"></span>
+                                        </span>
+                                    </div>
+                                    <div class="datepicker">
+                                        <div class="date-list">
+                                            <input type="checkbox" id="everyday" name="everyday"/>
+                                            <label for="everyday">重复<span class="eday"></span></label>
+                                        </div>
+                                        <div class="date-list">
+                                            <input type="checkbox" id="monday" name="day"/>
+                                            <label for="monday">星期一</label>
+                                        </div>
+                                        <div class="date-list">
+                                            <input type="checkbox" id="tuesday" name="day"/>
+                                            <label for="tuesday">星期二</label>
+                                        </div>
+                                        <div class="date-list">
+                                            <input type="checkbox" id="wednesday" name="day"/>
+                                            <label for="wednesday">星期三</label>
+                                        </div>
+                                        <div class="date-list">
+                                            <input type="checkbox" id="thursday" name="day"/>
+                                            <label for="thursday">星期四</label>
+                                        </div>
+                                        <div class="date-list">
+                                            <input type="checkbox" id="friday" name="day"/>
+                                            <label for="friday">星期五</label>
+                                        </div>
+                                        <div class="date-list">
+                                            <input type="checkbox" id="saturday" name="day"/>
+                                            <label for="saturday">星期六</label>
+                                        </div>
+                                        <div class="date-list">
+                                            <input type="checkbox" id="sunday" name="day"/>
+                                            <label for="sunday">星期日</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                    <button type="button" class="btn btn-primary save">保存设置</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="site-list">
+                    <div class="site-title" data-toggle="modal" href="#close-clock">
+                        <i class="fa fa-power-off"></i>
+                        <span>定时关闭</span>
+                    </div>
+                    <div class="modal fade" id="close-clock" role="dialog"  aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">定时关闭</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="input-group clockpicker">
+                                        <input type="text" class="form-control" value="09:30">
+                                        <span class="input-group-addon">
+                                        <span class="fa fa-clock-o"></span>
+                                        </span>
+                                    </div>
+                                    <div class="datepicker">
+                                        <div class="date-list">
+                                            <input type="checkbox" id="close-everyday" name="everyday"/>
+                                            <label for="close-everyday">重复<span class="eday"></span></label>
+                                        </div>
+                                        <div class="date-list">
+                                            <input type="checkbox" id="close-monday" name="day"/>
+                                            <label for="close-monday">星期一</label>
+                                        </div>
+                                        <div class="date-list">
+                                            <input type="checkbox" id="close-tuesday" name="day"/>
+                                            <label for="close-tuesday">星期二</label>
+                                        </div>
+                                        <div class="date-list">
+                                            <input type="checkbox" id="close-wednesday" name="day"/>
+                                            <label for="close-wednesday">星期三</label>
+                                        </div>
+                                        <div class="date-list">
+                                            <input type="checkbox" id="close-thursday" name="day"/>
+                                            <label for="close-thursday">星期四</label>
+                                        </div>
+                                        <div class="date-list">
+                                            <input type="checkbox" id="close-friday" name="day"/>
+                                            <label for="close-friday">星期五</label>
+                                        </div>
+                                        <div class="date-list">
+                                            <input type="checkbox" id="close-saturday" name="day"/>
+                                            <label for="close-saturday">星期六</label>
+                                        </div>
+                                        <div class="date-list">
+                                            <input type="checkbox" id="close-sunday" name="day"/>
+                                            <label for="close-sunday">星期日</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                    <button type="button" class="btn btn-primary save">保存设置</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                -->
+            </div>
+        </div>
+        <? $this->load->view( 'wechat/copyright.html' ); ?>
+    </section>
+</form>
+
+<!--定时器js-->
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap-clockpicker.min.js"></script>
+<!--滑动条js-->
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap-slider.min.js"></script>
+<!--颜色滑动块js-->
+<script src="<?= base_url(); ?>assets/wechat/js/idangerous.swiper.min.js"></script>
+<!--数据表格js-->
+<script src="<?= base_url(); ?>assets/wechat/js/echarts.js"></script>
+<script>			
+var result = '<?= $list ?>';
+var All_data = eval('(' + result + ')');
+var defaults = 'week';
+var type = '';
+var Day_number = ["0点","1点","2点","3点","4点","5点","6点","7点","8点","9点","10点","11点","12点","13点","14点","15点","16点","17点","18点","19点","20点","21点","22点","23点"];
+var Week_number = ['周日','周一','周二','周三','周四','周五','周六'];
+var Month_number = [<?= $days ?>];
+var nodata = new Array();;
+nodata['day'] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+nodata['week'] = [0,0,0,0,0,0,0];
+nodata['month'] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+for( var m = 28; m < Month_number.length; m++ ){
+	nodata['month'].push( 0 );
+}
+
+var end = 100
+
+require.config({
+	paths: {
+		echarts: '<?= base_url(); ?>assets/wechat/js'
+	}
+});
+var chart = document.getElementById('chart');
+// 按需加载
+require(['echarts','echarts/chart/line'],  
+function requireCallback(ec) {
+
+	myChart = ec.init(chart);
+	window.onresize = myChart.resize;
+ 
+	var option = format_chart( Week_number, 'week' );
+	myChart.setOption(option, true)
+});
+
+
+/* 滑动条js */	
+$("#lightness").slider({value:60,min:0,max:100,step:1 });
+$('#lightness-level').html( 60 );
+/*
+$("#lightness-level").text($("#lightness").val());
+$("#lightness").on('slide', function(slideEvt) {
+	$("#lightness-level").text(slideEvt.value);
+});
+*/
+$("#lightness").on('slideStop', function(slideEvt) 
+{
+	$("#lightness-level").text(slideEvt.value);
+	set_light( 'bright', slideEvt.value );
+});
+
+/* 颜色滑动块js */
+var mySwiper = new Swiper('.swiper-container',{
+    centeredSlides: true,
+	loop:true,
+    slidesPerView:3,
+    watchActiveIndex: true,
+	onSlideChangeStart: function(swiper){
+		var color = mySwiper.activeSlide().style.backgroundColor.match(/\d+/g);
+		set_light( 'color', color );
+    }
+})
+
+/* 提醒时间选择js 
+$('.clockpicker').clockpicker();
+*/
+/* 提醒日期选择js 
+function allClock(n)
+{
+	n.find('input[name="everyday"]').click(function() {
+		if (this.checked) {  
+			n.find('input[name="day"]').prop('checked',true); 
+			n.find('.eday').text('每天');
+		}
+		else
+		{
+			n.find('input[name="day"]').prop('checked',false); 
+			n.find('.eday').text('永不');
+		}
+	});
+}
+
+function chooseClock(m)
+{
+	m.find('input[name="day"]').click(function() {
+		if (m.find('input[name="day"]:checked').length<=0) {  
+			m.find('input[name="everyday"]').prop('checked', false);  
+			m.find('.eday').text('永不');
+		} 
+	 
+		
+		if(m.find('input[name="day"]:checked').length>0){
+			var question= new Array();
+			m.find('input[name="everyday"]').prop('checked',true);
+			m.find('input[name="day"]:checked').each(function() {				
+				var isCheck = $(this).next().text();
+				 
+				question.push(isCheck);
+			});
+	
+			m.find('.eday').text(question);
+		}
+	
+		if(m.find('input[name="day"]').length==m.find('input[name="day"]:checked').length){
+			m.find('input[name="everyday"]').prop('checked',true); 
+			m.find('.eday').text('每天');
+		}
+	})
+}
+*/
+$(document).ready(function() {	
+/*	allClock($('#open-clock'))
+	allClock($('#close-clock'))
+	chooseClock($('#open-clock'))
+	chooseClock($('#close-clock'))
+	
+	$('.save').click(function(){
+		swal("成功!", "保存提醒设置!", "success")
+	})
+*/	
+	 //自动获取相关即时数据
+     ajax_socket( code, 0 );
+
+});
+
+/* 按钮开关 */
+$('.switch').click(function(e){
+  e.preventDefault(); 
+  $(this).toggleClass('switch-on');
+});
+</script>
+</body>
+</html>

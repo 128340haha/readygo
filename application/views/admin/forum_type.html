@@ -1,0 +1,165 @@
+<style>
+#main-content tbody tr.alt-row{ background-color:#FFF; }
+</style>
+	<div id="main-content">
+    <!-- End .clear -->
+    <div class="content-box">
+    <link href="<?= base_url() ?>assets/admin/css/form_type.css?hmS" rel="stylesheet" type="text/css" />
+	<script type="text/JavaScript">
+		var admincpfilename = 'admin.php', IMGDIR = 'static/image/common', STYLEID = '1', VERHASH = 'hmS', IN_ADMINCP = true, ISFRAME = 1, STATICURL='static/', SITEURL = 'http://bbs.sooall.cn/', JSPATH = 'static/js/';
+		function delmod( id ){
+			if( confirm( '存在子版块请先清空子版块！' ) ){
+				var url = '<?= base_url() ?>admin/forum/edit/?action=delete&id='+id;
+				window.location = url;
+			}
+		}
+	</script>
+	<script src="<?= base_url() ?>assets/admin/js/common.js?hmS" type="text/javascript"></script>
+	<script src="<?= base_url() ?>assets/admin/js/admincp.js?hmS" type="text/javascript"></script>
+	<div id="append_parent"></div>
+	<div id="ajaxwaitid"></div>
+	<div class="container" id="cpcontainer">
+		<script type="text/JavaScript">parent.document.title = 'Discuz! Board 管理中心 - 论坛 - 版块管理';if(parent.$('admincpnav')) parent.$('admincpnav').innerHTML='论坛&nbsp;&raquo;&nbsp;版块管理&nbsp;&nbsp;<a target="main" title="添加到常用操作" href="admin.php?action=misc&operation=custommenu&do=add&title=%E7%89%88%E5%9D%97%E7%AE%A1%E7%90%86&url=action%253Dforums">[+]</a>';</script>
+		<div class="itemtitle">
+			<h3>版块管理</h3>
+		</div>
+
+		<script type="text/JavaScript">
+			var forumselect = '<optgroup label="--声物互动"><option value="38">北京声物</option><option value="39">深圳声物</option></optgroup><optgroup label="--Discuz!"><option value="2">运动社区</option><option value="36">智能家居</option></optgroup>';
+			var rowtypedata = [
+	[[1, ''], [1,'<input type="text" class="txt" name="newcatorder[]" value="0" />', 'td25'], [5, '<div><input name="newcat[]" value="新分区名称" size="20" type="text" class="txt" /><a href="javascript:;" class="deleterow" onClick="deleterow(this)">删除</a></div>']],
+	[[1, ''], [1,'<input type="text" class="txt" name="neworder[{1}][]" value="0" />', 'td25'], [5, '<div class="board"><input name="newforum[{1}][]" value="新版块名称" size="20" type="text" class="txt" /><a href="javascript:;" class="deleterow" onClick="deleterow(this)">删除</a></div>']],
+	[[1, ''], [1,'<input type="text" class="txt" name="neworder[{1}][]" value="0" />', 'td25'], [5, '<div class="childboard"><input name="newforum[{1}][]" value="新版块名称" size="20" type="text" class="txt" /><a href="javascript:;" class="deleterow" onClick="deleterow(this)">删除</a>&nbsp;</div>']],
+];
+		</script>
+		<form name="cpform" method="post" autocomplete="off" action="<?= base_url() ?>admin/forum/change_type" id="cpform">
+			<div style="height: 30px; line-height: 30px;"></div>
+			<table class="tb tb2 ">
+				<tr class="header">
+					<th></th>
+					<th>显示顺序</th>
+					<th>版块名称</th>
+					<th></th>
+					<th>编辑</th>
+				</tr>
+                <? 
+                	if( $list ){
+                    	$level = 0;
+                        $mypid = 0;
+                    	foreach( $list as $lt ){ 	
+                        	if( empty( $mypid ) ){
+                            	$mypid = $lt['id'];
+                            }
+                   			if( $lt['level'] <= $level && $lt['level'] == 1 ){     
+                ?>				<!--	下一个分区时，加入新版块添加按钮	-->
+                				</tbody>
+                                <tr>
+                                    <td></td>
+                                    <td colspan="4">
+                                        <div class="lastboard">
+                                            <a href="###" onclick="addrow(this, 1, <?= $mypid ?>)" class="addtr">添加新版块</a>
+                                        </div>
+                                    </td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                <?			$mypid = $lt['id'];
+                			}
+                        	if( $lt['level'] == 1 ){
+                ?> 
+				<tr class="hover">
+					<td class="td25" onclick="toggle_group('group_<?= $lt['id'] ?>', $('a_group_<?= $lt['id'] ?>'))">
+						<a href="javascript:;" id="a_group_<?= $lt['id'] ?>">[-]</a>
+					</td>
+					<td class="td25">
+						<input type="text" class="txt" name="order[<?= $lt['id'] ?>]" value="<?= $lt['ascno'] ?>" />
+					</td>
+					<td>
+						<div class="parentboard">
+							<input type="text" name="name[<?= $lt['id'] ?>]" value="<?= $lt['type_name'] ?>" class="txt" />
+						</div>
+						<div class="boardattr"></div>
+					</td>
+					<td align="right" class="td23 lightfont">(id:<?= $lt['id'] ?>)</td>
+					</td>
+					
+					<td width="160">	
+						<a href="javascript:void( delmod( <?= $lt['id'] ?> ) )" title="删除本版块" class="act">删除</a>
+					</td>
+				</tr>
+                <tbody id="group_<?= $lt['id'] ?>">
+                <? 			}elseif( $lt['level'] == 2 ){		 ?>
+					<tr class="hover">
+						<td class="td25"></td>
+						<td class="td25">
+							<input type="text" class="txt" name="order[<?= $lt['id'] ?>]" value="<?= $lt['ascno'] ?>" />
+						</td>
+						<td>
+							<div class="board">
+								<input type="text" name="name[<?= $lt['id'] ?>]" value="<?= $lt['type_name'] ?>" class="txt" />
+								<a href="###" onclick="addrowdirect = 1;addrow(this, 2, <?= $lt['id'] ?>)" class="addchildboard">添加子版块</a>
+							</div>
+						</td>
+						<td align="right" class="td23 lightfont">(id:<?= $lt['id'] ?>)</td>
+						</td>
+						
+						<td width="160">
+							<a href="javascript:void( delmod( <?= $lt['id'] ?> ) )"	title="删除本版块" class="act">删除</a>
+						</td>
+					</tr>
+                <?		 	}elseif( $lt['level'] == 3 ){		 ?>
+                <tr class="hover">
+						<td class="td25"></td>
+						<td class="td25">
+							<input type="text" class="txt" name="order[<?= $lt['id'] ?>]" value="<?= $lt['ascno'] ?>" />
+						</td>
+						<td>
+							<div id="cb_<?= $lt['id'] ?>" class="childboard">
+								<input type="text" name="name[<?= $lt['id'] ?>]" value="<?= $lt['type_name'] ?>" class="txt" />
+							</div>
+						</td>
+						<td align="right" class="td23 lightfont">(id:<?= $lt['id'] ?>)</td>
+						</td>
+						<td width="160">
+							<a
+								href="javascript:void( delmod( <?= $lt['id'] ?> ) )" title="删除本版块" class="act">删除</a>
+						</td>
+					</tr>
+                <?		} 
+                	$level = $lt['level'];
+                } } ?>
+                	<!-- 最后一个添加分区模块 -->
+                    <tr>
+                        <td></td>
+                        <td colspan="4">
+                            <div class="lastboard">
+                                <a href="###" onclick="addrow(this, 1, <?= $mypid ?>)" class="addtr">添加新版块</a>
+                            </div>
+                        </td>
+                        <td>&nbsp;</td>
+                    </tr>
+				</tbody>
+				<tr>
+					<td></td>
+					<td colspan="4">
+						<div>
+							<a href="###" onclick="addrow(this, 0)" class="addtr">添加新分区</a>
+						</div>
+					</td>
+					<td class="bold">
+						 
+					</td>
+				</tr>
+				<tr>
+					<td colspan="15">
+						<div class="fixsel">
+							<input type="submit" class="btn" id="submit_editsubmit" name="editsubmit" title="点击提交修改" value="提交" />
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+
+	</div>
+    </div>
+ <?= $foot ?>
+ 

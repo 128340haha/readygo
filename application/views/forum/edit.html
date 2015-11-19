@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>发新贴</title>
+	<link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/forum/css/front.css" />
+    <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/forum/css/page_default.css" />
+    <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/kindeditor/themes/default/default.css" />
+    <script type="text/javascript" src='<?= base_url() ?>assets/public/js/jquery.min.js'></script>
+    <script src="<?= base_url() ?>assets/kindeditor/kindeditor-min.js"></script>
+	<script src="<?= base_url() ?>assets/kindeditor/lang/zh_CN.js"></script>
+    <script type="text/javascript">
+		var editor = '';
+		$(function() {
+			var options = { allowImageUpload:true, allowMediaUpload:false, allowFlashUpload:false, uploadJson : '<?= base_url() ?>forum/upload_json/index' };
+			editor = KindEditor.create('textarea[name="content"]',options);
+		});
+					
+		function show_img(){
+			if( $('#mess').data( 'token' ) == 1 ){
+				return;
+			}
+			$('#mess').html('点击验证码刷新');
+			$('#mess').data( 'token', 1 );
+			$('#captcha').get(0).style.display = 'inline';
+			fresh_img();
+		}
+		
+		function fresh_img(){
+			$.ajax({
+			   type: "POST",
+			   url: "<?= base_url() ?>forum/index/captcha",
+			   data: "nolive=1&num="+Math.random(),
+			   success: function(msg){
+				  $('#captcha').attr('src', msg);
+			   }
+			});
+		}
+		
+		function check_data(){
+			var title = trim( $('#title').val() );
+			if( title == '' ){
+				alert('标题不能为空');
+				return false
+			}
+			if( editor.html() == '' ){
+				alert( '内容不能为空' )
+				return false;
+			}
+			var captcha = $('#vc').val();
+			if( captcha == '' ){
+				alert('验证码不能为空');
+				return false
+			}else if( captcha.length != 4 ){
+				alert('验证码格式不正确');
+				return false
+			}
+		}
+		//去左空格;   
+		 function ltrim(s){     
+			return s.replace(/(^\s*)/, "");  
+		 }   
+		 //去右空格;   
+		function rtrim(s){   
+		  return s.replace(/(\s*$)/, "");  
+		} 
+		function trim(s){  
+		 	s.replace(/(^\s*)|(\s*$)/, ""); 
+			return rtrim( ltrim(s) ); 
+		}
+    </script>
+</head>
+<body>
+	<!--div id="header">
+		<div>
+			
+			<p>
+				请选择您要进入的讨论区
+			</p>
+		</div>
+	</div-->
+	<div id="main">
+		<!-- header image -->
+<div class="contentblock">
+	<h5>创建讨论主题</h5>
+	
+<form action="<?= base_url() ?>forum/index/edit_submit" method="post" onsubmit="return check_data()" >		<dl class="form">
+			<dt>讨论类型</dt>
+			<dd>
+				<select name="category" id="category">
+                	<? 
+                    	if( $type ){
+                        	foreach( $type as $te ){
+                    ?>
+					<option <? if( $info['type'] == $te['id'] ){ ?>selected<? } ?> value="<?= $te['id'] ?>">
+                    	<? if( $te['level'] == 3 ){ 
+                        	  echo "&nbsp;&nbsp;&nbsp;&nbsp;".$te['type_name'];
+                           }else{
+                           	  echo $te['type_name'];
+                           }
+                        ?>
+                    </option>
+                    <? }	} ?>
+				</select>
+			</dd>
+			<dt>标题</dt>
+			<dd><input class="text" id="title" name="title" type="text" value="<?= $info['title'] ?>" /></dd>
+			<dd>
+            	<textarea name="content" id="content" style="width:800px;height:200px;"><?= $info['context'] ?></textarea>
+				<dt>验证码</dt>
+				<dd>
+					<input type="text" onfocus="show_img()" name="vc" id="vc" size="6" style="text-align: center;" />
+                    <img width="70" onclick="fresh_img()" id='captcha' style="vertical-align:top; cursor:pointer; display:none;" height="28" src="" >
+					<span id="mess">点击验证码框获得验证码。因为有人发广告，很抱歉必须使用验证码。登录后免输验证码。</span></dd>
+			
+			<dd class="submitline" style="text-align:left;">
+				<input type="submit" id="btnSave" value="发表" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="button" onclick="javascript:history.go(-1)" value="返回" />
+                <input type="hidden" name="img" value="<?= $img ?>"  />
+                <input type="hidden" name="id" value="<?= $info['id'] ?>"  />
+                <input type="hidden" name="from_url" value="<?= $from_url ?>"  />
+			</dd>
+		</dl>
+</form></div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html" />
+<!-- 告诉webkit内核浏览器初始缩放比例为1 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>设备绑定</title>
+<!-- 更换第三方图标库,Font Awesome <i class="icon-magic">-->
+<link href="<?= base_url(); ?>assets/wechat/css/bootstrap.css" rel="stylesheet">
+<link href="<?= base_url(); ?>assets/wechat/css/index.css" rel="stylesheet">
+<!-- 提示框css-->
+<link href="<?= base_url(); ?>assets/wechat/css/sweet-alert.css" rel="stylesheet">
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/jquery-1.11.1.min.js"></script>
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/bootstrap.min.js"></script>
+<script src="<?= base_url(); ?>assets/wechat/js/touch.min.js"></script>
+<!--弹出提示框js-->
+<script src="<?= base_url(); ?>assets/wechat/js/sweet-alert.min.js"></script>
+<script type="text/javascript">
+	/* 绑定 */
+	window.onload = function(){
+		<? if( $error == 1 ){ ?>
+			swal("失败", "<?= $info ?>", "error");
+		<? } ?>
+	}
+
+	$(function(){
+		touch.on('#qrcode', 'tap doubletap', function(ev){
+			window.location = '<?= base_url() ?>wechat/device/qrcode';
+		})
+		
+	})
+
+	function ckdata(){
+		var code = $('input[name=code]');
+		if( code.val().length < 12 ){
+			swal("失败", "设备码格式不对!", "error");
+			return false;	
+		}
+		var salt = $('input[name=salt]');
+		if( salt.val().length != 6 ){
+			swal("失败", "校验码格式不对!", "error");
+			return false;	
+		}
+		var dname =  $('input[name=name]');
+		if( dname.val() == '' ){
+			swal("失败", "设备 自定义名称不能为空!", "error");
+			return false;
+		}
+	//	swal("成功!", "您的设备添加绑定成功!", "success")
+	}
+</script>
+</head>
+
+<body>
+<form name="myform" method="get" action="<?= base_url() ?>wechat/device/act_bind" onSubmit="return ckdata()">
+    <section id="wrap">
+        <div id="header">
+            <a href="<?= base_url() ?>wechat/device/device_all" class="fa fa-angle-left">
+            </a>
+            <span>设备绑定</span>
+        </div>
+        <div id="bingding-content">
+            <div class="container-fluid">
+            	<div class="login-btn">
+                    <input type="button" id="qrcode" value="启用二维码扫描绑定">
+                </div>
+                <div class="bingding-input">
+                    <i class="fa fa-code"></i>
+                    <input type="text" name="code" placeholder="设备编码" value="<?= $code ?>"/>
+                </div>
+                <div class="bingding-input">
+                    <i class="fa fa-lock"></i>
+                    <input type="text" name="salt" placeholder="校验码" value="<?= $salt ?>"/>
+                </div>
+                <div class="bingding-input">
+                    <i class="fa fa-tags"></i>
+                    <input type="text" name="name" placeholder="设备名" value="<?= $name ?>"/>
+                </div>
+                <div class="bingding-btn">
+                    <input type="submit" value="手动绑定" id="bingdingBtn">
+                </div>
+            </div>
+        </div>
+        <? $this->load->view( 'wechat/copyright.html' ); ?>
+    </section>
+</form>
+</body>
+</html>

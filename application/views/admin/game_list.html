@@ -1,0 +1,99 @@
+<script type="text/javascript" >	
+	function del( id ){
+		if( confirm( '您确定要删除吗？' ) ){
+			window.location = "<?= base_url(array('admin','route','del_game')); ?>?id="+id
+		}
+	}
+	
+	function change_no( obj ){
+		var val = $(obj).val();
+		var sid = $(obj).attr( 'sid' );
+		if( sid == '' ){
+			alert('主要参数丢失,操作失败,请刷新后再试');
+			return
+		}
+		if( isNaN( val ) ){
+			alert( '排序必须是数字' );
+			return
+		}else{
+			val = parseInt( val );
+		}
+
+		$.post("<?= base_url(array('admin','route','change_no')); ?>", { 'val' : val, 'id' : sid }, function(data){
+			if( data.res == 1 ){
+				if( val == 1 ){
+					$(obj).attr( 'src', "<?= base_url().'assets/admin/icons/tick_circle.png' ?>" );
+				}else{
+					$(obj).attr( 'src', "<?= base_url().'assets/admin/icons/cross.png' ?>" );
+				}
+				$(obj).attr( 'val', val );
+			}else{
+				alert('更改失败');
+			}},"json"
+		);  
+	}
+</script>
+
+<div id="main-content">
+    <!-- End .clear -->
+    <div class="content-box">
+      <!-- Start Content Box -->
+      <div class="content-box-header">
+        <h3>游戏列表</h3>
+        <div class="clear"></div>
+      </div>
+      <!-- End .content-box-header -->
+      <div class="content-box-content">
+        <div class="tab-content default-tab" id="tab1">
+          <!-- This is the target div. id must match the href of this div's tab -->
+          <form action="#">
+          <table>
+            <thead>
+              <tr>
+                <th>游戏名</th>
+                <th>图片</th>
+                <th>游戏描述</th>
+                <th>排序</th>
+                <th>开发状态</th>
+                <th>下载地址</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <td colspan="6">
+                  <div class="pagination"> 
+                  <?= $bar ?>
+                  </div>
+                  <!-- End .pagination -->
+                  <div class="clear"></div>
+                </td>
+              </tr>
+            </tfoot>
+            <tbody>
+            <? if( $list ){
+            	foreach( $list as $li ){
+            ?>
+                  <tr>
+                    <td style="vertical-align:middle;"><?= $li['name'] ?></td>
+                    <td><img src="<?= base_url().'uploads/route/'.$li['image'] ?>" alt="" ></td>
+                    <td style="vertical-align:middle;"><?= $li['desc'] ?></td>
+                    <td style="vertical-align:middle;"><input type="text" name="ascno" onchange="change_no(this)" sid="<?= $li['id'] ?>" style="text-align:center;" class="text-input" size=2 value="<?= $li['ascno'] ?>"</td></td>
+                    <td style="vertical-align:middle;"><? if( $li['status']==1 ){ ?>开发完成<? }elseif( $li['status']==0 ){ ?>开发中<? }elseif( $li['status']==2 ){ ?>维护中<? } ?></td>
+                    <td style="vertical-align:middle;"><? if($li['resource']){ ?><a href="<?= base_url().'uploads/route/'.$li['resource'] ?>">下载</a><? }else{ ?>-<? } ?></td>
+                    <td style="vertical-align:middle;">
+                      <!-- Icons -->
+                      <a href="<?= base_url().'admin/route/edit?id='.$li['id'] ?>" title="编辑"><img src="<?= base_url().'assets/admin/icons/' ?>pencil.png" alt="编辑" /></a> &nbsp;&nbsp;<a href="javascript:void(del('<?= $li['id'] ?>'))" title="删除"><img src="<?= base_url().'assets/admin/icons/' ?>cross.png" alt="删除" /></a> </td>
+                  </tr>
+            <?
+              	}
+              }
+            ?>
+            </tbody>
+          </table>
+          </form>
+        </div>
+      </div>
+      <!-- End .content-box-content -->
+    </div>
+ <?= $foot ?>

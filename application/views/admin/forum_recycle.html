@@ -1,0 +1,130 @@
+<script type="text/javascript" src="<?= base_url(); ?>assets/public/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" >	
+	function del( id ){
+		if( confirm( '您确定要完全删除该帖么？删除后将无法恢复，请慎重操作' ) ){
+			window.location = "<?= base_url(array('admin','forum','del_true')); ?>?id="+id
+		}
+	}
+	
+	function batch(){
+		if( confirm('您确定要清除当前选定的贴？删除后将无法恢复，请慎重操作') ){
+			var token = '';
+			var ids = $('input[name=batch_del]');
+			for( var i=0; i<ids.length; i++ ){
+				if( ids[i].checked == true ){
+					if( token == '' ){
+						token = ids[i].value;
+					}else{
+						token += ','+ids[i].value;
+					}
+				}
+			}
+			if( token == '' ){
+				alert( '请选择您要删除的贴' );
+				return false;
+			}else{
+				window.location = "<?= base_url(array('admin','forum','del_true')); ?>?id="+token
+			}
+		}
+	}
+	
+	function use_time(){
+		WdatePicker({skin:'green',dateFmt:'yyyy-MM-dd',maxDate:'%y-%M-%d'})
+	}
+	
+	function killPic(){
+		window.location = "<?= base_url('admin/forum/killPic'); ?>";
+	}
+	
+</script>
+<div id="main-content">
+    <!-- End .clear -->
+    <div class="content-box">
+      <!-- Start Content Box -->
+      <div class="content-box-header">
+        <h3>无效图片管理</h3>
+        <div class="clear"></div>
+      </div>
+      <!-- End .content-box-header -->
+      <div class="content-box-content">
+        <div class="tab-content default-tab" id="tab1">
+          <!-- This is the target div. id must match the href of this div's tab -->
+          <form name="form1" action="" method="get" >
+             当前论坛无效图片有<?= $number ?>张
+             <input type="button" onclick="killPic()" class="button" value="点我干掉它们"  />
+          </form>
+        </div>
+      </div>
+      <!-- End .content-box-content -->
+    </div>
+    <div class="content-box">
+      <!-- Start Content Box -->
+      <div class="content-box-header">
+        <h3>帖子列表</h3>
+        <div class="clear"></div>
+      </div>
+      <!-- End .content-box-header -->
+      <div class="content-box-content">
+        <div class="tab-content default-tab" id="tab1">
+          <!-- This is the target div. id must match the href of this div's tab -->
+          <form name="form1" action="" method="get" >
+             关键字:
+             <input type="text" class="text-input" size="6" name="keyword" value="<?= $keyword ?>"  />
+              &nbsp&nbsp&nbsp
+             <input type="submit" class="button" value="搜索"  />
+          <table>
+            <thead>
+              <tr>
+                <th> </th>
+                <th>板块</th>
+                <th>标题</th>
+                <th>作者/时间</th>
+                <th>阅读/回复</th>
+                <th>审核</th>
+                <th>置顶</th>
+                <th>精华</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <td colspan="6">  
+                  <div class="pagination"> 
+                  <?= $bar ?>
+                  </div>
+                  <!-- End .pagination -->
+                  <div class="clear"></div>
+                </td>
+              </tr>
+            </tfoot>
+            <tbody>
+            <? if( $list ){
+            	foreach( $list as $li ){
+            ?>
+                  <tr>
+                    <td><input type="checkbox" name="batch_del" value="<?= $li['id'] ?>"  /></td>
+                    <td><?= $li['type_name'] ?></td>
+                    <td><?= $li['title'] ?></td>
+                    <td><span style="color:#0C3;"><?= $users[$li['user_id']].'</span> / '.date('Y-m-d H:i:s',$li['addtime']) ?></td>
+                    <td><?= $li['read'].'/'.$li['rpd'] ?></td>
+                    <td><img style="cursor:pointer;" src="<? if( $li['review'] == 1 ){ echo base_url().'assets/admin/icons/tick_circle.png'; }else{ echo base_url().'assets/admin/icons/cross.png';  } ?> " ></td>
+                    <td><img style="cursor:pointer;" src="<? if( $li['sticky'] == 1 ){ echo base_url().'assets/admin/icons/tick_circle.png'; }else{ echo base_url().'assets/admin/icons/cross.png';  } ?> " ></td>
+                    <td><img style="cursor:pointer;" src="<? if( $li['elite'] == 1 ){ echo base_url().'assets/admin/icons/tick_circle.png'; }else{ echo base_url().'assets/admin/icons/cross.png';  } ?> " ></td>
+                      <!-- Icons -->
+                    <td>
+                      <a href="javascript:void(del('<?= $li['id'] ?>'))" title="删除"><img src="<?= base_url().'assets/admin/icons/' ?>cross.png" alt="删除" /></a> </td>
+                  </tr>
+            <?
+              	}
+              }
+            ?>
+            </tbody>
+          </table>
+          </form>
+        </div>
+        <br />
+        <input type="button" value="批量删除" onclick="batch()" />
+      </div>
+      <!-- End .content-box-content -->
+    </div>
+ <?= $foot ?>

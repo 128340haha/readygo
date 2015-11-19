@@ -1,0 +1,157 @@
+<script type="text/javascript" src="<?= base_url(); ?>assets/public/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" >
+	function use_time(){
+		WdatePicker({skin:'green',dateFmt:'yyyy-MM-dd',maxDate:'%y-%M-%d'})
+	}
+	function go_list(){
+		window.location = '<?= base_url("admin/user/index") ?>';
+	}
+	
+	//code公共参数
+	var plot_show = '';
+	//切换显示设备
+	function change_line(){
+		var devices = $('input[name=devices]');
+		var ids = '';
+		for( var i = 0; i < devices.length; i++ ){
+			if( devices[i].checked == true ){
+				if( ids == '' ){
+					ids = devices[i].value;
+					plot_show = $(devices[i]).attr('code');
+				}else{
+					ids += ','+devices[i].value;
+					plot_show += ','+$(devices[i]).attr('code');
+				}
+			}
+		}
+		$('input[name=ids]').val( ids );
+		reflash_plot();
+	}
+	
+	//刷新线状图
+	function reflash_plot(){
+	//	base_url('admin/device/show_plot').'?noheadfoot=1&m='.$model.'&t='.$t.'&v=0'
+		var model = '&m='+$('select[name=model]').val();
+		var date = '<?= $date ?>';
+		//code数据组合
+		if( plot_show == '' ){
+			return;
+		}
+		//ajax获取数据
+		$.post("<?= base_url(array('admin','user','get_data')); ?>", { 'ids' : plot_show, 'model' : $('select[name=model]').val(), 'date' : date }, function(data){
+			var res = eval('(' + data + ')');
+			if( res.res == 1 && res.list != '' ){
+				var k = '';
+				var v = '';
+				var t = '&t='+res.t;
+				for( var x in res.list ){
+					if( k == '' ){
+						k = x;
+					}else{
+						k += '|'+x;
+					}
+					if( v == '' ){
+						v = res.list[x];
+					}else{
+						v += '|'+res.list[x];
+					}
+				}
+				k = '&k='+k;
+				v = '&v='+v;
+			}
+			var src = "<?= base_url('admin/device/show_plot').'?noheadfoot=1' ?>"+model+k+v+t;
+			var src = src.replace( /,/g, ':' )
+			$('iframe[name=plot]').attr( 'src', src )
+		}); 
+	}
+	
+	//载入页面显示
+	$(function($){ 
+		var show_id = $('input[name=ids]').val();
+		var devices = $('input[name=devices]');
+		if( show_id == '' ){
+			var ids = '';
+			for( var i = 0; i < devices.length; i++ ){
+				if( i == 0 ){
+					ids = devices[i].value;
+					plot_show = $(devices[i]).attr('code');
+					devices[i].checked = true;
+				}else if( i == 1 ){
+					ids += ','+devices[i].value;
+					plot_show += ','+$(devices[i]).attr('code');
+					devices[i].checked = true;
+				}
+			}
+			$('input[name=ids]').val( ids );
+		}else{
+			for( var i = 0; i < devices.length; i++ ){
+				if( devices[i].checked == true ){
+					if( plot_show == '' ){
+						plot_show = $(devices[i]).attr('code');
+					}else{
+						plot_show += ','+$(devices[i]).attr('code');
+					}
+				}
+			}
+		}
+		reflash_plot();
+	}); 	
+	
+</script>
+<div id="main-content">
+    <!-- End .clear -->
+    <div class="content-box">
+      <!-- Start Content Box -->
+      <div class="content-box-header">
+        <h3>设备耗能信息</h3>
+        <div class="clear"></div>
+      </div>
+      <!-- End .content-box-header -->
+      <div class="content-box-content">
+        <div class="tab-content default-tab" id="tab1">
+        	<form method="get" name="form1" action="#">
+            <p>
+              <label style="display:inline;">用户名：</label>
+              <?php echo $username; ?>
+              <span style="margin-left:50px;"> </span>
+              
+              查询类型：
+              <select name="model" >
+              	<option value="1" <? if( $model == 1 ){ ?>selected<? } ?> >日数据</option>
+                <option value="2" <? if( $model == 2 ){ ?>selected<? } ?> >周数据</option>
+                <option value="3" <? if( $model == 3 ){ ?>selected<? } ?> >月数据</option>
+              </select>
+              <span style="margin-left:50px;"> </span>
+              历史记录：
+              <input type="text"  size="10" onclick="use_time()" name="date" value="<?= $date ?>"  />
+              
+              <span class="input-notification"></span>
+              <input type="submit" class="button" value="查询"  /> 
+              <input type="hidden" name="id" value="<?= $id ?>"  />
+              <span style="margin-left:25%;"> </span>
+              <input type="button" onclick="go_list()"  value="返回上一页"  /> 
+            </p>
+            <input type="hidden" name="uid" value="<?= $uid ?>"  />
+            <input type="hidden" name="ids" value="<?= $ids ?>"  />
+            </form>
+            <iframe name=plot align=middle marginwidth=0 marginheight=0 src=""  frameborder=no scrolling=no  width=1000 height=550></iframe>
+            <div>
+                <? 
+                    if( $list ){ 
+                    	if( empty( $ids ) ){
+                        	$checked = array();
+                        }else{
+                        	$checked = explode( ',', $ids );
+                        }
+                        foreach( $list as $li ){
+                ?>
+                <input type="checkbox" code="<?= $li['code'] ?>" name="devices" <? if( in_array( $li['id'], $checked ) ){ ?>checked<? } ?> onclick="change_line()" value="<?= $li['id'] ?>"  /><span style="color:red;"><?= $li['code'] ?></span>(<?= $li['device_name'] ?>)&nbsp;&nbsp;&nbsp;
+            <? }}else{
+            ?>
+            	您没有绑定的设备
+            <? } ?>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>

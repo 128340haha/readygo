@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title>主题列表</title>
+	<link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/forum/css/front.css" />
+    <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/forum/css/page_default.css" />
+    <script type="text/javascript" src="<?= base_url() ?>assets/forum/js/front.js"></script>
+    <script type="text/javascript" src="<?= base_url() ?>assets/forum/js/common.js"></script>
+    <script type="text/javascript" src="<?= base_url() ?>assets/forum/js/frontpage.js"></script>
+</head>
+<body>
+	<!--div id="header">
+		<div>
+			
+			<p>
+				本讨论区的主题列表
+			</p>
+		</div>
+	</div-->
+	
+	<div id="main">
+		<!-- header image -->
+<div class="contentblock">
+	<h5>主题列表</h5>
+	<a href="<?= base_url() ?>forum/index/main/" target="main">查看全部</a>
+	|
+		<a class="add" href="<?= base_url() ?>forum/index/new_forum/?tid=<?= $tid ?>">发表主题</a>
+	<table class="datalist" id="topicList">
+		<tr>
+			<th style="width: 150px;">板块
+			</th>
+			<th>标题
+			</th>
+			<th style="width: 150px;">作者/时间
+			</th>
+			<th style="width: 200px;">阅读/回复/最后回复时间
+			</th>
+		</tr>
+		<tr class="category">
+			<th colspan="4">⊙﹏⊙ 普通主题</th>
+		</tr>
+    <? 
+    	if( $list ){ 
+    		foreach( $list as $lt ){
+    ?>
+	<tr class="topTopic_0">
+		<td align="center"><?= $lt['type_name'] ?>
+		</td>
+		<td class="topic_notreviewed "><a href="<?= base_url() ?>forum/index/details/?id=<?= $lt['id'] ?>"><?= $lt['title'] ?></a>
+		</td>
+		<td>&lt;<?= $users[$lt['user_id']] ?>&gt;
+			<br />
+			<small><?= date('Y/m/d H:i:s',$lt['addtime']) ?></small>
+		</td>
+		<td>阅读/回复：<span style="font-weight: bold; color: red;"><?= $lt['read'] ?></span>/<span style="font-weight: bold; color: blue;"><?= $lt['rpd'] ?></span>
+			<br />
+			<small><?= date('Y/m/d H:i:s',$lt['updtime']) ?></small>
+		</td>
+	</tr>
+    <? } }else{  ?>
+    	<tr>
+			<td colspan="4" align="center" style="color:red;">该分类下没有找到相关的主题
+			</td>
+		</tr>
+    <? } ?>
+		<tr>
+			<td colspan="4"><div class="page_list"><div class="page_list_info">共<strong><?= $pinfo['all_num'] ?></strong>条信息/每页<strong><?= $pinfo['per_page'] ?></strong>条</div>
+            <div class="page_list_content">
+            	<?= $bar ?>
+            	<!--
+                <a href="javascript:;" class='disabled' disabled='disabled'>首页</a>
+                <a href="javascript:;" class='disabled' disabled='disabled'>上页</a>
+                <a href='javascript:;' class='current_page'>1</a>
+                <a href="/discussion/common/56/2">2</a>
+                <a href="/discussion/common/56/3">3</a>
+                <a>...</a>
+                <a href="/discussion/common/56/8">8</a>
+                <a href="/discussion/common/56/9">9</a>
+                <a href="/discussion/common/56/2" class='terminal'>下页</a>
+                <a href="/discussion/common/56/9" class='terminal'>末页</a>
+                -->
+             </div>
+			</td>
+		</tr>
+	</table>
+</div>
+	</div>
+	
+	<div id="copyright" class="nofootlink">
+		&copy;Copyright 2007-2015, 测试论坛模板 [<a href="#">thank iFish</a>], All rights reserved.
+		<br />
+	</div>
+
+</body>
+</html>

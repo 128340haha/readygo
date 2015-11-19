@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html" />
+<!-- 告诉webkit内核浏览器初始缩放比例为1 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>用户中心</title>
+<!-- 更换第三方图标库,Font Awesome <i class="icon-magic">-->
+<link href="<?= base_url(); ?>assets/wechat/css/bootstrap.css" rel="stylesheet">
+<link href="<?= base_url(); ?>assets/wechat/css/index.css" rel="stylesheet">
+</head>
+
+<body>
+<form name="myform">
+    <section id="wrap">
+        <div id="header">
+            <a href="<?= base_url() ?>wechat/ucenter/index" class="fa fa-angle-left">
+            </a>
+            <span>用户中心</span>
+        </div>
+        <div id="user-head">
+            <div class="container-fluid">
+                <div class="user">
+                    <div class="userhead img-responsive">
+                        <div class="head">
+                            <img src="<?= $headimgurl ?>" />
+                        </div>
+                    </div>
+                    <div class="username">
+                        <p class="sooall"><?= $username ?></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="user-content">
+            <div class="user-list">
+                <div class="list-title list-border">联系方式</div>
+                <a class="list" href="#">
+                    邮箱<span><?= $mail ?></span>
+                </a>
+                <a class="list" href="#">
+                    电话<span><?= $phone ?></span>
+                </a>
+            </div>
+            <div class="user-list">
+                <div class="list-title list-border">基本信息</div>
+                <a class="list" href="#">
+                    性别<span><? if( $sex == 1 ){ ?>男<? }elseif( $sex == 2 ){ ?>女<? }else{ ?>保密<? } ?></span>
+                </a>
+                <a class="list" href="#">
+                    年龄<span><?= $age ?>岁</span>
+                </a>
+                <a class="list" href="#">
+                    身高<span><?= $stature ?>cm</span>
+                </a>
+                <a class="list" href="#">
+                    体重<span><?= $weight ?>kg</span>
+                </a>
+            </div>
+        </div>
+        <div class="user-footer">
+            <? $this->load->view( 'wechat/copyright.html' ); ?>
+        </div>
+    </section>
+</form>
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/jquery-1.11.1.min.js"></script>
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/bootstrap.min.js"></script>
+</body>
+</html>

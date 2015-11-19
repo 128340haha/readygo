@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link rel="stylesheet" type="text/css" href="<?= base_url(); ?>assets/public/css/jquery.jqplot.css"  />  
+<script type="text/javascript" src="<?= base_url().'assets/public/js/jquery.min.js' ?>"></script>
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/js/excanvas.js"></script>
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/js/jquery.jqplot.js" ></script>    
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/plugins/jqplot.pieRenderer.min.js" ></script>  
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/plugins/jqplot.barRenderer.min.js" /></script>
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+<script type="text/javascript" >
+$(document).ready(function(){
+	var data = '<?= $data ?>';
+	var key = '<?= $key ?>';
+	var array_data = data.split( '|' );
+	var array_key = key.split( '|' );
+	var _data = [];
+	var _key = [];
+	for( var e = 0; e < array_data.length; e++ ){
+		_data[e] = [];
+		_key[e] = [];
+		var _arrData = array_data[e].split(',');
+		var _arrKey = array_key[e].split(',');
+		for(var n = 0; n < _arrData.length; n++){
+			_data[e].push( parseInt( _arrData[n] ) );
+			_key[e].push(_arrKey[n]);
+		}
+	}
+//	var s2=[302,81,151,323,218,208]; //实际使用
+	<?php 
+		if( $model == 1 ){ 
+			$title = '日';
+			$ticks = '"0点","1点","2点","3点","4点","5点","6点","7点","8点","9点","10点","11点","12点","13点","14点","15点","16点","17点","18点","19点","20点","21点","22点","23点"';
+			
+		}elseif( $model == 2 ){
+			$title = '周';
+			$ticks = '"星期天","星期一","星期二","星期三","星期四","星期五","星期六"';
+			
+		}elseif( $model == 3 ){
+			$title = '月';
+			//构建日期
+			$ticks = '';
+			for( $i = 1; $i < $month ; $i++ ){
+				if( empty( $ticks ) ){
+					$ticks = '"'.$i.'日"';
+				}else{
+					$ticks .= ',"'.$i.'日"';
+				}
+			}
+		}
+	?>	
+	
+//	var ticks=["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+//	var ticks=["0点","1点","2点","3点","4点","5点","6点","7点","8点","9点","10点","11点","12点","13点","14点","15点","16点","17点","18点","19点","20点","21点","22点","23点"];
+
+	var ticks = [<?= $ticks ?>];
+//	console.info( _data );
+	var plot2 = $.jqplot ('chart', _data, {
+		animate: true,
+		legend: {show:true,location: 'ne',labels: _key}, //
+		cursor:{
+			show:true, zoom:true},
+			title: '<?= $title ?>电能消耗状况',
+		 	seriesDefaults: {
+				rendererOptions: { smooth: true },
+		 	},
+		 	axes: {
+				xaxis: {label: "时间", 
+					pad: 0,
+					ticks:ticks, 
+					renderer: $.jqplot.CategoryAxisRenderer,
+				 },
+		 	yaxis: { 
+				label: "电量",  
+			},
+		 }
+	});
+});
+</script>
+</head>
+
+<body>
+	<div id="chart" style="margin-top:10px; margin-left:10%; width:<? if( $model == 3 ){ ?>900<? }else{ ?>700<? } ?>px; height:500px; float:left;"></div> 
+</body>
+</html>

@@ -1,0 +1,104 @@
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/js/jquery.validate.min.js"></script>
+<script type="text/javascript" >
+$(function() {
+	$("#form1").validate({
+		rules: {
+   			mail: {
+				email:true
+			},
+   			phone: {
+				digits: true,
+    			maxlength: 11,
+				minlength: 11,
+   			},
+   			age: {
+				digits: true
+   			},
+   			stature: {
+    			digits: true
+   			},
+   			weight: {
+    			digits: true
+   			},
+  		},
+        messages: {
+   			mail: {
+				email: "邮箱格式不正确",
+   			},
+   			phone: {
+				digits: "手机必须是数字",
+    			maxlength: '手机号码不会超过11位',
+				minlength: '手机号码不会小于11位',
+   			},
+			age: {
+				digits: "年龄必须是数字"
+   			},
+			stature: {
+				digits: "身高必须是数字"
+   			},
+			weight: {
+				digits: "体重必须是数字"
+   			},
+		}
+    });
+});
+</script>
+<div id="main-content">
+    <!-- End .clear -->
+    <div class="content-box">
+      <!-- Start Content Box -->
+      <div class="content-box-header">
+        <h3>用户信息</h3>
+        <div class="clear"></div>
+      </div>
+      <!-- End .content-box-header -->
+      <div class="content-box-content">
+        <div class="tab-content default-tab" id="tab1">
+            <form name="form1" id="form1" method="post" action="<?= base_url().'admin/user/update_info' ?>" >
+            	<p>
+                  <label>当前用户名：<span style="color:red;"><?= $username ?></span></label>
+                  
+                </p>
+                <p>
+                  <label>邮箱</label>
+                  <input class="text-input small-input" type="text" name="mail" value="<?php echo $mail ? $mail : set_value('mail') ?>" />
+                  <span class="input-notification"><? echo form_error('mail'); ?></span>
+                </p>
+                <p>
+                  <label>电话</label>
+                  <input class="text-input small-input" type="text" name="phone" value="<?php echo $phone ? $phone : set_value('phone') ?>" />
+                  <span class="input-notification"><? echo form_error('phone'); ?></span>
+                </p>
+                <p>
+                  <label>年龄</label>
+                  <input class="text-input small-input" type="text" name="age" value="<?php echo $age ? $age : set_value('age') ?>" />
+                  <span class="input-notification"><? echo form_error('age'); ?></span>
+                </p>
+                <p>
+                  <label>身高</label>
+                  <input class="text-input small-input" type="text" name="stature" value="<?php echo $stature ? $stature : set_value('stature') ?>" />
+                  <span class="input-notification"><? echo form_error('stature'); ?></span>
+                </p>
+                <p>
+                  <label>体重</label>
+                  <input class="text-input small-input" type="text" name="weight" value="<?php echo $weight ? $weight : set_value('weight') ?>" />
+                  <span class="input-notification"><? echo form_error('weight'); ?></span>
+                </p><p>
+                  <label>性别</label>
+                  <select name="sex" >
+                  	<option value="0" <?php if( $sex === '0' ){ echo 'selected'; }else{ echo set_select('sex', '0', TRUE); } ?>  >保密</option>
+                    <option value="1" <?php if( $sex === '1' ){ echo 'selected'; }else{ echo set_select('sex', '1'); } ?>  >男</option>
+                    <option value="2" <?php if( $sex === '2' ){ echo 'selected'; }else{ echo set_select('sex', '2'); } ?>  >女</option>
+                  </select>
+                  <span class="input-notification"><? echo form_error('ckpwd'); ?></span>
+                </p>
+                <br>
+                <input type="hidden" name="uid" value="<?= $id ?>" />
+                <input type="hidden" id="from_url" name="from_url" value="<? if( empty( $from_url ) ){ echo ''; }else{ echo $from_url; } ?>"  />
+                <input class="button" type="submit" value="提交" />
+                <input class="button" type="button" onClick="javascript:history.go(-1)" value="返回" />
+            </form>
+        </div>
+      </div>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>登录页面</title>
+
+<script type="text/javascript" src="<?= base_url('assets/public/js').'/jquery.min.js' ?>"></script>
+<SCRIPT language=javascript>
+	var secs=parseInt( '<?= $sec ?>' );//5秒
+	var roll = '';
+	
+	$(function(){ 
+		jQuery('#number').html( secs )
+	}); 
+	
+	for(i=1;i<=secs;i++) { 
+		window.setTimeout("update(" + i + ")", i * 1000);
+	} 
+	function update(num) { 
+		roll = secs - num;
+		jQuery('#number').html( roll )
+		if(num == secs){ 
+			reback( "<?= $gotourl ?>" )
+		}
+	}
+	
+	function reback( url ){
+		if( url == 'back' ){
+			window.history.back();
+		}else{
+			window.location = url;
+		}
+	}
+</SCRIPT>
+</head>
+<body>
+    <div id="mws-wrapper">
+        <div id="mws-container" class="clearfix">
+            <div class="container">
+            	<div id="mws-error-container">
+                    <p id="mws-error-message"><?= $error ?></p>
+                    <p id="mws-error-message"><span <? if( empty( $sec ) ){ ?>style="display:none;"<? } ?> ><span id="number"></span>秒后自动跳转，</span><a style="text-decoration:none; color:#323232;" href="javascript:void( reback( '<?= $gotourl ?>' ) )">如果您的浏览器没有自动跳转，请点击这里</a></p>
+                </div>
+            </div>            
+		</div>
+        </div>
+        <!-- End Container Wrapper --> 
+    </div>
+    <!-- End Main Wrapper -->
+</body>
+</html>

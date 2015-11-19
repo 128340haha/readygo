@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html" />
+<!-- 指定以最新的IE版本模式来显示网页 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- 针对360浏览器的内核调用,强制调用极速模式 -->
+<meta name="renderer" content="webkit" />
+<!--[if lt IE 10]>
+<meta name="renderer" content="ie-stand" />
+<![endif]-->
+<!--[if !IE]>
+<meta name="renderer" content="ie-stand" />
+<!<![endif]-->
+<!--[if lt IE 9]>
+      <script language="javascript" type="text/javascript" src="js/bootstrap/html5shiv.js"></script>
+<![endif]-->
+<!-- 确保设备能正常显示响应式页面 -->
+<!-- 告诉webkit内核浏览器初始缩放比例为1 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!-- 判断浏览器版本.IE8以下版本,bootstrap支持不了.加个提示 -->
+<!--[if IE]>      
+      <!--[if IE 6]>
+          <div class="ie"></div>
+      <![endif]-->
+<!-- 判断浏览器版本IE6以下版本 -->
+<!--[if lt IE 6]> 
+           <div class="ie"></div>
+      <![endif]-->
+<!--[if IE 7]>
+           <div class="ie"></div>
+      <![endif]-->
+<![endif]-->
+<!-- 百度等搜索,会把description显示在搜索结果里面.这个地方非常总要.但要注意不要超过150字符 -->
+<meta name="description" content="百度等搜索,会把description显示在搜索结果里面.这个地方非常总要.但要注意不要超过150字符">
+<!-- 关于文档的关键字标签 -->
+<meta name="keywords" content="关于文档的关键字标">
+<title>用户绑定</title>
+<!-- 更换第三方图标库,Font Awesome <i class="icon-magic">-->
+<link href="<?= base_url(); ?>assets/wechat/css/bootstrap.css" rel="stylesheet">
+<link href="<?= base_url(); ?>assets/wechat/css/index.css" rel="stylesheet">
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/jquery-1.11.1.min.js"></script>
+<script src="<?= base_url(); ?>assets/wechat/js/touch.min.js"></script>
+<script>
+	$(function(){
+		touch.on('#login', 'tap doubletap', function(ev){
+			//console.log(ev.type);
+			$('#message').hide();
+			var username = $('input[name=username]').val();
+			var password = $('input[name=password]').val();
+			var captcha = $('input[name=captcha]').val();
+			if( username == '' ){
+				$('#message').html( '用户名请不要为空' ).show(1000);
+				$('input[name=username]').focus();
+				return;
+			}
+			if( password == '' ){
+				$('#message').html( '密码请不要为空' ).show(1000);
+				$('input[name=password]').focus();
+				return;
+			}
+			if( captcha == '' ){
+				$('#message').html( '验证码请不要为空' ).show(1000);
+				$('input[name=captcha]').focus();
+				return;
+			}
+			$('form[name=form1]').submit();
+		});
+		
+		touch.on('#cimg', 'tap doubletap', function(ev){
+			$.get("<?= site_url(array('wechat','login','captcha')); ?>", { "model":2, "func": Math.random() },
+				function(data){
+					$('#cimg').attr( 'src', data );
+				}
+			);
+		});
+	})
+</script>
+</head>
+
+
+<body>
+
+<section id="wrap">
+	<div id="header">
+          <a href="<?= base_url() ?>wechat/ucenter/index" class="fa fa-angle-left"></a>
+          <span>绑定账户</span>
+    </div>
+ 	<div id="login-logo">
+    	<div class="logo"><img src="<?= base_url(); ?>assets/wechat/images/logo.png"/></div>
+    </div>
+    <div id="login-message">
+    	<div class="message" id="message"><?= $error ?></div>
+    </div>
+    <div id="login-box">
+    	<div class="container-fluid">
+        	<form name="form1" method="post" action="<?= base_url() ?>wechat/login/auth" >
+    		<div class="login-input">
+                <i class="fa fa-user"></i>
+                <input type="text" name="username" placeholder="用户名" value="<?= $username ?>"/>
+            </div>
+            <div class="login-input">
+            	<i class="fa fa-lock"></i>
+                <input type="password" name="password" placeholder="密码" value="<?= $password ?>"/> 
+            </div>
+            <div id="ver-box">
+            	<div class="ver-left">
+                    <div class="login-input">
+                         <i class="fa fa-exclamation-triangle"></i>
+                        <input type="text" name="captcha" placeholder="输入验证码" value="<?= $captcha ?>" />
+                    </div>
+                </div>
+                <div class="ver-right">
+                	<div class="ver-img img-responsive"><img id="cimg" src="<?= $img ?>" ></div>
+                </div>
+            </div>
+            <div class="login-btn">
+            	<input type="button" id="login" value="绑定">
+            </div>
+            <div class="login-tips">
+            	<span><a href="###">忘记密码</a></span>
+	 	        <span><a href="<?= base_url() ?>wechat/login/reg">注册账户</a></span>
+            </div>
+            </form>
+        </div>
+    </div>
+    <? $this->load->view( 'wechat/copyright.html' ); ?>
+</section>
+
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/bootstrap.min.js"></script>
+<!--[if lt IE 9]>
+      <script src="js/bootstrap/respond.min.js"></script>
+    <![endif]-->
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/ie10-viewport-bug-workaround.js"></script>
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/ie-emulation-modes-warning.js"></script>
+<!-- 对IE低版本的一个小技巧.禁止在IE模式下,直接本地文件浏览 -->
+<!--[if lt IE 9]><script src="js/bootstrap/ie8-responsive-file-warning.js"></script><![endif]-->
+  
+</body>
+</html>

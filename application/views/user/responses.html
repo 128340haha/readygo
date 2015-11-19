@@ -1,0 +1,54 @@
+<div class="container-grid-layout loading">
+	<div id="content" style="display: block;">
+		<div class="box-id-content">
+			<div class="box-title">
+				<i class="icon-halfblock"></i>
+				我的回复
+			</div>
+			<div id="main_content" class="box-inner dyn clearfix">
+				<div id="content_recently_content" class="main-content-page">
+					
+					<ul class="recently-list clearfix" id="dyn_list" mode="dyn">	
+            	<?
+													
+if ($list) {
+														foreach ( $list as $lt ) {
+															?>
+                <li class="REVIEW">
+							<div class="recently-list-item clearfix">
+								<div class="recently-list-info">
+									<div class="recently-list-info-face">
+										<img src="<?= base_url() ?>assets/forum/images/discuss.png">
+									</div>
+									<div class="info-r">
+										<div class="recently-list-info-text">
+                                        	所属板块：
+											<a target="_blank" href="<?= base_url() ?>forum/index/index?url=<?= base_url() ?>forum/index/main/?id=<?= $lt['type'] ?>" ><?= $lt['type_name'] ?></a>
+                                            &nbsp;&nbsp;&nbsp;
+                                            回复主题:
+                                            <a target="_blank" href="<?= base_url() ?>forum/index/index?url=<?= base_url() ?>forum/index/details/?id=<?= $lt['pid'] ?>" ><?= $lt['title'] ?></a>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <?= $lt['floor'] ?>楼
+											<div class="date"><?= date('Y-m-d H:i:s', $lt['retime']) ?></div>
+										</div>
+										<div class="recently-list-info-comment">
+											<p class="txt" id="<?= $lt['id'] ?>">
+                                    			<?= $lt['context']?>
+                                    		</p>
+											<p class="more">
+												...&nbsp;
+												<a href="<?= base_url() ?>forum/index/index?url=<?= base_url() ?>forum/index/details/?id=<?= $lt['pid'] ?>" target="_blank">[查看帖子详情]</a>
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+                <? }  } ?>
+            </ul>
+					<input type="button" class="btn simple" value="查看更多" >
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

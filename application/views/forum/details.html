@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title><?= $info['title'] ?></title>
+	<link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/forum/css/front.css" />
+    <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/forum/css/page_default.css" />
+    <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/kindeditor/themes/default/default.css" />
+    <script type="text/javascript" src='<?= base_url() ?>assets/public/js/jquery.min.js'></script>
+    <script src="<?= base_url() ?>assets/kindeditor/kindeditor-min.js"></script>
+	<script src="<?= base_url() ?>assets/kindeditor/lang/zh_CN.js"></script>
+    <script type="text/javascript" >
+		var editor = '';
+		$(function() {
+			var options = { allowImageUpload:true, allowMediaUpload:false, allowFlashUpload:false, uploadJson : '<?= base_url() ?>forum/upload_json/index' };
+			editor = KindEditor.create('textarea[name="content"]',options);
+		});
+		
+		function iwback(){
+			$("#editor").show("normal");
+			$('#fishDialogMask').get(0).style.display = 'inline';
+		//	$('#editor').get(0).style.display = 'inline';
+		//	
+		}
+		
+		function cancel(){
+			$("#editor").hide("normal");
+			$('#fishDialogMask').get(0).style.display = 'none';
+		}
+		
+		function show_img(){
+			if( $('#mess').data( 'token' ) == 1 ){
+				return;
+			}
+			$('#mess').html('点击验证码刷新');
+			$('#mess').data( 'token', 1 );
+			$('#captcha').get(0).style.display = 'inline';
+			fresh_img();
+		}
+		
+		function fresh_img(){
+			$.ajax({
+			   type: "POST",
+			   url: "<?= base_url() ?>forum/index/captcha",
+			   data: "nolive=1&num="+Math.random(),
+			   success: function(msg){
+				  $('#captcha').attr('src', msg);
+			   }
+			});
+		}
+		
+		function check_data(){
+			var title = trim( $('#title').val() );
+			if( title == '' ){
+				alert('标题不能为空');
+				return false
+			}
+			if( editor.html() == '' ){
+				alert( '内容不能为空' )
+				return false;
+			}
+			var captcha = $('input[name=vc]').val();
+			if( captcha == '' ){
+				alert('验证码不能为空');
+				return false
+			}else if( captcha.length != 4 ){
+				alert('验证码格式不正确');
+				return false
+			}
+		}
+		
+		//去左空格;   
+		 function ltrim(s){     
+			return s.replace(/(^\s*)/, "");  
+		 }   
+		 //去右空格;   
+		function rtrim(s){   
+		  return s.replace(/(\s*$)/, "");  
+		} 
+		function trim(s){  
+		 	s.replace(/(^\s*)|(\s*$)/, ""); 
+			return rtrim( ltrim(s) ); 
+		}
+		
+		function del_floor( id ){
+			if( confirm( '您确定要删除该楼层么？' ) ){
+				window.location = "<?= base_url() ?>forum/index/del_floor?id="+id
+			}
+		}
+		
+		function del_forum( id ){
+			if( confirm( '您确定要删除该贴么？' ) ){
+				window.location = "<?= base_url() ?>forum/index/del_forum?id="+id
+			}
+		}
+	</script>
+</head>
+<body>
+	<!--div id="header">
+		<div>
+			
+			<p>
+				阅读主题
+			</p>
+		</div>
+	</div-->
+	<div id="main">
+		<!-- header image -->
+		
+
+<script type="text/javascript" src="http://static.fishlee.net/content/scripts/discussion.js?20131210025635"></script>
+
+
+<div class="contentblock" id="tlist">
+	<h5>
+		<?= $info['title'] ?>
+        <span class="tool" id="backLink"><a href="#"><?= $info['type_name'] ?></a>
+		</span>
+
+	</h5>
+    
+    <? if( empty( $_SESSION['uid'] ) ){ ?>
+	<div class="tipWarning">
+			您当前尚未登录，将会以游客身份浏览。建议您登录后再进行操作。请点击
+				<a target="_top" href="<?= base_url() ?>user/login/">登录</a>
+			或
+				<a target="_top" href="<?= base_url() ?>user/reg/">注册</a>
+			。
+			
+	</div>
+    <? }else{ ?>
+	<div class="navigation">
+		<a href="javascript:void( iwback() );" class="edit">回复主题</a>
+        <a style="float:right;" href="<?= base_url() ?>forum/index/main/" class="edit">返回大厅</a>
+	</div>
+    <? } ?>
+	<table class="datalist threadlist">
+    		<? if( $pinfo['this_page'] == 1 ){ ?>
+			<tr pid="135617" tid="129758">
+				<th>
+					<div class="threadTitle">
+						1楼 <?= $info['title'] ?>
+					</div>
+				</th>
+			</tr>
+			<tr>
+				<td>
+					<div class="threadTool">
+						<big><strong><?= $info['username'] ?></strong></big>
+						，<?= date('Y/m/d H:i:s', $info['addtime']); ?> 
+					</div>
+					<div class="threadContent">
+						<p><?= $info['context'] ?></p>
+					</div>
+				</td>
+			</tr>
+            <? 
+            }
+            if( $list ){
+            	foreach( $list as $lt ){
+            ?>
+			<tr id="<?= $lt['id'] ?>">
+				<th>
+					<div class="threadTitle">
+						<?= $lt['floor'] ?>楼 <?= $lt['heading'] ?>
+					</div>
+				</th>
+			</tr>
+			<tr>
+				<td>
+					<div class="threadTool">
+						<big><strong><?= $users[$lt['user_id']] ?></strong></big>
+						，<?= date( 'Y/m/d H:i:s', $lt['retime'] ) ?> 
+                        <? if( $lt['user_id'] == $_SESSION['uid'] ){ ?>
+                        	<a href="javascript:void( del_floor( '<?= $lt['id'] ?>' ) )" >删除</a>
+                        <? } ?>
+					</div>
+					<div class="threadContent">
+						<p><?= $lt['context'] ?></p>
+					</div>
+				</td>
+			</tr>
+            <? } } ?>
+				<tr>
+			<td>
+            	<div class="page_list">
+                	<div class="page_list_info">共<strong><?= $pinfo['all_num'] ?></strong>条回复/每页<strong><?= $pinfo['per_page'] ?></strong>条</div>
+                    <div class="page_list_content">
+                    	<?= $bar ?>
+                    </div>
+                </div>
+			</td>
+		</tr>
+	</table>
+    <? if( !empty( $_SESSION['uid'] ) ){ ?>
+	<div class="navigation">
+		<a href="javascript:void( iwback() )" class="edit">回复主题</a>
+        <? if( $info['user_id'] == $_SESSION['uid'] ){ ?>
+        <a style="float:right; margin-right:20px;" href="javascript:void( del_forum( '<?= $info['id'] ?>' ) )" class="edit">删除</a>
+        <a style="float:right; margin-right:10px;" href="<?= base_url() ?>forum/index/edit_forum?id=<?= $info['id'] ?>" class="edit">编辑</a> 
+        <? } ?>
+	</div>
+    <? } ?>
+</div>
+
+
+<div class="fish_container dialog" id="editor">
+	<h5 class="icon_tip">编辑器
+	</h5>
+<form action="<?= base_url() ?>forum/index/response" onsubmit="return check_data()" method="post">		<input type="hidden" value="<?= $info['id'] ?>" name="pid" />
+		<dl class="form">
+			<dt>回复</dt>
+			<dd><input class="text" id="title" name="title" type="text" value="回复" /></dd>
+			<dt></dt>
+			<dd><textarea name="content" id="content" style="width:893px;height:200px;"></textarea>
+			</dd>
+				<dt>验证码</dt>
+				<dd>
+					<input type="text" name="vc" size="6" style="text-align: center;" onfocus="show_img()" />
+                    <img width="70" onclick="fresh_img()" id='captcha' style="vertical-align:top; cursor:pointer; display:none;" height="28" src="" >
+					<span id="mess">点击验证码框获得验证码。因为有人发广告，很抱歉必须使用验证码。登录后免输验证码</span></dd>
+									<dd class="submitline">
+				<button id="btnSaveReply" class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> 保 存</button>
+				<button id="btnCancelEdit" class="btn btn-normal close_button" onclick="cancel()" type="button"><i class="glyphicon glyphicon-remove"></i> 取 消</button>
+			</dd>
+		</dl>
+</form></div>
+		<div id="copyright" class="nofootlink">
+		&copy;Copyright 2007-2015, 测试论坛模板 [<a href="#">thank iFish</a>], All rights reserved.
+		<br />
+	</div>
+
+	</div>
+
+</div>
+<div id="fishDialogMask" class="fishDialogMask" style="height: 1206px; opacity: 0.5; display:none;"></div>
+</body>
+</html>

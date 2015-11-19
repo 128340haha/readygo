@@ -1,0 +1,39 @@
+<div id="mws-sidebar-stitch"></div>
+<div id="mws-sidebar-bg"></div>
+<!-- Sidebar Wrapper -->
+<div id="mws-sidebar">    
+    <!-- Main Navigation -->
+    <div id="mws-navigation">
+        <ul>
+            <li <? if( uri_string() == 'business/center/index' ){ echo 'class="active"'; } ?>><a href="<?= base_url('business/center/index') ?>" class="mws-i-24 i-home">统计面板</a></li>
+            <li <? if( strpos( uri_string(), 'business/device/' ) === 0 ){ echo 'class="active"'; } ?> >
+                <a href="#" class="mws-i-24 i-list">设备中心</a>
+                <ul>
+                    <li><a href="<?= base_url('business/device/device_list') ?>">设备列表</a></li>
+                    <li><a href="<?= base_url('business/device/device_add') ?>">添加设备</a></li>
+                    <li><a href="#" id="<?= base_url('business/device/device_data') ?>" >耗能统计</a></li>
+                    <li><a href="<?= base_url('business/device/batch_add') ?>">批量添加</a></li>
+                </ul>
+            </li>
+            <li <? if( strpos( uri_string(), 'business/app/' ) === 0 ){ echo 'class="active"'; } ?> >
+            	<a href="#" class="mws-i-24 i-cog">应用中心</a>
+                <ul>
+                    <li><a href="#" id="<?= base_url('business/app/app_list') ?>">应用列表</a></li>
+                    <li><a href="#" id="<?= base_url('business/app/game_list') ?>">游戏列表</a></li>
+                    <li><a href="#" id="<?= base_url('business/app/other') ?>" >其他</a></li>
+                </ul>
+            </li>
+            <li <? if( uri_string() == 'business/site/index' ){ echo 'class="active"'; } ?> >
+            	<a href="#" class="mws-i-24 i-blocks-images">我的站点</a>
+            	<ul>
+                    <li><a href="#" id="<?= base_url('business/site/setting') ?>">站点设定</a></li>
+                    <li><a href="#" id="<?= base_url('business/site/views') ?>" >站点模板</a></li>
+
+                </ul>
+            </li>
+            <li <? if( uri_string() == 'business/center/info' ){ echo 'class="active"'; } ?>><a href="#" class="mws-i-24 i-text-styling">个人中心</a></li>
+        </ul>
+    </div>
+    <!-- End Navigation -->
+    
+</div>

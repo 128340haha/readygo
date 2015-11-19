@@ -1,0 +1,95 @@
+<?php $this->load->view('business/header.html');?>  
+<script type="text/javascript" >
+	function change_type( obj ){
+		if( $('input[name=action]').val() == 'edit' ){
+			return;
+		}
+		var val = $(obj).val();
+		var num = $(obj).find("option:selected").attr('num');
+  		var maxid = $(obj).find("option:selected").attr('maxid');
+		//计算code
+		var newid = pad( parseInt( maxid ) + 1, 8 )
+		var value = pad( val, 4 )+newid;
+		$('input[name=code]').val( value );
+		$('input[name=num]').val( num );
+	}
+	
+	function pad(num, n) {
+	  return Array( (n-(''+num).length+1) ).join(0)+num;
+	}
+	
+	$(function(){
+		change_type( $('select[name=type_id]') )
+	})
+</script>
+    <div id="mws-wrapper">
+		<?php $this->load->view('business/left.html');?>    
+        
+        <div id="mws-container" class="clearfix">
+            <div class="container">
+  
+            	<div class="mws-panel grid_8">
+                	<div class="mws-panel-header">
+                    	<span class="mws-i-24 i-ipod-nano-2"><? if( $action == 'add' ){ ?>添加设备<? }elseif( $action == 'edit' ){ ?>编辑设备<? } ?></span>
+                    </div>
+                    <div class="mws-panel-body">
+                    	<form id="form1" name="from1" class="mws-form" method="post" action="<?= base_url('business/device/device_action') ?>">
+                    		<div class="mws-form-inline">
+                            	<div class="mws-form-row">
+                    				<label>设备分类：</label>
+                    				<div class="mws-form-item small">
+                    					<select <? if( $action == 'edit' ){ ?>disabled<? } ?> onChange="change_type(this)" name="type_id">
+                                        	<? if( $action == 'add' ){
+                                            		foreach( $types as $ts ){ 
+                                            ?>
+                    						<option <? if( $ts['id']==$info['type_id'] ){ ?>selected<? } ?> num="<?= $ts['num'] ?>" maxid="<?= $ts['maxid'] ?>"  value="<?= $ts['id'] ?>"><?= $ts['type_name'] ?></option
+                                            ><? }}elseif( $action == 'edit' ){ ?>
+                                            <option><?= $info['type_name'] ?></option>
+                                            <? } ?>
+                    					</select>
+                    				</div>
+                    			</div>
+								<div class="mws-form-row" <? if( $action == 'edit' ){ ?>style='display:none;'<? } ?> >
+                    				<label>该分类设备数：</label>
+                    				<div class="mws-form-item small">
+                    					<input name="num" disabled size="6" style="width:5%;" readonly type="text" class="mws-textinput" />
+                    				</div>
+                    			</div>
+                    			<div class="mws-form-row">
+                    				<label>设备编号：</label>
+                    				<div class="mws-form-item small">
+                    					<input name="code" disabled type="text" value="<?= $info['code'] ?>" class="mws-textinput" />
+                    				</div>
+                                    <? if( $action == 'add' ){ ?><div style="color:red; min-height:20px;" class="mws-form-item small">PS:此处为设备号预计，实际设备号以添加生成信息为主</div><? } ?>
+                    			</div>
+                    			<div class="mws-form-row">
+                    				<label>设备自定义名称：</label>
+                    				<div class="mws-form-item small">
+                    					<input type="text" name="device_name" value="<?= $info['device_name'] ?>" class="mws-textinput" />
+                    				</div>
+                    			</div>
+                    			
+                    			<div class="mws-form-row">
+                    				<label>是否启用：</label>
+                    				<div class="mws-form-item clearfix">
+                    					<ul class="mws-form-list inline">
+                    						<li><input name="status" value="1" type="radio" <? if( $info['status'] == 1 || $action == 'add' ){ ?>checked<? } ?> /> <label>是</label></li>
+                    						<li><input name="status" value="0" type="radio" <? if( $info['status'] === 0 || $info['status'] === '0' ){ ?>checked<? } ?> /> <label>否</label></li>
+                    					</ul>
+                    				</div>
+                    			</div>
+                    		</div>
+                    		<div class="mws-button-row" style="text-align:left;">
+                            	<input type="submit" value="提交" class="mws-button black" />&nbsp;&nbsp;&nbsp;
+                    			<input type="button" onClick="javascript:history.go(-1)" value="返回" class="mws-button gray" />
+                    		</div>
+                        <input type="hidden" name='did' value="<?= $did ?>" />
+                        <input type="hidden" name='action' value="<?= $action ?>" />
+                        <input type="hidden" name='from_url' value="<?= $this->input->server('HTTP_REFERER'); ?>" />
+                    	</form>
+                    </div>    	
+                </div>
+                
+            </div>
+
+<?php $this->load->view('business/footer.html');?>   

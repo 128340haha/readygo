@@ -1,0 +1,124 @@
+<?php $this->load->view('business/header.html');?>
+<script type="text/javascript" >
+	function change_status( obj ){
+		var val = $(obj).attr( 'val' );
+		var did = $(obj).attr( 'did' );
+		if( val == 1 ){
+			val = 0
+		}else{
+			val = 1;
+		}
+		$.post("<?= base_url(array('business','device','change_status')); ?>", { 'val' : val, 'did' : did }, function(data){
+			if( data.res == 1 ){
+				if( val == 1 ){
+					$(obj).attr( 'class', "mws-ic-16 ic-accept" );
+				}else{
+					$(obj).attr( 'class', "mws-ic-16 ic-cross" );
+				}
+				$(obj).attr( 'val', val );
+			}else{
+				alert('更改失败');
+			}},"json"
+		);  
+	}
+	
+	
+	function makeExcel(){
+		if( confirm( '您确定要导出excel吗？' ) ){
+			$('input[name=excel]').val( 1 )
+			$('#page').attr('name','page');
+			$('#form1').submit();
+		}
+	}	
+	
+	function formSubmit(){
+		$('input[name=excel]').val( 0 )
+		$('#form1').submit();
+	}
+	
+</script>
+    <!-- Main Wrapper -->
+    <div id="mws-wrapper">
+    	<?php $this->load->view('business/left.html');?>    
+        <!-- Container Wrapper -->
+        <div id="mws-container" class="clearfix">   
+        	<!-- Main Container -->
+            <div class="container">
+            	<div class="mws-panel grid_8">
+                	<div class="mws-panel-header">
+                    	<span class="mws-i-24 i-table-1">我的设备列表</span>
+                    </div>
+                    <div class="mws-panel-body">
+                        <div class="dataTables_wrapper">
+                         	<div class="dataTables_filter">
+                            <form name="form1" id="form1" method="get" action="#" >
+                            	<label>分类:
+                                	<select name='type_id'>
+                                    	<option value="0" <? if( empty( $type_id ) ){ ?>selected<? } ?> >全部</option>
+                                    	<? if( $types ){
+                                        		foreach( $types as $ts ){
+                                        ?>
+                                        <option value="<?= $ts['id'] ?>" <? if( $ts['id'] == $type_id ){ ?>selected<? } ?> ><?= $ts['type_name'] ?></option>
+                                        <? } } ?>
+                                    </select>
+                                </label>
+                                &nbsp;&nbsp;&nbsp;
+                         		<label>Search: <input name="code" placeholder='code' type="text" value="<?= $code ?>" ></label>
+                                <input type="button" onclick="formSubmit()" class="mws-button black small" value="搜索" >
+                                <input type="button" style="float:right;" onclick="makeExcel()" class="mws-button blue small" value="导出当前页面数据到excel"  />
+                                <input type="hidden" name="excel" value="0"  />
+                                <input type="hidden" id="page" value="<? if( $page ){ echo $page['this_page']; }else{ echo 1; } ?>"  />
+                            </form>
+                            </div>
+                        <table class="mws-datatable-fn mws-table">
+                            <thead>
+      
+                                	<th rowspan="1" colspan="1" width="15%" >设备码</th>
+                                    <th rowspan="1" colspan="1" width="15%" >所属分类</th>
+                                    <th rowspan="1" colspan="1" width="25%" >设备备注</th>
+                                    <th rowspan="1" colspan="1" width="28%">已绑定用户</th>
+                                    <th rowspan="1" colspan="1" width="6%">是否启用</th>
+                                    <th rowspan="1" colspan="1" width="11%">相关操作</th>
+                              
+                            </thead>
+                        <tbody>
+                        	<? if( $list ){ 
+                            		foreach( $list as $lt ){
+                            ?>
+                        	<tr class="gradeC odd">
+                                <td><?= $lt['code'] ?></td>
+                                <td><?= $lt['type_name'] ?></td>
+                                <td><?= $lt['device_name'] ?></td>
+                                <td style="word-break:break-all"><?= $lt['users'] ?></td>
+                                <td>
+                                	<div style="cursor:pointer;" onclick="change_status(this)" val="<?= $lt['status'] ?>" did="<?= $lt['id'] ?>" class="<? if( $lt['status']==1 ){ ?>mws-ic-16 ic-accept<? }else{ ?>mws-ic-16 ic-cross<? } ?>" >&nbsp;</div>
+                                </td>
+                                <td><a href="<?= base_url('business/device/device_edit').'?id='.$lt['id'] ?>" style="text-decoration:none; color:black;" >修改</a> &nbsp;&nbsp;<a href="#" style="text-decoration:none; color:black;" >删除</a></td>
+                            </tr>
+                            <? }} ?>
+                            </tbody>
+                        </table>
+                        <? if( $bar ){ ?>
+                        <div class="dataTables_info"><?= $page['this_page'].'/'.$page['all_page'] ?>&nbsp;&nbsp;共<?= $page['all_num'] ?>条</div>
+                        <div class="dataTables_paginate paging_full_numbers">
+                        	<?= $bar ?>
+                        <!--	<span class="first paginate_button">First</span>
+                            <span class="previous paginate_button">Previous</span>
+                            <span>
+                            	<span class="paginate_button">1</span>
+                                <span class="paginate_button">2</span>
+                                <span class="paginate_active">3</span>
+                                <span class="paginate_button">4</span>
+                                <span class="paginate_button">5</span>
+                            </span>
+                            <span class="next paginate_button">Next</span>
+                            <span class="last paginate_button">Last</span>
+                        -->
+                       </div>
+                       <? } ?>
+                    </div>
+                </div>
+            </div>
+            <!-- End Main Container -->
+            
+          	<?php $this->load->view('business/footer.html');?>    

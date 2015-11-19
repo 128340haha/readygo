@@ -1,0 +1,152 @@
+<?php $this->load->view('business/header.html');?>  
+<script type="text/javascript">
+function change_type( obj ){
+  //数量
+  var num = $(obj).find("option:selected").attr('num');
+    //maxi_device_d
+  var maxid = $(obj).find("option:selected").attr('maxid');
+  //ID
+  var tid = $(obj).val();
+  //计算与显示
+  fill_blank( num, maxid, tid );
+}
+
+
+function change_number( obj ){
+  if( isNaN( obj.value ) || obj.value <= 0 || obj.value > 9999 ){
+     alert( '添加个数异常' );
+     obj.value = '';
+     return;
+  }
+  var num = $('select[name=type_id]').find("option:selected").attr('num');
+  //maxi_device_d
+  var maxid = $('select[name=type_id]').find("option:selected").attr('maxid');
+  //ID
+  var tid = $('select[name=type_id]').val();
+  //计算与显示
+  fill_blank( num, maxid, tid );
+}
+
+
+function fill_blank( num, maxid, tid ){
+  //显示数量
+  $('input[name=show_num]').val( num );
+  //制作设备号自动填充
+  var head = pad( tid, 4 );
+  var foot = pad( parseInt(maxid)+1, 8 );
+  $('input[name=start]').val( head+foot );
+  var add_num = parseInt( $('input[name=number]').val() );
+  if( add_num > 0 ){
+    var end = parseInt(maxid)+add_num;
+    var newfoot = pad( end,8 );
+    $('input[name=end]').val( head+''+newfoot );
+  }
+}
+
+
+function pad(num, n) {
+  return Array( (n-(''+num).length+1) ).join(0)+num;
+}
+
+$(function(){
+   //数量
+  var num = $('select[name=type_id]').find("option:selected").attr('num');
+     //数量
+  var maxid = $('select[name=type_id]').find("option:selected").attr('maxid');
+  //ID
+  var tid = $('select[name=type_id]').val();
+  //计算与显示
+  fill_blank( num, maxid, tid );
+})
+
+function check_data(){
+  var device_name = $('input[name=device_name]').val();
+  if( device_name == '' || device_name == undefined || device_name == null ){
+    alert('设备名称不能为空');
+    return false;
+  }
+  var number = $('input[name=number]').val();
+  if( isNaN( number ) || number == '' || number == null ){
+    alert('添加数量不能为空或者格式不对');
+    return false;
+  }
+}
+
+</script>
+    <div id="mws-wrapper">
+		<?php $this->load->view('business/left.html');?>    
+        
+        <div id="mws-container" class="clearfix">
+            <div class="container">
+  
+            	<div class="mws-panel grid_8">
+                	<div class="mws-panel-header">
+                    	<span class="mws-i-24 i-ipod-nano-2">添加设备</span>
+                    </div>
+                    <div class="mws-panel-body">
+                    	<form id="form1" name="from1" class="mws-form" method="post" action="<?= base_url('business/device/batch_action') ?>">
+                    		<div class="mws-form-inline">
+                            	<div class="mws-form-row">
+                    				<label>设备分类：</label>
+                    				<div class="mws-form-item small">
+                    					<select onChange="change_type(this)" name="type_id">
+                                        	<? if( $types ){
+                                            		foreach( $types as $ts ){ 
+                                            ?>
+                    						<option num="<?= $ts['num'] ?>" maxid="<?= $ts['maxid'] ?>"  value="<?= $ts['id'] ?>"><?= $ts['type_name'] ?></option>
+                                            <? }} ?>
+                    					</select>
+                    				</div>
+                    			</div>
+								<div class="mws-form-row" >
+                    				<label>该分类设备数：</label>
+                    				<div class="mws-form-item small">
+                    					<input name="show_num" disabled size="6" style="width:5%;" readonly type="text" class="mws-textinput" />
+                    				</div>
+                    			</div>
+                                <div class="mws-form-row" >
+                    				<label>我要添加：</label>
+                    				<div class="mws-form-item small">
+                    					<input name="number" onchange="change_number(this)" size="6" style="width:5%;" type="text" class="mws-textinput" />个
+                    				</div>
+                    			</div>
+                                <div class="mws-form-row">
+                    				<label>设备自定义名称：</label>
+                    				<div class="mws-form-item small">
+                    					<input type="text" name="device_name" value="" class="mws-textinput" />
+                    				</div>
+                    			</div>
+                    			<div class="mws-form-row">
+                    				<label>设备编号：</label>
+                    				<div class="mws-form-item small">
+                    					从<input name="start" disabled type="text" value="" class="mws-textinput" />
+                    				</div>
+                    			</div>
+                                <div class="mws-form-row">
+                    				<div class="mws-form-item small">
+                    					到<input name="end" disabled type="text" value="" class="mws-textinput" />
+                    				</div>
+                                    <div style="color:red; min-height:20px;" class="mws-form-item small">PS:此处为设备号预计，实际设备号以添加生成信息为主</div>
+                    			</div>
+                    			<div class="mws-form-row">
+                    				<label>是否启用：</label>
+                    				<div class="mws-form-item clearfix">
+                    					<ul class="mws-form-list inline">
+                    						<li><input name="status" value="1" type="radio" checked /> <label>是</label></li>
+                    						<li><input name="status" value="0" type="radio" /> <label>否</label></li>
+                    					</ul>
+                    				</div>
+                    			</div>
+                    		</div>
+                    		<div class="mws-button-row" style="text-align:left;">
+                            	<input type="submit" value="提交" class="mws-button black" />&nbsp;&nbsp;&nbsp;
+                    			<input type="button" onClick="javascript:history.go(-1)" value="返回" class="mws-button gray" />
+                    		</div>
+                        <input type="hidden" name='from_url' value="<?= $this->input->server('HTTP_REFERER'); ?>" />
+                    	</form>
+                    </div>    	
+                </div>
+                
+            </div>
+
+<?php $this->load->view('business/footer.html');?>   

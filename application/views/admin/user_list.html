@@ -1,0 +1,99 @@
+<script type="text/javascript" >
+	function change_status( obj ){
+		var val = $(obj).attr( 'val' );
+		var uid = $(obj).attr( 'uid' );
+		if( val == 1 ){
+			val = 0
+		}else{
+			val = 1;
+		}
+		$.post("<?= base_url(array('admin','user','change_status')); ?>", { 'val' : val, 'uid' : uid }, function(data){
+			if( data.res == 1 ){
+				if( val == 1 ){
+					$(obj).attr( 'src', "<?= base_url().'assets/admin/icons/tick_circle.png' ?>" );
+				}else{
+					$(obj).attr( 'src', "<?= base_url().'assets/admin/icons/cross.png' ?>" );
+				}
+				$(obj).attr( 'val', val );
+			}else{
+				alert('更改失败');
+			}},"json"
+		);  
+	}
+	
+	
+	function del( id ){
+		if( confirm( '您确定要删除吗？' ) ){
+			window.location = "<?= base_url(array('admin','user','del_user')); ?>?id="+id
+		}
+	}
+</script>
+
+<div id="main-content">
+    <!-- End .clear -->
+    <div class="content-box">
+      <!-- Start Content Box -->
+      <div class="content-box-header">
+        <h3>用户列表</h3>
+        <div class="clear"></div>
+      </div>
+      <!-- End .content-box-header -->
+      <div class="content-box-content">
+        <div class="tab-content default-tab" id="tab1">
+          <!-- This is the target div. id must match the href of this div's tab -->
+          <table>
+            <thead>
+              <tr>
+                <th>用户名</th>
+                <th>登陆时间</th>
+                <th>登录ip</th>
+                <th>是否激活</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <td colspan="6">
+                  
+                  <div class="pagination"> 
+                  <?= $bar ?>
+                  <!--
+                  	<a href="#" title="First Page">&laquo; First</a>
+                    <a href="#" title="Previous Page">&laquo; Previous</a> 
+                    <a href="#" class="number" title="1">1</a> 
+                    <a href="#" class="number" title="2">2</a> 
+                    <a href="#" class="number current" title="3">3</a> 
+                    <a href="#" class="number" title="4">4</a> 
+                    <a href="#" title="Next Page">Next &raquo;</a>
+                    <a href="#" title="Last Page">Last &raquo;</a> 
+                  -->
+                  </div>
+                  <!-- End .pagination -->
+                  <div class="clear"></div>
+                </td>
+              </tr>
+            </tfoot>
+            <tbody>
+            <? if( $list ){
+            	foreach( $list as $li ){
+            ?>
+                  <tr>
+                    <td><?= $li['username'] ?></td>
+                    <td><? if( empty( $li['login_time'] ) ){ echo '未登录'; }else{ echo date( 'Y-m-d H:i:s', $li['login_time'] ); } ?></td>
+                    <td><? if( empty( $li['login_ip'] ) ){ echo '-'; }else{ echo $li['login_ip']; } ?></td>
+                    <td><img style="cursor:pointer;" onclick="change_status(this)" val="<?= $li['status'] ?>" uid="<?= $li['id'] ?>" src="<? if( $li['status'] == 1 ){ echo base_url().'assets/admin/icons/tick_circle.png'; }else{ echo base_url().'assets/admin/icons/cross.png';  } ?> " ></td>
+                    <td>
+                      <!-- Icons -->
+                      <a href="<?= base_url().'admin/user/reset_pass?uid='.$li['id'] ?>" title="重置密码"><img src="<?= base_url().'assets/admin/icons/' ?>pencil.png" alt="重置密码" /></a> &nbsp;&nbsp;<a href="javascript:void(del('<?= $li['id'] ?>'))" title="删除用户"><img src="<?= base_url().'assets/admin/icons/' ?>cross.png" alt="删除用户" /></a> &nbsp;&nbsp;<a href="<?= base_url().'admin/user/user_info?uid='.$li['id'] ?>" title="个人信息"><img src="<?= base_url().'assets/admin/icons/' ?>hammer_screwdriver.png" alt="个人信息" /></a> &nbsp;&nbsp;<a href="<?= base_url().'admin/user/user_device?uid='.$li['id'] ?>" title="我的设备" ><img width="16" height="16" src="<?= base_url().'assets/admin/icons/' ?>mydevice.jpg" alt="我的设备" /></a> &nbsp;&nbsp;<a href="<?= base_url().'admin/user/device_data?uid='.$li['id'] ?>" title="我的设备耗能" ><img width="16" height="16" src="<?= base_url().'assets/admin/icons/' ?>lighting.jpg" alt="我的设备耗能" /></a></td>
+                  </tr>
+            <?
+              	}
+              }
+            ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- End .content-box-content -->
+    </div>
+ <?= $foot ?>

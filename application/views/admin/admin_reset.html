@@ -1,0 +1,64 @@
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/js/jquery.validate.min.js"></script>
+<script type="text/javascript" >
+$(function() {
+	$("#form1").validate({
+		rules: {
+   			password: {
+				required: true,
+    			minlength:6,
+				maxlength:30
+			},
+   			ckpwd: {
+    			required: true,
+    			equalTo: "input[name=password]"
+   			}
+  		},
+        messages: {
+   			password: {
+				required: "密码不能为空",
+				minlength: "密码不能小于6位",
+				maxlength: "密码不能大于30位"
+   			},
+   			ckpwd: {
+				required: "确认密码不能为空",
+				equalTo: "两次输入密码不一致不一致",
+   			},
+		}
+    });
+});
+</script>
+<div id="main-content">
+    <!-- End .clear -->
+    <div class="content-box">
+      <!-- Start Content Box -->
+      <div class="content-box-header">
+        <h3>重置管理员密码</h3>
+        <div class="clear"></div>
+      </div>
+      <!-- End .content-box-header -->
+      <div class="content-box-content">
+        <div class="tab-content default-tab" id="tab1">
+            <form name="form1" id="form1" method="post" action="<?= base_url().'admin/admin/reset_pass' ?>" >
+            	<p>
+                  <label>管理员账号</label>
+                  <input class="text-input small-input" readonly type="text" name="admin" value="<?= $admin ?>" />
+                </p>
+                <p>
+                  <label>密码</label>
+                  <input class="text-input small-input" type="password" name="password" value="<? echo set_value('password') ?>" />
+                  <span class="input-notification"><? echo form_error('password'); ?></span>
+                </p>
+                <p>
+                  <label>密码确认</label>
+                  <input class="text-input small-input" type="password" name="ckpwd" value="<? echo set_value('ckpwd') ?>" />
+                  <span class="input-notification"><? echo form_error('ckpwd'); ?></span>
+                </p>
+                <br>
+                <input class="button" type="submit" value="提交" />
+                <input class="button" type="button" onClick="javascript:history.go(-1)" value="返回" />
+                <input type="hidden" name="id" value="<?= $id ?>"  />
+            </form>
+        </div>
+      </div>
+    </div>
+</div>

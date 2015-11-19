@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html" />
+<!-- 告诉webkit内核浏览器初始缩放比例为1 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>index</title>
+<!-- 更换第三方图标库,Font Awesome <i class="icon-magic">-->
+<link href="<?= base_url(); ?>assets/wechat/css/bootstrap.css" rel="stylesheet">
+<link href="<?= base_url(); ?>assets/wechat/css/index.css" rel="stylesheet">
+</head>
+
+<body>
+<form name="myform">
+    <section id="wrap">
+        <div id="header">
+            <a href="#" class="fa fa-angle-left">
+            </a>
+            <span>设备中心</span>
+        </div>
+        <div class="header-tips"> 最近一周用电 </div>
+        <!--统计表-->
+        <div class="chart-box">
+            <div id="chart" style="height:300px;">
+            </div>
+        </div>
+        
+        <!--统计数据-->
+        <div class="count clearfix">
+            <div class="count-list">
+                <p class="count-num">12<small>kWh</small></p>
+                <p class="count-date">今日用电</p>
+            </div>
+            <div class="count-list">
+                <p class="count-num">134<small>kWh</small></p>
+                <p class="count-date">本周用电</p>
+            </div>
+            <div class="count-list">
+                <p class="count-num">659<small>kWh</small></p>
+                <p class="count-date">本月用电</p>
+            </div>
+        </div>
+        <!--重点产品-->
+        <div class="device-center">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="device-list">
+                            <div class="device-name">云灯
+                                <a href="#" class="site">
+                                    <i class="fa fa-sliders"></i>
+                                </a>
+                            </div>
+                            <div class="device-text clearfix">
+                                <div class="device-site">
+                                    <div class="device-img">
+                                        <i class="fa fa-lightbulb-o"></i>
+                                    </div>
+                                    <div class="device-switch">
+                                        <div class="switch">
+                                            <div class="toggle-button"></div>
+                                            <div class="toggle-text-off">OFF</div>
+                                            <div class="toggle-text-on">ON</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="device-txt">
+                                    <p><span class="title">颜色：</span><span class="txt"><i class="fa fa-circle" style="color:rgba(216,64,54,1);"></i></span></p>
+                                    <p><span class="title">亮度：</span><span class="txt">89</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="device-list">
+                            <div class="device-name">插板
+                                <a href="#" class="site">
+                                    <i class="fa fa-sliders"></i>
+                                </a>
+                            </div>
+                            <div class="device-text clearfix">
+                                <div class="device-site">
+                                    <div class="device-img">
+                                        <i class="fa fa-plug"></i>
+                                    </div>
+                                    <div class="device-switch">
+                                        <div class="switch">
+                                            <div class="toggle-button"></div>
+                                            <div class="toggle-text-off">OFF</div>
+                                            <div class="toggle-text-on">ON</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="device-txt">
+                                    <p><span class="title">电压：</span><span class="txt">56&deg;</span></p>
+                                    <p><span class="title">电流：</span><span class="txt">89&deg;</span></p>
+                                    <p><span class="title">电量：</span><span class="txt">36&deg;</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="device-list">
+                            <div class="device-name">空气监测</div>
+                            <div class="device-text clearfix">
+                                <div class="device-site">
+                                    <div class="device-img">
+                                        <i class="fa fa-life-ring"></i>
+                                    </div>
+                                    <div class="device-switch">
+                                        <a class="data">
+                                            数据
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="device-txt">
+                                    <p><span class="title">湿度：</span><span class="txt">56&deg;</span></p>
+                                    <p><span class="title">温度：</span><span class="txt">89&deg;</span></p>
+                                    <p><span class="title">甲醛：</span><span class="txt">36&deg;</span></p>
+                                    <p><span class="title">PM2.5：</span><span class="txt">36&deg;</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--添加产品-->
+                    <div class="col-xs-12">
+                        <div class="device-add">
+                            <i class="fa fa-plus-circle"></i>
+                        </div>
+                    </div>
+                    <!--更多产品-->
+                    <div class="col-xs-12">
+                        <div class="device-more">我的设备</div>
+                        <div class="device-more">更多设备</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <? $this->load->view( 'wechat/copyright.html' ); ?>
+    </section>
+</form>
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/jquery-1.11.1.min.js"></script>
+<script src="<?= base_url(); ?>assets/wechat/js/bootstrap/bootstrap.min.js"></script>
+<!--数据表格js-->
+<script src="<?= base_url(); ?>assets/wechat/js/echarts.js"></script>
+<script>				
+var Day_data1=[123,445,611,234,898,446,145,647,657,897,123,546,789,123,789,214,687,645,123,445,611,234,898,446,145,647,657,897,123,546,789,123,789,214,687,645,123,445,611,234,898,446,145,647,657,897,123,546,789,123,789,214,687,645,];
+var Day_data2=[221,321,123,446,798,942,465,654,506,478,797,897,988,885,819,789,776,221,654,361,,456,456,123,312,655,466,573,211,362,221,321,123,446,798,942,465,654,506,478,797,897,988,885,819,789,776,221,654,361,,456,456,123,312,655,466,573,211,362];
+ 
+var Day_number=['星期天','星期六','星期五','星期四','星期三','星期二','星期一','星期天','星期六','星期五','星期四','星期三','星期二','星期一','星期天','星期六','星期五','星期四','星期三','星期二','星期一','星期天','星期六','星期五' ];
+
+var end = 0
+if(Day_number.length==7)
+{
+	end=100;
+}
+else if(Day_number.length==24)
+{
+	end=26;	
+}else if(Day_number.length>=28)
+{
+	end=22
+}
+
+require.config({
+	paths: {
+		echarts: '<?= base_url(); ?>assets/wechat/js'
+	}
+});
+
+// 按需加载
+require(['echarts','echarts/chart/line'], 
+function requireCallback(ec) {
+
+	myChart = ec.init(document.getElementById('chart'));
+	window.onresize = myChart.resize;
+ 
+	option = {
+    color: ['rgba(107, 175, 197,1)','rgba(255,255,255,1)'],
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        data:['设备1','设备2'],
+		textStyle:{color:'#fff' }
+    },
+	grid :{
+		x:40,
+		y:30,
+		x2:40,
+		y2:60,
+	 	borderWidth:0
+	},
+	dataZoom : {
+        show : true,
+        realtime : true,
+		showDetail:false,
+        height: 20,
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        dataBackgroundColor: 'rgba(0,0,0,0.3)',
+        fillerColor: 'rgba(0,0,0,0.6)',
+        handleColor: 'rgba(0,0,0,0.3)',
+        start : 0,
+        end : end,
+		handleSize:10,
+		 
+    },
+    xAxis : [
+        {
+            type : 'category',
+            boundaryGap : true,
+            data : Day_number,
+			axisLine : {    // 轴线
+                show: true,
+                lineStyle: {
+                    color: 'rgba(255,255,255,0.1)',
+                    type: 'solid',
+                    width: 1
+                }
+            },
+			splitLine : {
+                show:true,
+                lineStyle: {
+                    color: 'rgba(255,255,255,0.1)',
+                    type: 'solid',
+                    width: 1
+                }
+            },
+			axisLabel : {
+                show:true,
+                textStyle: {
+                    color: '#fff',
+                }
+            },
+			axisTick : {    // 轴标记
+                show:true,
+                length: 5,
+                lineStyle: {
+                    color: 'rgba(255,255,255,0.1)',
+                    width: 3
+                }
+            },
+			 position: 'bottom',
+            boundaryGap: true,
+			
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+			axisLine : {    // 轴线
+                show: false,
+                
+            },
+			splitLine : {
+                show:true,
+                lineStyle: {
+                    color: 'rgba(255,255,255,0.1)',
+                    type: 'solid',
+                    width: 1
+                }
+            },
+			axisLabel : {
+                show:true,
+				textStyle: {
+                    color: '#fff',
+                }
+            }
+        }
+    ],
+   series : [
+        {
+            name:'设备1',
+            type:'line',
+            smooth:true,
+            itemStyle: {normal: {areaStyle: {type: 'default'}}},
+            data:Day_data1
+        },
+        {
+            name:'设备2',
+            type:'line',
+            smooth:true,
+            itemStyle: {normal: {areaStyle: {type: 'default'}}},
+            data:Day_data2
+        } 
+    ]
+};                 
+	myChart.setOption(option, true)
+});
+
+/* 按钮开关 */
+$('.switch').click(function(e){
+  e.preventDefault(); 
+  $(this).toggleClass('switch-on');
+});
+</script>
+</body>
+</html>

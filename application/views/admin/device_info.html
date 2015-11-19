@@ -1,0 +1,69 @@
+<script language="javascript" type="text/javascript" src="<?= base_url(); ?>assets/public/js/jquery.validate.min.js"></script>
+<script type="text/javascript" >
+$(function() {
+	$("#form1").validate({
+		rules: {
+   			device_name: {
+				required: true,
+			}
+  		},
+        messages: {
+   			device_name: {
+				required: '设备名不能为空',
+   			}
+		}
+    });
+});
+</script>
+<div id="main-content">
+    <!-- End .clear -->
+    <div class="content-box">
+      <!-- Start Content Box -->
+      <div class="content-box-header">
+        <h3>用户信息</h3>
+        <div class="clear"></div>
+      </div>
+      <!-- End .content-box-header -->
+      <div class="content-box-content">
+        <div class="tab-content default-tab" id="tab1">
+            <form name="form1" id="form1" method="post" action="<?= base_url().'admin/device/device_action' ?>" >
+                <p>
+                  <label>设备ID</label>
+                  <?php echo $device_id ? $device_id : '自动生成' ?>
+                  <span class="input-notification"></span>
+                </p>
+                <p>
+                  <label>类型</label>
+                  <select <? if( $action == 'edit' ){ ?>disabled<? } ?> name="type_id">
+                  <? 
+                  	if( $types ){
+                  		foreach( $types as $tp ){
+                  ?>
+                    <option <?php if( $tp['id'] == $type_id ){ ?> selected <? } ?> value="<?= $tp['id'] ?>"><?= $tp['type_name'] ?></option>
+                  <?
+                  	}	}
+                  ?>
+                  </select>
+                </p>
+                <p>
+                  <label>设备名称</label>
+                  <input class="text-input small-input" type="text" name="device_name" value="<?php echo $device_name ?>" />
+                  <span class="input-notification"></span>
+                </p>
+                <p>
+                  <label>设备编号</label>
+                  <?php echo $code ? $code : '自动生成' ?>
+                  <span class="input-notification"></span>
+                </p>
+               
+                <br>
+                <input type="hidden" name="action" value="<?= $action ?>" />
+                <input type="hidden" name="id" value="<?= $id ?>" />
+                <input type="hidden" id="from_url" name="from_url" value="<? if( empty( $from_url ) ){ echo ''; }else{ echo $from_url; } ?>"  />
+                <input class="button" type="submit" value="提交" />
+                <input class="button" type="button" onClick="javascript:history.go(-1)" value="返回" />
+            </form>
+        </div>
+      </div>
+    </div>
+</div>

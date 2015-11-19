@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>测试后台</title>
+<?= link_tag('assets/admin/css/reset.css'); ?>  
+<?= link_tag('assets/admin/css/index_style.css'); ?> 
+<?= link_tag('assets/admin/css/invalid.css'); ?> 
+<!--                       Javascripts                       -->
+<!-- jQuery -->
+<script type="text/javascript" src="<?= base_url().'assets/public/js/jquery.min.js' ?>"></script>
+<script type="text/javascript" src="<?= base_url().'assets/public/js/jquery-migrate.js' ?>"></script>
+<!-- jQuery Configuration -->
+<script type="text/javascript" src="<?= base_url().'assets/admin/js/simpla.jquery.configuration.js' ?>"></script>
+<!-- Facebox jQuery Plugin -->
+<script type="text/javascript" src="<?= base_url().'assets/admin/js/facebox.js' ?>"></script>
+<!-- jQuery WYSIWYG Plugin -->
+<script type="text/javascript" src="<?= base_url().'assets/admin/js/jquery.wysiwyg.js' ?>"></script>
+<!-- jQuery Datepicker Plugin -->
+<script type="text/javascript">
+	function layout(){
+		if( confirm('您确定要注销么?') ){
+			window.location = "<?= base_url('admin/admin/admin_layout') ?>";
+		}
+	}
+</script>
+</head>
+<body>
+<div id="body-wrapper">
+	<div id="sidebar">
+    <div id="sidebar-wrapper">
+      <!-- Sidebar with logo and menu -->
+      <h1 id="sidebar-title"><a href="#">测试后台v1.0</a></h1>
+      <!-- Logo (221px wide) -->
+      <a href="#"><img id="logo" src="<?= base_url().'assets/admin/images/' ?>logo.png" alt="测试后台v1.0" /></a>
+      <!-- Sidebar Profile links -->
+      <div id="profile-links"> 欢迎你, <a href="#" title="Edit your profile"><?= $admin ?></a><br />
+        <br />
+         <a href="javascript:void( layout() )" title="Sign Out">注销</a> </div>
+      <ul id="main-nav">
+        <!-- Accordion Menu -->
+        <li> <a href="#" class="nav-top-item <? if( strpos( uri_string(), 'admin/user/' ) === 0 ){ echo 'current'; } ?> "> 用户中心 </a>
+          <ul>
+            <li><a <? if( uri_string() == 'admin/user/index' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/user/index') ?>">用户列表</a></li>
+            <li><a <? if( uri_string() == 'admin/user/add_user' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/user/add_user') ?>">添加用户</a></li>
+       <!-- <li><a <? if( uri_string() == 'admin/user/device' ){ echo 'class="current"'; } ?> href="<?= base_url().'admin/user/device' ?>">用户设备</a></li>	-->
+            <li><a <? if( uri_string() == 'admin/user/setting' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/user/setting') ?>">相关设定</a></li>
+            <li><a <? if( uri_string() == 'admin/user/device_data' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/user/device_data') ?>">用户统计</a></li>
+          </ul>
+        </li>
+        <li> <a href="#" class="nav-top-item <? if( strpos( uri_string(), 'admin/device/' ) === 0 ){ echo 'current'; } ?>"> 设备中心 </a>
+          <ul>
+            <li><a <? if( uri_string() == 'admin/device/index' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/device/index') ?>">设备列表</a></li>
+            <li><a <? if( uri_string() == 'admin/device/device_add' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/device/device_add') ?>">添加设备</a></li>
+            <li><a <? if( uri_string() == 'admin/device/device_types' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/device/device_types') ?>">设备分类</a></li>
+            <li><a <? if( uri_string() == 'admin/device/batch_add' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/device/batch_add') ?>">批量添加</a></li>
+            <li><a <? if( uri_string() == 'admin/device/device_parent' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/device/device_parent') ?>">主从设备</a></li>
+          </ul>
+        </li>
+        <li> <a href="#" class="nav-top-item <? if( strpos( uri_string(), 'admin/admin/' ) === 0 ){ echo 'current'; } ?>"> 管理员列表 </a>
+          <ul>
+            <li><a <? if( uri_string() == 'admin/admin/index' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/admin/index') ?>">管理员列表</a></li>
+            <li><a <? if( uri_string() == 'admin/admin/add_admin' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/admin/add_admin') ?>">添加管理员</a></li>
+            <li><a href="#">管理员权限</a></li>
+          </ul>
+        </li>
+        <li> <a href="#" class="nav-top-item <? if( strpos( uri_string(), 'admin/forum/' ) === 0 ){ echo 'current'; } ?>"> 论坛设定 </a>
+          <ul>
+            <li><a <? if( uri_string() == 'admin/forum/index' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/forum/index') ?>">帖子列表</a></li>
+            <li><a <? if( uri_string() == 'admin/forum/type' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/forum/type') ?>">板块分类</a></li>
+            <li><a href="#">论坛功能</a></li>
+            <li><a <? if( uri_string() == 'admin/forum/recycle' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/forum/recycle') ?>">回收站</a></li>
+          </ul>
+        </li>
+        <li> <a href="#" class="nav-top-item <? if( strpos( uri_string(), 'admin/main/' ) === 0 && uri_string() != 'admin/main/tip' ){ echo 'current'; } ?>"> 主站管理 </a>
+          <ul>
+            <li><a <? if( uri_string() == 'admin/main/navi' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/main/navi') ?>">导航设置</a></li>
+            <li><a href="#">操作日志</a></li>
+            <li><a href="#">功能开关</a></li>
+            <li><a href="#">站点参数</a></li>
+            <li><a href="#">站点信息</a></li>
+          </ul>
+        </li>
+        <li> <a href="#" class="nav-top-item <? if( strpos( uri_string(), 'admin/seller/' ) === 0 ){ echo 'current'; } ?>"> 商家管理 </a>
+          <ul>
+            <li><a <? if( uri_string() == 'admin/seller/index' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/seller/index') ?>">商家列表</a></li>
+            <li><a <? if( uri_string() == 'admin/seller/add' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/seller/add') ?>">添加商家</a></li>
+          </ul>
+        </li>
+        <li> <a href="#" class="nav-top-item <? if( strpos( uri_string(), 'admin/route/' ) === 0 ){ echo 'current'; } ?>"> 路由周边管理 </a>
+          <ul>
+            <li><a <? if( uri_string() == 'admin/route/index' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/route/index') ?>">游戏列表</a></li>
+            <li><a <? if( uri_string() == 'admin/route/add' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/route/add') ?>">添加游戏</a></li>
+          </ul>
+        </li>
+        <li> <a href="#" class="nav-top-item <? if( strpos( uri_string(), 'admin/setting/' ) === 0 && uri_string() != 'admin/setting/tip' ){ echo 'current'; } ?>"> 站点设定 </a>
+          <ul>
+            <li><a <? if( uri_string() == 'admin/setting/index' ){ echo 'class="current"'; } ?> href="<?= base_url('admin/setting/index') ?>">欢迎页</a></li>
+            <li><a href="#">操作日志</a></li>
+            <li><a href="#">功能开关</a></li>
+            <li><a href="#">站点参数</a></li>
+            <li><a href="#">站点信息</a></li>
+          </ul>
+        </li>
+      </ul>
+      <!-- End #main-nav -->
+    </div>
+  </div>
